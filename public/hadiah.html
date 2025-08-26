@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadiah</title>
+</head>
+<body>
+    <h1>Informasi Hadiah</h1>
+    <p id="hadiahInfo"></p>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const nomor = urlParams.get('nomor');
+        console.log('Nomor yang diambil dari URL:', nomor); // Debugging log
+
+        // Fungsi untuk mengambil data dari CSV
+        async function fetchData() {
+            const response = await fetch('data_pemenang.csv');
+            const data = await response.text();
+            return data;
+        }
+
+        // Proses data CSV
+        function processCSV(data) {
+            const lines = data.split('\n').slice(1); // Mengabaikan header
+            const hadiahData = {};
+
+            lines.forEach(line => {
+                const [nomor, nama, link] = line.split(',');
+                hadiahData[nomor.trim()] = { nama, link }; // Trim untuk menghapus spasi
+            });
+
+            console.log('Data hadiah yang diproses:', hadiahData); // Debugging log
+            return hadiahData;
+        }
+
+        // Menampilkan informasi hadiah dan melakukan redirect
+        fetchData().then(data => {
+            const hadiahData = processCSV(data);
+            const hadiahInfo = document.getElementById('hadiahInfo');
+
+            console.log('Hadiah Data:', hadiahData); // Debugging log
+
+            if (hadiahData[nomor]) {
+                hadiahInfo.innerHTML = `Redirecting to ${hadiahData[nomor].nama}...`;
+                window.location.href = hadiahData[nomor].link; // Redirect ke link
+            } else {
+                hadiahInfo.textContent = 'Nomor hadiah tidak ditemukan.';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV and Generate QR Codes - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #ff7849 0%, #ff6b35 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 120, 73, 0.1);
+            color: #ff7849;
+            border-left-color: #ff7849;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 120, 73, 0.15);
+            color: #ff7849;
+            border-left-color: #ff7849;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            fill: currentColor;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-description {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .upload-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .upload-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(248, 249, 250, 0.8);
+            border: 2px dashed rgba(255, 120, 73, 0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .file-input-label:hover {
+            border-color: #ff7849;
+            background: rgba(255, 120, 73, 0.1);
+            color: #ff7849;
+        }
+
+        .file-input:focus + .file-input-label {
+            border-color: #ff7849;
+            box-shadow: 0 0 0 3px rgba(255, 120, 73, 0.1);
+        }
+
+        .upload-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 1rem;
+            fill: currentColor;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 120, 73, 0.3);
+            display: flex;
+            align-items: center;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 120, 73, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            fill: currentColor;
+        }
+
+        #status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .status-processing {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .status-success {
+            background: rgba(16, 172, 132, 0.1);
+            color: #10ac84;
+            border: 1px solid rgba(16, 172, 132, 0.2);
+        }
+
+        .status-error {
+            background: rgba(255, 107, 107, 0.1);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .qr-gallery {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .gallery-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 1rem;
+            fill: #ff7849;
+        }
+
+        .qr-counter {
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        #qrCodeContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .qr-code-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 120, 73, 0.1);
+        }
+
+        .qr-code-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #ff7849;
+        }
+
+        .qr-code-container img {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-number {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 120, 73, 0.2);
+            border-top: 4px solid #ff7849;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            #qrCodeContainer {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .upload-card, .qr-gallery {
+                padding: 1.5rem;
+            }
+
+            #qrCodeContainer {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .gallery-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .upload-card {
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        .qr-gallery {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .qr-code-container {
+            animation: slideInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Bayan Dashboard</h2>
+                <p class="sidebar-subtitle">QR Tools & Utilities</p>
+            </div>
+            <ul class="nav-menu">
+                 <li class="nav-item">
+                    <a href="/index.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zM9.5 14.5v3h-3v-3h3M11 13H5v6h6v-6zM17.5 6.5v3h-3v-3h3M19 5h-6v6h6V5zM13 13h1.5v1.5H13zM14.5 14.5H16V16h-1.5zM16 13h1.5v1.5H16zM13 16h1.5v1.5H13zM14.5 17.5H16V19h-1.5zM16 16h1.5v1.5H16zM17.5 14.5H19V16h-1.5zM17.5 17.5H19V19h-1.5zM22 7h-2V4h-3V2h5zM22 22v-5h-2v3h-3v2zM2 22h5v-2H4v-3H2zM2 2v5h2V4h3V2z"/>
+                        </svg>
+                        QR Scanner
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/convert-json.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M8 16h8v2H8v-2zm0-4h8v2H8v-2zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                        </svg>
+                        JSON to CSV Generator
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/upload-csv.html" class="nav-link active">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                        </svg>
+                        CSV to QR Generator
+                    </a>
+                </li>
+               <li class="nav-item">
+                <a href="/s.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M2 6h1v12H2V6zm2 0h1v12H4V6zm2 0h3v12H6V6zm4 0h1v12h-1V6zm3 0h1v12h-1V6zm2 0h3v12h-3V6zm4 0h1v12h-1V6z" />
+                    </svg>
+                    Monitor Welcome
+                </a>
+            </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 class="page-title">Upload CSV and Generate QR Codes</h1>
+                <p class="page-description">Upload CSV files to automatically generate QR codes with downloadable Excel output</p>
+            </header>
+
+            <!-- Upload Section -->
+            <div class="upload-card">
+                <div class="upload-section">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="csvFile" accept=".csv" class="file-input">
+                        <label for="csvFile" class="file-input-label">
+                            <svg class="upload-icon" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            </svg>
+                            <span id="file-label-text">Choose CSV File</span>
+                        </label>
+                    </div>
+                    
+                    <button id="uploadBtn">
+                        <svg class="button-icon" viewBox="0 0 24 24">
+                            <path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" />
+                        </svg>
+                        Upload and Generate
+                    </button>
+                </div>
+                
+                <div id="status"></div>
+            </div>
+
+            <!-- QR Code Gallery -->
+            <div class="qr-gallery">
+                <div class="gallery-header">
+                    <h3 class="gallery-title">
+                        <svg class="gallery-icon" viewBox="0 0 24 24">
+                            <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM19 13h2v2h-2zM13 13h2v2h-2zM15 15h2v2h-2zM13 17h2v2h-2zM15 19h2v2h-2zM17 17h2v2h-2zM17 19h2v2h-2zM19 17h2v2h-2z"/>
+                        </svg>
+                        QR Code Gallery
+                    </h3>
+                    <span id="qr-counter" class="qr-counter">0 QR codes</span>
+                </div>
+                <div id="qrCodeContainer">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Loading QR codes...
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        // Update QR counter
+        function updateQRCounter(count) {
+            const counter = document.getElementById('qr-counter');
+            counter.textContent = `${count} QR code${count !== 1 ? 's' : ''}`;
+        }
+
+        // Update file label
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const fileLabelText = document.getElementById('file-label-text');
+            if (e.target.files.length > 0) {
+                fileLabelText.textContent = e.target.files[0].name;
+            } else {
+                fileLabelText.textContent = 'Choose CSV File';
+            }
+        });
+
+        // Fungsi untuk menampilkan semua QR code
+        function displayAllQRCodes() {
+            fetch('/api/get-all-qrcodes')
+                .then(response => response.json())
+                .then(data => {
+                    const qrCodeContainer = document.getElementById('qrCodeContainer');
+                    qrCodeContainer.innerHTML = '';
+                    
+                    updateQRCounter(data.length);
+                    
+                    if (data.length === 0) {
+                        qrCodeContainer.innerHTML = '<div class="loading">No QR codes available. Upload a CSV file to generate QR codes.</div>';
+                        return;
+                    }
+                    
+                    data.forEach(item => {
+                        const container = document.createElement('div');
+                        container.className = 'qr-code-container';
+
+                        const img = document.createElement('img');
+                        img.src = item.qrCodeUrl;
+                        img.style.width = '140px';
+                        img.style.height = '140px';
+                        img.style.marginBottom = '1rem';
+                        container.appendChild(img);
+
+                        const number = document.createElement('div');
+                        number.textContent = `No. ${item.nomor}`;
+                        number.className = 'qr-number';
+                        container.appendChild(number);
+
+                        qrCodeContainer.appendChild(container);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const qrCodeContainer = document.getElementById('qrCodeContainer');
+                    qrCodeContainer.innerHTML = '<div class="loading">Error loading QR codes. Please try again.</div>';
+                    updateQRCounter(0);
+                });
+        }
+
+        // Tampilkan semua QR code saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', displayAllQRCodes);
+
+        document.getElementById('uploadBtn').addEventListener('click', function() {
+            const fileInput = document.getElementById('csvFile');
+            if (!fileInput.files.length) {
+                alert('Pilih file CSV terlebih dahulu');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const statusDiv = document.getElementById('status');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            statusDiv.textContent = 'Mengupload dan memproses file...';
+            statusDiv.className = 'status-processing';
+            statusDiv.style.display = 'block';
+            uploadBtn.disabled = true;
+            
+            document.getElementById('qrCodeContainer').innerHTML = '<div class="loading"><div class="loading-spinner"></div>Memproses...</div>';
+
+            fetch('/api/upload-csv', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Gagal mengupload file');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'data_with_qr_codes.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                statusDiv.textContent = 'File berhasil diunduh!';
+                statusDiv.className = 'status-success';
+                uploadBtn.disabled = false;
+
+                // Baca file Excel untuk menampilkan gambar QR Code
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                    const qrCodeContainer = document.getElementById('qrCodeContainer');
+                    qrCodeContainer.innerHTML = '';
+                    
+                    updateQRCounter(jsonData.length);
+
+                    jsonData.forEach(row => {
+                        const container = document.createElement('div');
+                        container.className = 'qr-code-container';
+
+                        const img = document.createElement('img');
+                        img.src = row.qrCodeUrl;
+                        img.style.width = '140px';
+                        img.style.height = '140px';
+                        img.style.marginBottom = '1rem';
+                        container.appendChild(img);
+
+                        const number = document.createElement('div');
+                        number.textContent = `No. ${row.nomor}`;
+                        number.className = 'qr-number';
+                        container.appendChild(number);
+
+                        qrCodeContainer.appendChild(container);
+                    });
+                };
+                reader.readAsArrayBuffer(blob);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusDiv.textContent = 'Terjadi kesalahan: ' + error.message;
+                statusDiv.className = 'status-error';
+                uploadBtn.disabled = false;
+                
+                // Show error message in QR container
+                document.getElementById('qrCodeContainer').innerHTML = '<div class="loading">Error processing file. Please try again.</div>';
+                updateQRCounter(0);
+            });
+        });
+    </script>
+</body>
+</html>

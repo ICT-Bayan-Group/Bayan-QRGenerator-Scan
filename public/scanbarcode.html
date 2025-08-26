@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #scanner {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #video {
+            width: 100%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .scanning {
+            border: 2px solid green !important;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="scanner">
+        <h1>QR Code Scanner</h1>
+        <select id="cameraSelect" style="margin-bottom: 10px;"></select>
+        <video id="video" autoplay playsinline></video>
+        <div id="result"></div>
+        <!-- Tombol untuk memicu audio pertama kali di iOS -->
+        <button id="initAudio" style="display: none;">Enable Sound</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+        const socket = io();
+        const video = document.getElementById('video');
+        const resultDiv = document.getElementById('result');
+        const cameraSelect = document.getElementById('cameraSelect');
+        let currentStream = null;
+        
+        // Audio untuk notifikasi
+        const scanSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2127/2127-preview.mp3');
+        scanSound.volume = 0.5;
+
+        // Get available cameras
+        async function getCameras() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                
+                if (videoDevices.length > 1) {
+                    videoDevices.forEach((device, i) => {
+                        const option = document.createElement('option');
+                        option.value = device.deviceId;
+                        option.text = device.label || `Camera ${i + 1}`;
+                        cameraSelect.appendChild(option);
+                    });
+                    cameraSelect.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error accessing cameras:', error);
+            }
+        }
+
+        // Start scanning with selected camera
+        async function startScanning(deviceId) {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+
+            const constraints = {
+                video: {
+                    deviceId: deviceId ? { exact: deviceId } : undefined,
+                    facingMode: 'environment'
+                }
+            };
+
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = currentStream;
+                await video.play();
+                scanQRCode();
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error accessing camera: ${error.message}</span>`;
+            }
+        }
+
+        // QR Code scanning function
+        function scanQRCode() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            // Optimasi ukuran canvas
+            const scale = 0.8; // Mengurangi ukuran canvas untuk performa lebih baik
+            canvas.width = video.videoWidth * scale;
+            canvas.height = video.videoHeight * scale;
+
+            let lastScanTime = 0;
+            const scanInterval = 100; // Interval scanning dalam milidetik
+
+            function tick() {
+                const now = Date.now();
+                if (video.readyState === video.HAVE_ENOUGH_DATA && now - lastScanTime > scanInterval) {
+                    lastScanTime = now;
+                    
+                    // Menggambar video ke canvas dengan ukuran yang dioptimalkan
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                        inversionAttempts: 'both', // Mencoba kedua mode inversion
+                        canOverwriteImage: true, // Mengizinkan overwrite image untuk performa lebih baik
+                        grayscaleWeights: { // Optimasi bobot grayscale
+                            red: 0.299,
+                            green: 0.587,
+                            blue: 0.114
+                        }
+                    });
+
+                    if (code) {
+                        video.classList.add('scanning');
+                        resultDiv.textContent = `QR Code detected: ${code.data}`;
+                        socket.emit('barcodeScanned', code.data);
+        // Handle sound
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            // Show the audio init button if on iOS
+            document.getElementById('initAudio').style.display = 'block';
+        }
+        scanSound.play(); // Memainkan suara notifikasi
+                    } else {
+                        video.classList.remove('scanning');
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+            tick();
+        }
+
+        // Camera selection handler
+        cameraSelect.addEventListener('change', () => {
+            startScanning(cameraSelect.value);
+        });
+
+        // Initialize scanner
+        getCameras();
+        startScanning();
+        
+        // Handle iOS audio initialization
+        document.getElementById('initAudio').addEventListener('click', () => {
+            // Play silent audio to enable future audio playback
+            const silentAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+            silentAudio.play();
+            document.getElementById('initAudio').style.display = 'none';
+        });
+
+        socket.on('barcodeAdded', (data) => {
+            resultDiv.textContent = `QR Code ${data.barcode} saved at ${new Date(data.timestamp).toLocaleTimeString()}`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+        .print-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Selamat Datang di Undangan Kami</h1>
+    <p>Nomor Undian: <span id="nomorUndian"></span></p>
+    <p>Silakan nikmati acara kami!</p>
+    <button class="print-button" onclick="window.print()">Cetak Undangan</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const nomorUndian = urlParams.get('nomor');
+        document.getElementById('nomorUndian').textContent = nomorUndian;
+    </script>
+</body>
+</html>

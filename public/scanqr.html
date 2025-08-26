@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        #scanner {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        #barcodeInput {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="scanner">
+        <h1>Barcode Scanner</h1>
+        <input type="text" id="barcodeInput" placeholder="Scan barcode here" autofocus>
+        <div id="result"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io(); // Menghubungkan ke server via Socket.IO
+        const barcodeInput = document.getElementById('barcodeInput');
+        const resultDiv = document.getElementById('result');
+
+        // Audio untuk notifikasi
+        const scanSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2127/2127-preview.mp3');
+        scanSound.volume = 0.5;
+
+        // Event listener untuk menangkap data dari barcode scanner
+        barcodeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const barcodeData = event.target.value.trim(); // Ambil nilai dari input
+                if (barcodeData) {
+                    // Tampilkan hasil scan
+                    resultDiv.innerHTML = `<span class="success">Barcode detected: ${barcodeData}</span>`;
+                    
+                    // Kirim data barcode ke server
+                    socket.emit('barcodeScanned', barcodeData);
+                    
+                    // Putar suara notifikasi
+                    scanSound.play();
+                    
+                    // Bersihkan input setelah scan
+                    event.target.value = '';
+                } else {
+                    resultDiv.innerHTML = `<span class="error">No barcode detected.</span>`;
+                }
+            }
+        });
+
+        // Event listener untuk menerima konfirmasi dari server
+        socket.on('barcodeAdded', (data) => {
+            resultDiv.innerHTML = `<span class="success">Barcode ${data.barcode} saved at ${new Date(data.timestamp).toLocaleTimeString()}</span>`;
+        });
+
+        // Fokus otomatis ke input setiap kali halaman dimuat
+        window.onload = () => {
+            barcodeInput.focus();
+        };
+    </script>
+</body>
+</html>

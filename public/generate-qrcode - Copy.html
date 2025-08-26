@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate QR Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #qrCodeContainer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generate QR Code</h1>
+    <input type="text" id="nomorInput" placeholder="Masukkan nomor urut">
+    <button id="generateBtn">Generate QR Code</button>
+    <div id="qrCodeContainer"></div>
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const nomor = document.getElementById('nomorInput').value;
+            if (!nomor) {
+                alert('Masukkan nomor urut terlebih dahulu');
+                return;
+            }
+
+            const url = `http://7c300734a638.sn.mynetname.net:3000/hadiah.html?nomor=${nomor}`;
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            qrCodeContainer.innerHTML = '';
+
+            // Generate QR Code menggunakan library QRCode.js
+            const qrcode = new QRCode(qrCodeContainer, {
+                text: url,
+                width: 256,
+                height: 256,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+</body>
+</html>

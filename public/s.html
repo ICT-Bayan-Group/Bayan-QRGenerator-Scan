@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Datang</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            background-color: rgba(219, 219, 212, 0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 100%;
+            width: 100%;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 1rem;
+        }
+        .info {
+            margin-top: 1.5rem;
+            font-size: 4rem;
+            color: #fffb00;
+        }
+        .info span {
+            font-weight: bold;
+            color: #ffe600;
+        }
+        .back-btn {
+            margin-top: 2rem;
+            padding: 0.5rem 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .back-btn:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        body {
+            background-image: url('BackS.png'); /* Ganti dengan path gambar Anda */
+            background-size: cover; /* Gambar menutupi seluruh halaman */
+            background-position: center; /* Gambar berada di tengah */
+            background-repeat: no-repeat; /* Menghindari pengulangan gambar */
+            height: 100vh; /* Membuat tinggi halaman seukuran dengan layar */
+            margin: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <!-- <h1>Menunggu Scan...</h1> -->
+       <!-- <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
+     
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <script>
+
+        // Inisialisasi socket dengan auto-connect
+        const socket = io({
+            reconnection: true,
+            reconnectionAttempts: Infinity,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            randomizationFactor: 0.5
+        });
+
+        // Tampilkan status koneksi
+        function updateConnectionStatus(status) {
+            const statusElement = document.getElementById('connection-status');
+            if (statusElement) {
+                statusElement.textContent = status;
+                statusElement.style.color = status === 'Connected' ? 'green' : 'red';
+            }
+        }
+
+        // Event handler untuk koneksi
+        socket.on('connect', () => {
+            console.log('Connected to socket server');
+            updateConnectionStatus('Connected');
+        });
+
+     //   socket.on('disconnect', () => {
+       //     console.log('Disconnected from socket server');
+         //   updateConnectionStatus('Disconnected');
+        //    displayError('Koneksi ke server terputus, mencoba menghubungkan kembali...');
+      //  });
+
+        socket.on('connect_error', (error) => {
+            console.error('Socket connection error:', error);
+            updateConnectionStatus('Connection Error');
+            displayError('Gagal terhubung ke server, mencoba kembali...');
+        });
+
+       // socket.on('reconnecting', (attempt) => {
+         //   console.log(`Reconnecting attempt: ${attempt}`);
+         //   updateConnectionStatus(`Reconnecting (attempt ${attempt})`);
+       // });
+
+        socket.on('reconnect_failed', () => {
+            console.error('Reconnection failed');
+            updateConnectionStatus('Reconnection Failed');
+            displayError('Gagal menghubungkan kembali ke server');
+        });
+
+        // Fungsi untuk menampilkan data
+        function displayData(data) {
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <h1>Selamat Datang!</h1>
+                <div class="info">Nama: <span>${data.nama}</span></div>
+                <div class="info">Nomor: <span>${data.nomor}</span></div>
+                <button class="back-btn" onclick="window.history.back()">Kembali</button>
+            `;
+        }
+
+        // Fungsi untuk menampilkan error
+        function displayError(message) {
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <h1 style="color: #ff0000;">Error!</h1>
+                <div class="info">${message}</div>
+                <button class="back-btn" onclick="window.history.back()">Kembali</button>
+            `;
+        }
+
+        // Tangkap event scanSuccess dari server
+        socket.on('scanSuccess', function(data) {
+            console.log('Received scanSuccess event:', data);
+          
+            try {
+                if (data && data.qrString) {
+                    // Ekstrak nomor dan nama dari string QR
+                    const urlParts = data.qrString.split('?');
+                    const params = urlParts[1].split('#');
+                    const nomor = params[0].split('=')[1];
+                    const nama = params[1].replace(/_/g, ' ');
+                    
+                    const container = document.querySelector('.container');
+                    container.innerHTML = `   
+                        <div class="info"><span>${nama}</span></div>
+                    `;
+
+                    // Atur timer untuk menghapus elemen setelah 5 detik
+                    
+          //  setTimeout(() => {
+            //    container.innerHTML = ''; // Hapus konten
+           // }, 5000); // 5000 ms = 5 detik
+
+                } else {
+                    throw new Error('Data QR tidak valid diterima');
+                }
+            } catch (error) {
+                console.error('Error processing scanSuccess:', error);
+                displayError(error.message);
+            }
+        });
+
+        // Tampilkan pesan menunggu saat pertama kali load
+        document.querySelector('.container').innerHTML = `
+          <!--  <h1>Menunggu Scan...</h1> -->
+          <!--  <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
+        `;
+    </script>
+</body>
+</html>

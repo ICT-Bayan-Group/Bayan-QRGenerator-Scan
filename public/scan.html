@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #scanner {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #video {
+            width: 100%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .scanning {
+            border: 2px solid green !important;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="scanner">
+        <h1>QR Code Scanner</h1>
+        <select id="cameraSelect" style="margin-bottom: 10px;"></select>
+        <video id="video" autoplay playsinline></video>
+        <div id="result"></div>
+        <button id="initAudio" style="display: none;">Enable Sound</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+        const socket = io();
+        const video = document.getElementById('video');
+        const resultDiv = document.getElementById('result');
+        const cameraSelect = document.getElementById('cameraSelect');
+        let currentStream = null;
+
+        let dataMaster = {};
+
+        // Function to load data from CSV
+        async function loadDataMaster() {
+            const response = await fetch('/data_master.csv');
+            const text = await response.text();
+            const rows = text.split('\n').slice(1); // Skip header
+            rows.forEach(row => {
+                const [nomor, nama] = row.split(',');
+                if (nomor && nama) {
+                    dataMaster[nomor] = nama.trim();
+                }
+            });
+        }
+
+        function saveToJson(nomor) {
+            const nama = dataMaster[nomor];
+            if (nama) {
+                resultDiv.innerHTML = `Nomor: ${nomor}, Nama: ${nama}`;
+                // Emit the data to the server to save it
+                socket.emit('barcodeScanned', nomor);
+            } else {
+                resultDiv.innerHTML = `Nomor ${nomor} tidak ditemukan.`;
+            }
+        }
+
+        async function getCameras() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                
+                if (videoDevices.length > 1) {
+                    videoDevices.forEach((device, i) => {
+                        const option = document.createElement('option');
+                        option.value = device.deviceId;
+                        option.text = device.label || `Camera ${i + 1}`;
+                        cameraSelect.appendChild(option);
+                    });
+                    cameraSelect.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error accessing cameras:', error);
+            }
+        }
+
+        async function startScanning(deviceId) {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+
+            const constraints = {
+                video: {
+                    deviceId: deviceId ? { exact: deviceId } : undefined,
+                    facingMode: 'environment'
+                }
+            };
+
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = currentStream;
+                await video.play();
+                scanQRCode();
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error accessing camera: ${error.message}</span>`;
+            }
+        }
+
+        function scanQRCode() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            const scale = 0.8;
+            canvas.width = video.videoWidth * scale;
+            canvas.height = video.videoHeight * scale;
+
+            let lastScanTime = 0;
+            const scanInterval = 100;
+
+            function tick() {
+                const now = Date.now();
+                if (video.readyState === video.HAVE_ENOUGH_DATA && now - lastScanTime > scanInterval) {
+                    lastScanTime = now;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                        inversionAttempts: 'both',
+                        canOverwriteImage: true,
+                        grayscaleWeights: {
+                            red: 0.299,
+                            green: 0.587,
+                            blue: 0.114
+                        }
+                    });
+
+                    if (code) {
+                        video.classList.add('scanning');
+                        resultDiv.textContent = `QR Code detected: ${code.data}`;
+                        const nomor = new URLSearchParams(code.data.split('?')[1]).get('nomor');
+                        const matchedNomor = nomor.trim();
+                        saveToJson(matchedNomor);
+                    } else {
+                        video.classList.remove('scanning');
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+            tick();
+        }
+
+        cameraSelect.addEventListener('change', () => {
+            startScanning(cameraSelect.value);
+        });
+
+        getCameras();
+        loadDataMaster(); // Call to load data from CSV
+        startScanning();
+
+        document.getElementById('initAudio').addEventListener('click', () => {
+            const silentAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+            silentAudio.play();
+            document.getElementById('initAudio').style.display = 'none';
+        });
+
+        socket.on('barcodeAdded', (data) => {
+            resultDiv.textContent = `QR Code ${data.barcode} saved at ${new Date(data.timestamp).toLocaleTimeString()}`;
+        });
+    </script>
+</body>
+</html>
+</create_file>
