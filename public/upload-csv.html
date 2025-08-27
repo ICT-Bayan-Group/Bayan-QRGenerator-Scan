@@ -528,159 +528,302 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script>
-        // Update QR counter
-        function updateQRCounter(count) {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+            <script>
+            /** =========================
+             *  UTIL & STATE
+             *  ========================= */
+            const USE_SERVER_UPLOAD = false; // set true jika mau pakai /api/upload-csv duluan
+            const LS_KEY = 'qrGalleryData';
+
+            function updateQRCounter(count) {
             const counter = document.getElementById('qr-counter');
             counter.textContent = `${count} QR code${count !== 1 ? 's' : ''}`;
-        }
-
-        // Update file label
-        document.getElementById('csvFile').addEventListener('change', function(e) {
-            const fileLabelText = document.getElementById('file-label-text');
-            if (e.target.files.length > 0) {
-                fileLabelText.textContent = e.target.files[0].name;
-            } else {
-                fileLabelText.textContent = 'Choose CSV File';
             }
-        });
 
-        // Fungsi untuk menampilkan semua QR code
-        function displayAllQRCodes() {
-            fetch('/api/get-all-qrcodes')
-                .then(response => response.json())
-                .then(data => {
-                    const qrCodeContainer = document.getElementById('qrCodeContainer');
-                    qrCodeContainer.innerHTML = '';
-                    
-                    updateQRCounter(data.length);
-                    
-                    if (data.length === 0) {
-                        qrCodeContainer.innerHTML = '<div class="loading">No QR codes available. Upload a CSV file to generate QR codes.</div>';
-                        return;
-                    }
-                    
-                    data.forEach(item => {
-                        const container = document.createElement('div');
-                        container.className = 'qr-code-container';
+            function setStatus(text, type) {
+            const statusDiv = document.getElementById('status');
+            const uploadBtn = document.getElementById('uploadBtn');
+            statusDiv.textContent = text;
+            statusDiv.className = type; // 'status-processing' | 'status-success' | 'status-error'
+            statusDiv.style.display = 'block';
+            uploadBtn.disabled = (type === 'status-processing');
+            }
 
-                        const img = document.createElement('img');
-                        img.src = item.qrCodeUrl;
-                        img.style.width = '140px';
-                        img.style.height = '140px';
-                        img.style.marginBottom = '1rem';
-                        container.appendChild(img);
+            function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-                        const number = document.createElement('div');
-                        number.textContent = `No. ${item.nomor}`;
-                        number.className = 'qr-number';
-                        container.appendChild(number);
+            /** Generate QR (base64 dataURL) dengan qrcodejs */
+            function generateQRDataURL(text, size = 140) {
+            return new Promise(async (resolve) => {
+                const temp = document.createElement('div');
+                temp.style.position = 'absolute';
+                temp.style.left = '-9999px';
+                document.body.appendChild(temp);
 
-                        qrCodeContainer.appendChild(container);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    const qrCodeContainer = document.getElementById('qrCodeContainer');
-                    qrCodeContainer.innerHTML = '<div class="loading">Error loading QR codes. Please try again.</div>';
-                    updateQRCounter(0);
+                // Render QR
+                new QRCode(temp, {
+                text: String(text ?? ''),
+                width: size,
+                height: size,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
                 });
-        }
 
-        // Tampilkan semua QR code saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', displayAllQRCodes);
+                // Tunggu frame render
+                await sleep(50);
+                let dataUrl = '';
+                const img = temp.querySelector('img');
+                if (img && img.src) {
+                dataUrl = img.src;
+                } else {
+                const canvas = temp.querySelector('canvas');
+                if (canvas) dataUrl = canvas.toDataURL('image/png');
+                }
+                document.body.removeChild(temp);
+                resolve(dataUrl);
+            });
+            }
 
-        document.getElementById('uploadBtn').addEventListener('click', function() {
+            /** Render galeri ke DOM */
+            function renderGallery(items) {
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            qrCodeContainer.innerHTML = '';
+
+            if (!items || !items.length) {
+                qrCodeContainer.innerHTML = '<div class="loading">No QR codes available. Upload a CSV file to generate QR codes.</div>';
+                updateQRCounter(0);
+                return;
+            }
+
+            updateQRCounter(items.length);
+
+            for (const item of items) {
+                const container = document.createElement('div');
+                container.className = 'qr-code-container';
+
+                const img = document.createElement('img');
+                img.src = item.qrCodeUrl;
+                img.width = 140;
+                img.height = 140;
+                img.loading = 'lazy';
+                container.appendChild(img);
+
+                const number = document.createElement('div');
+                number.textContent = `No. ${item.nomor}`;
+                number.className = 'qr-number';
+                container.appendChild(number);
+
+                qrCodeContainer.appendChild(container);
+            }
+            }
+
+            /** Simpan/ambil dari localStorage */
+            function saveToLocal(items) {
+            try { localStorage.setItem(LS_KEY, JSON.stringify(items)); } catch(_) {}
+            }
+            function loadFromLocal() {
+            try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(_) { return []; }
+            }
+
+            /** =========================
+             *  STARTUP: coba dari API, lalu fallback localStorage
+             *  ========================= */
+            async function displayAllQRCodes() {
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            qrCodeContainer.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading QR codes...</div>';
+            try {
+                const res = await fetch('/api/get-all-qrcodes', { method: 'GET' });
+                if (!res.ok) throw new Error('API not available');
+                const data = await res.json();
+                renderGallery(Array.isArray(data) ? data : []);
+                // sinkronkan ke local agar tetap muncul saat reload
+                if (Array.isArray(data) && data.length) saveToLocal(data);
+            } catch (_) {
+                // fallback local
+                renderGallery(loadFromLocal());
+            }
+            }
+            document.addEventListener('DOMContentLoaded', displayAllQRCodes);
+
+            /** =========================
+             *  FILE LABEL
+             *  ========================= */
+            document.getElementById('csvFile').addEventListener('change', function(e) {
+            const fileLabelText = document.getElementById('file-label-text');
+            if (e.target.files.length > 0) fileLabelText.textContent = e.target.files[0].name;
+            else fileLabelText.textContent = 'Choose CSV File';
+            });
+
+            /** =========================
+             *  CLIENT-SIDE CSV → QR → EXCEL
+             *  ========================= */
+            async function handleCsvLocally(file) {
+            setStatus('Mengupload dan memproses file...', 'status-processing');
+            document.getElementById('qrCodeContainer').innerHTML =
+                '<div class="loading"><div class="loading-spinner"></div>Memproses...</div>';
+
+            const parseCsv = () =>
+                new Promise((resolve, reject) => {
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: results => {
+                    if (results.errors && results.errors.length) {
+                        reject(new Error(results.errors[0].message || 'CSV parse error'));
+                    } else {
+                        resolve(results);
+                    }
+                    },
+                    error: err => reject(err)
+                });
+                });
+
+            let rows;
+            try {
+                const results = await parseCsv();
+                rows = results.data;
+            } catch (err) {
+                setStatus('Terjadi kesalahan saat membaca CSV: ' + err.message, 'status-error');
+                document.getElementById('qrCodeContainer').innerHTML =
+                '<div class="loading">Error processing file. Please try again.</div>';
+                updateQRCounter(0);
+                return;
+            }
+
+            if (!rows || !rows.length) {
+                setStatus('CSV kosong atau tidak valid.', 'status-error');
+                document.getElementById('qrCodeContainer').innerHTML =
+                '<div class="loading">CSV kosong. Pastikan ada data.</div>';
+                updateQRCounter(0);
+                return;
+            }
+
+            // Normalisasi kolom
+            const norm = (obj, ...keys) => {
+                for (const k of keys) {
+                if (obj[k] != null && String(obj[k]).trim() !== '') return String(obj[k]).trim();
+                // coba case-insensitive
+                const found = Object.keys(obj).find(x => x.toLowerCase() === k.toLowerCase());
+                if (found && obj[found] != null && String(obj[found]).trim() !== '') return String(obj[found]).trim();
+                }
+                return '';
+            };
+
+            const output = [];
+            let i = 0;
+            for (const row of rows) {
+                i++;
+                const nomor = norm(row, 'nomor', 'no', 'kode', 'id') || String(i);
+                const payload = norm(row, 'payload', 'url', 'link', 'data', 'value', 'text') || nomor;
+                const qrCodeUrl = await generateQRDataURL(payload, 140);
+                output.push({ nomor, payload, qrCodeUrl });
+            }
+
+            // Tampilkan galeri + simpan local
+            renderGallery(output);
+            saveToLocal(output);
+
+            // Buat Excel (qrCodeUrl berupa dataURL string)
+            const ws = XLSX.utils.json_to_sheet(output);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'QR Codes');
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            // Download Excel
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data_with_qr_codes.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            setStatus('File berhasil diunduh!', 'status-success');
+            }
+
+            /** =========================
+             *  SERVER MODE (opsional): pakai /api/upload-csv
+             *  ========================= */
+            async function handleCsvViaServer(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            setStatus('Mengupload dan memproses file...', 'status-processing');
+
+            document.getElementById('qrCodeContainer').innerHTML =
+                '<div class="loading"><div class="loading-spinner"></div>Memproses...</div>';
+
+            const res = await fetch('/api/upload-csv', { method: 'POST', body: formData });
+            if (!res.ok) throw new Error('Gagal mengupload file');
+
+            const blob = await res.blob();
+            // Download file Excel dari server
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data_with_qr_codes.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Baca balik Excel untuk render galeri
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+                // Simpan & tampilkan
+                const items = jsonData.map(r => ({
+                nomor: r.nomor ?? r.Nomor ?? r.no ?? r.No ?? '',
+                payload: r.payload ?? r.Payload ?? '',
+                qrCodeUrl: r.qrCodeUrl ?? r.QRCodeUrl ?? r.qrcodeurl ?? ''
+                })).filter(x => x.qrCodeUrl);
+                renderGallery(items);
+                saveToLocal(items);
+            };
+            reader.readAsArrayBuffer(blob);
+
+            setStatus('File berhasil diunduh!', 'status-success');
+            }
+
+            /** =========================
+             *  BUTTON HANDLER
+             *  ========================= */
+            document.getElementById('uploadBtn').addEventListener('click', async function() {
             const fileInput = document.getElementById('csvFile');
             if (!fileInput.files.length) {
                 alert('Pilih file CSV terlebih dahulu');
                 return;
             }
-
             const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('file', file);
 
-            const statusDiv = document.getElementById('status');
-            const uploadBtn = document.getElementById('uploadBtn');
-            
-            statusDiv.textContent = 'Mengupload dan memproses file...';
-            statusDiv.className = 'status-processing';
-            statusDiv.style.display = 'block';
-            uploadBtn.disabled = true;
-            
-            document.getElementById('qrCodeContainer').innerHTML = '<div class="loading"><div class="loading-spinner"></div>Memproses...</div>';
-
-            fetch('/api/upload-csv', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Gagal mengupload file');
+            try {
+                if (USE_SERVER_UPLOAD) {
+                await handleCsvViaServer(file);
+                } else {
+                await handleCsvLocally(file);
                 }
-                return response.blob();
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'data_with_qr_codes.xlsx';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-                
-                statusDiv.textContent = 'File berhasil diunduh!';
-                statusDiv.className = 'status-success';
-                uploadBtn.disabled = false;
-
-                // Baca file Excel untuk menampilkan gambar QR Code
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const sheetName = workbook.SheetNames[0];
-                    const sheet = workbook.Sheets[sheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-                    const qrCodeContainer = document.getElementById('qrCodeContainer');
-                    qrCodeContainer.innerHTML = '';
-                    
-                    updateQRCounter(jsonData.length);
-
-                    jsonData.forEach(row => {
-                        const container = document.createElement('div');
-                        container.className = 'qr-code-container';
-
-                        const img = document.createElement('img');
-                        img.src = row.qrCodeUrl;
-                        img.style.width = '140px';
-                        img.style.height = '140px';
-                        img.style.marginBottom = '1rem';
-                        container.appendChild(img);
-
-                        const number = document.createElement('div');
-                        number.textContent = `No. ${row.nomor}`;
-                        number.className = 'qr-number';
-                        container.appendChild(number);
-
-                        qrCodeContainer.appendChild(container);
-                    });
-                };
-                reader.readAsArrayBuffer(blob);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                statusDiv.textContent = 'Terjadi kesalahan: ' + error.message;
-                statusDiv.className = 'status-error';
-                uploadBtn.disabled = false;
-                
-                // Show error message in QR container
-                document.getElementById('qrCodeContainer').innerHTML = '<div class="loading">Error processing file. Please try again.</div>';
+            } catch (error) {
+                console.error(error);
+                setStatus('Terjadi kesalahan: ' + error.message, 'status-error');
+                document.getElementById('qrCodeContainer').innerHTML =
+                '<div class="loading">Error processing file. Please try again.</div>';
                 updateQRCounter(0);
+
+                // fallback ke local jika server gagal
+                if (USE_SERVER_UPLOAD) {
+                try {
+                    await handleCsvLocally(file);
+                } catch (_) {}
+                }
+            }
             });
-        });
-    </script>
+            </script>
 </body>
 </html>
