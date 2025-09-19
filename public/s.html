@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,29 +15,34 @@
             height: 100vh;
             margin: 0;
         }
+
         .container {
             background-color: white;
             padding: 2rem;
             border-radius: 8px;
             background-color: rgba(219, 219, 212, 0.2);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
             max-width: 100%;
             width: 100%;
         }
+
         h1 {
             color: #4CAF50;
             margin-bottom: 1rem;
         }
+
         .info {
             margin-top: 1.5rem;
             font-size: 4rem;
             color: #fffb00;
         }
+
         .info span {
             font-weight: bold;
             color: #ffe600;
         }
+
         .back-btn {
             margin-top: 2rem;
             padding: 0.5rem 1rem;
@@ -47,6 +53,7 @@
             cursor: pointer;
             font-size: 1rem;
         }
+
         .back-btn:hover {
             background-color: #45a049;
         }
@@ -59,25 +66,48 @@
         }
 
         body {
-            background-image: url('BackS.png'); /* Ganti dengan path gambar Anda */
-            background-size: cover; /* Gambar menutupi seluruh halaman */
-            background-position: center; /* Gambar berada di tengah */
-            background-repeat: no-repeat; /* Menghindari pengulangan gambar */
-            height: 100vh; /* Membuat tinggi halaman seukuran dengan layar */
+            background-image: url('BackS.png');
+            /* Ganti dengan path gambar Anda */
+            background-size: cover;
+            /* Gambar menutupi seluruh halaman */
+            background-position: center;
+            /* Gambar berada di tengah */
+            background-repeat: no-repeat;
+            /* Menghindari pengulangan gambar */
+            height: 100vh;
+            /* Membuat tinggi halaman seukuran dengan layar */
             margin: 5;
         }
     </style>
 </head>
+
 <body>
+
+    <select id="MejaID" class="nav-link" rel="noopener noreferrer">
+        <option value="">Select Meja</option>
+        <option value="meja1">Meja 1</option>
+        <option value="meja2">Meja 2</option>
+    </select>
+
     <div class="container">
-       <!-- <h1>Menunggu Scan...</h1> -->
-       <!-- <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
-     
+        <!-- <h1>Menunggu Scan...</h1> -->
+        <!-- <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
+
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    
+
     <script>
+
+        // Event listener untuk select MejaID
+        document.getElementById('MejaID').addEventListener('change', function () {
+            const meja = this.value;
+            if (meja) {
+                localStorage.setItem("MejaID", meja);
+                //   socket.emit('joinRoom', meja); // join ke room baru
+                console.log(`Client join room: ${meja}`);
+            }
+        });
 
         // Inisialisasi socket dengan auto-connect
         const socket = io({
@@ -103,11 +133,11 @@
             updateConnectionStatus('Connected');
         });
 
-     //   socket.on('disconnect', () => {
-       //     console.log('Disconnected from socket server');
-         //   updateConnectionStatus('Disconnected');
+        //   socket.on('disconnect', () => {
+        //     console.log('Disconnected from socket server');
+        //   updateConnectionStatus('Disconnected');
         //    displayError('Koneksi ke server terputus, mencoba menghubungkan kembali...');
-      //  });
+        //  });
 
         socket.on('connect_error', (error) => {
             console.error('Socket connection error:', error);
@@ -115,10 +145,10 @@
             displayError('Gagal terhubung ke server, mencoba kembali...');
         });
 
-       // socket.on('reconnecting', (attempt) => {
-         //   console.log(`Reconnecting attempt: ${attempt}`);
-         //   updateConnectionStatus(`Reconnecting (attempt ${attempt})`);
-       // });
+        // socket.on('reconnecting', (attempt) => {
+        //   console.log(`Reconnecting attempt: ${attempt}`);
+        //   updateConnectionStatus(`Reconnecting (attempt ${attempt})`);
+        // });
 
         socket.on('reconnect_failed', () => {
             console.error('Reconnection failed');
@@ -148,9 +178,11 @@
         }
 
         // Tangkap event scanSuccess dari server
-        socket.on('scanSuccess', function(data) {
+        socket.on('scanSuccess', function (data) {
+            const MejaID = localStorage.getItem("MejaID") || "Unknown"; // Ambil dari localStorage
+            socket.emit('joinRoom', MejaID);
             console.log('Received scanSuccess event:', data);
-          
+
             try {
                 if (data && data.qrString) {
                     // Ekstrak nomor dan nama dari string QR
@@ -158,17 +190,17 @@
                     const params = urlParts[1].split('#');
                     const nomor = params[0].split('=')[1];
                     const nama = params[1].replace(/_/g, ' ');
-                    
+
                     const container = document.querySelector('.container');
                     container.innerHTML = `   
                         <div class="info"><span>${nama}</span></div>
                     `;
 
                     // Atur timer untuk menghapus elemen setelah 5 detik
-                    
-          //  setTimeout(() => {
-            //    container.innerHTML = ''; // Hapus konten
-           // }, 5000); // 5000 ms = 5 detik
+
+                    //  setTimeout(() => {
+                    //    container.innerHTML = ''; // Hapus konten
+                    // }, 5000); // 5000 ms = 5 detik
 
                 } else {
                     throw new Error('Data QR tidak valid diterima');
@@ -186,4 +218,5 @@
         `;
     </script>
 </body>
+
 </html>

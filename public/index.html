@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -358,6 +359,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -374,10 +376,13 @@
 
         /* Scanner status animation */
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
                 opacity: 1;
             }
+
             50% {
                 transform: scale(1.1);
                 opacity: 0.8;
@@ -389,6 +394,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
@@ -398,10 +404,11 @@
                 <p class="sidebar-subtitle">QR Tools & Utilities</p>
             </div>
             <ul class="nav-menu">
-                 <li class="nav-item">
+                <li class="nav-item">
                     <a href="/index.html" class="nav-link active">
                         <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zM9.5 14.5v3h-3v-3h3M11 13H5v6h6v-6zM17.5 6.5v3h-3v-3h3M19 5h-6v6h6V5zM13 13h1.5v1.5H13zM14.5 14.5H16V16h-1.5zM16 13h1.5v1.5H16zM13 16h1.5v1.5H13zM14.5 17.5H16V19h-1.5zM16 16h1.5v1.5H16zM17.5 14.5H19V16h-1.5zM17.5 17.5H19V19h-1.5zM22 7h-2V4h-3V2h5zM22 22v-5h-2v3h-3v2zM2 22h5v-2H4v-3H2zM2 2v5h2V4h3V2z"/>
+                            <path
+                                d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zM9.5 14.5v3h-3v-3h3M11 13H5v6h6v-6zM17.5 6.5v3h-3v-3h3M19 5h-6v6h6V5zM13 13h1.5v1.5H13zM14.5 14.5H16V16h-1.5zM16 13h1.5v1.5H16zM13 16h1.5v1.5H13zM14.5 17.5H16V19h-1.5zM16 16h1.5v1.5H16zM17.5 14.5H19V16h-1.5zM17.5 17.5H19V19h-1.5zM22 7h-2V4h-3V2h5zM22 22v-5h-2v3h-3v2zM2 22h5v-2H4v-3H2zM2 2v5h2V4h3V2z" />
                         </svg>
                         QR Scanner
                     </a>
@@ -409,7 +416,8 @@
                 <li class="nav-item">
                     <a href="/convert-json.html" class="nav-link">
                         <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M8 16h8v2H8v-2zm0-4h8v2H8v-2zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                            <path
+                                d="M8 16h8v2H8v-2zm0-4h8v2H8v-2zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z" />
                         </svg>
                         JSON to CSV Generator
                     </a>
@@ -417,19 +425,28 @@
                 <li class="nav-item">
                     <a href="/upload-csv.html" class="nav-link">
                         <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            <path
+                                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                         </svg>
                         CSV to QR Generator
                     </a>
                 </li>
-               <li class="nav-item">
-                <a href="/s.html" class="nav-link" target="_blank" rel="noopener noreferrer">
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path d="M2 6h1v12H2V6zm2 0h1v12H4V6zm2 0h3v12H6V6zm4 0h1v12h-1V6zm3 0h1v12h-1V6zm2 0h3v12h-3V6zm4 0h1v12h-1V6z" />
-                    </svg>
-                    Monitor Welcome
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a href="/s.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path
+                                d="M2 6h1v12H2V6zm2 0h1v12H4V6zm2 0h3v12H6V6zm4 0h1v12h-1V6zm3 0h1v12h-1V6zm2 0h3v12h-3V6zm4 0h1v12h-1V6z" />
+                        </svg>
+                        Monitor Welcome
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <select id="MejaID" class="nav-link" rel="noopener noreferrer">
+                        <option value="">Select Meja</option>
+                        <option value="meja1">Meja 1</option>
+                        <option value="meja2">Meja 2</option>
+                    </select>
+                </li>
             </ul>
         </nav>
 
@@ -437,7 +454,8 @@
         <main class="main-content">
             <header class="content-header">
                 <h1 class="page-title">Barcode Scanner</h1>
-                <p class="page-description">Scan barcodes and QR codes using camera or manual input with real-time processing</p>
+                <p class="page-description">Scan barcodes and QR codes using camera or manual input with real-time
+                    processing</p>
             </header>
 
             <div class="scanner-grid">
@@ -445,24 +463,25 @@
                 <div class="scanner-card">
                     <h3 class="card-title">
                         <svg class="card-icon" viewBox="0 0 24 24">
-                            <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+                            <path
+                                d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
                         </svg>
                         Camera Scanner
                         <span id="scannerStatus" class="status-indicator status-inactive"></span>
                     </h3>
-                    
+
                     <video id="cameraPreview"></video>
-                    
+
                     <div class="scanner-controls">
                         <button class="scan-button" onclick="startScan()">
                             <svg class="button-icon" viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z"/>
+                                <path d="M8 5v14l11-7z" />
                             </svg>
                             Start Camera Scan
                         </button>
                         <button class="scan-button stop" onclick="stopScan()">
                             <svg class="button-icon" viewBox="0 0 24 24">
-                                <path d="M6 6h12v12H6z"/>
+                                <path d="M6 6h12v12H6z" />
                             </svg>
                             Stop Camera Scan
                         </button>
@@ -477,9 +496,9 @@
                         </svg>
                         Manual Input
                     </h3>
-                    
+
                     <input type="text" id="barcodeInput" placeholder="Type or paste barcode here..." autofocus>
-                    
+
                     <div style="color: #666; font-size: 0.9rem; line-height: 1.5;">
                         <p><strong>Tips:</strong></p>
                         <ul style="margin-left: 1rem; margin-top: 0.5rem;">
@@ -494,7 +513,8 @@
                 <div class="results-card">
                     <div class="results-header">
                         <svg class="card-icon" viewBox="0 0 24 24" style="margin-right: 1rem;">
-                            <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M19,19H5V5H19V19Z"/>
+                            <path
+                                d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M19,19H5V5H19V19Z" />
                         </svg>
                         <h3 class="results-title">Scan Results</h3>
                         <span id="resultsCount" class="results-count">0 scans</span>
@@ -509,6 +529,17 @@
     <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
     <script>
+        // Event listener untuk select MejaID
+        document.getElementById('MejaID').addEventListener('change', function () {
+            const meja = this.value;
+            if (meja) {
+                localStorage.setItem("MejaID", meja);
+             //   socket.emit('joinRoom', meja); // join ke room baru
+                console.log(`Client join room: ${meja}`);
+            }
+        });
+
+
         const socket = io();
         const barcodeInput = document.getElementById('barcodeInput');
         const resultDiv = document.getElementById('result');
@@ -517,30 +548,26 @@
         const resultsCount = document.getElementById('resultsCount');
         let scannerActive = false;
         let scannedCount = 0;
-        
+
         // Audio untuk notifikasi
         const scanSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2127/2127-preview.mp3');
         scanSound.volume = 0.5;
-         barcodeInput.addEventListener('keydown', (event) => {
+        barcodeInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                const barcodeData = event.target.value.trim(); // Ambil nilai dari input
+                const barcodeData = event.target.value.trim();
+                const MejaID = localStorage.getItem("MejaID") || "Unknown"; // Ambil dari localStorage
+                socket.emit('joinRoom', MejaID);
                 if (barcodeData) {
-                    // Tampilkan hasil scan
                     resultDiv.innerHTML = `<span class="success">Barcode detected: ${barcodeData}</span>`;
-                    
-                    // Kirim data barcode ke server
-                    socket.emit('barcodeScanned', barcodeData);
-                    
-                    // Putar suara notifikasi
+                    socket.emit('barcodeScanned', { MejaID, barcodeData });
                     scanSound.play();
-                    
-                    // Bersihkan input setelah scan
                     event.target.value = '';
                 } else {
                     resultDiv.innerHTML = `<span class="error">No barcode detected.</span>`;
                 }
             }
         });
+
 
         // Event listener untuk menerima konfirmasi dari server
         socket.on('barcodeAdded', (data) => {
@@ -580,7 +607,7 @@
             if (!scannerActive) {
                 try {
                     // Request camera permission
-                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                    const stream = await navigator.mediaDevices.getUserMedia({
                         video: {
                             facingMode: "environment",
                             width: { ideal: 1280 },
@@ -591,7 +618,7 @@
                     cameraPreview.play();
                     cameraPreview.style.display = 'block';
                     updateScannerStatus(true);
-                    
+
                     // Initialize Quagga with more compatible settings
                     Quagga.init({
                         inputStream: {
@@ -606,12 +633,12 @@
                         },
                         decoder: {
                             readers: ["code_128_reader", "ean_reader", "upc_reader"],
-            multiple: false
+                            multiple: false
                         },
                         locate: true,
                         numOfWorkers: navigator.hardwareConcurrency || 4,
                         frequency: 10
-                    }, function(err) {
+                    }, function (err) {
                         if (err) {
                             console.error(err);
                             alert('Failed to initialize scanner. Please try again or use manual input.');
@@ -628,16 +655,16 @@
                     document.body.appendChild(qrCanvas);
                     qrCanvas.style.display = 'none';
                     const qrCtx = qrCanvas.getContext('2d', { willReadFrequently: true });
-                    
+
                     function scanQRCode() {
                         if (!scannerActive) return;
-                        
+
                         qrCanvas.width = cameraPreview.videoWidth;
                         qrCanvas.height = cameraPreview.videoHeight;
-                        
+
                         function processFrame() {
                             if (!scannerActive) return;
-                            
+
                             try {
                                 qrCtx.drawImage(cameraPreview, 0, 0, qrCanvas.width, qrCanvas.height);
                                 const imageData = qrCtx.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
@@ -651,7 +678,7 @@
                                     },
                                     maxScansPerSecond: 30
                                 });
-                                
+
                                 if (code) {
                                     handleBarcode(code.data);
                                     return;
@@ -660,19 +687,19 @@
                                 console.error('QR Code scanning error:', error);
                                 return;
                             }
-                            
+
                             requestAnimationFrame(processFrame);
                         }
-                        
+
                         processFrame();
                     }
 
                     // Start both scanners
-                    Quagga.onDetected(function(result) {
+                    Quagga.onDetected(function (result) {
                         const code = result.codeResult.code;
                         handleBarcode(code);
                     });
-                    
+
                     // Start QR Code scanner after a short delay
                     setTimeout(scanQRCode, 1000);
                 } catch (error) {
@@ -688,7 +715,7 @@
                 scannerActive = false;
                 updateScannerStatus(false);
                 cameraPreview.style.display = 'none';
-                
+
                 // Stop camera stream
                 if (cameraPreview.srcObject) {
                     const tracks = cameraPreview.srcObject.getTracks();
@@ -697,6 +724,8 @@
                 }
             }
         }
+
+
 
         // Display new scans
         socket.on('barcodeAdded', (data) => {
@@ -712,4 +741,5 @@
         updateResultsCount();
     </script>
 </body>
+
 </html>

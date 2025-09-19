@@ -2,5 +2,23 @@
   {
     "barcode": "https://www.digitalkargo.id/shipper.tracking/termservice.php?termService=/AtM6FEPvkfQ",
     "timestamp": "2025-08-26T08:19:57.189Z"
+  },
+  {
+    "timestamp": "2025-09-19T06:34:53.215Z"
+  },
+  {
+    "barcode": "https://www.digitalkargo.id/shipper.tracking/termservice.php?termService=/AtM6FEPNVKFQ",
+    "meja": "meja1",
+    "timestamp": "2025-09-19T08:29:57.259Z"
+  },
+  {
+    "barcode": "hervi://hp?teriService=/AtM6FEPvkfQ",
+    "meja": "meja1",
+    "timestamp": "2025-09-19T08:29:57.415Z"
+  },
+  {
+    "barcode": "/termservice.php?termService=/AtM6FEPvkfQ",
+    "meja": "meja1",
+    "timestamp": "2025-09-19T08:29:57.585Z"
   }
 ]
