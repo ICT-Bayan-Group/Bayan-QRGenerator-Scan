@@ -104,7 +104,7 @@
             const meja = this.value;
             if (meja) {
                 localStorage.setItem("MejaID", meja);
-                //   socket.emit('joinRoom', meja); // join ke room baru
+                socket.emit('joinRoom', meja); // join ke room baru
                 console.log(`Client join room: ${meja}`);
             }
         });
@@ -179,9 +179,14 @@
 
         // Tangkap event scanSuccess dari server
         socket.on('scanSuccess', function (data) {
-            const MejaID = localStorage.getItem("MejaID") || "Unknown"; // Ambil dari localStorage
-            socket.emit('joinRoom', MejaID);
+            const currentMeja = localStorage.getItem("MejaID") || "Unknown"; // Ambil dari localStorage
             console.log('Received scanSuccess event:', data);
+
+            // ✅ Cek apakah event ini untuk meja yang sama
+            if (data.meja !== currentMeja) {
+                console.log(`⚠️ Abaikan data karena meja berbeda. Client di ${currentMeja}, data dari ${data.meja}`);
+                return;
+            }
 
             try {
                 if (data && data.qrString) {

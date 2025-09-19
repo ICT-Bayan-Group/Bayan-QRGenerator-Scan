@@ -20,5 +20,25 @@
     "barcode": "/termservice.php?termService=/AtM6FEPvkfQ",
     "meja": "meja1",
     "timestamp": "2025-09-19T08:29:57.585Z"
+  },
+  {
+    "barcode": "https://www.digitalkargo.id/shipper.tvkfQ",
+    "meja": "meja1",
+    "timestamp": "2025-09-19T09:04:13.249Z"
+  },
+  {
+    "barcode": "https://www.digitalkargo.id/shipper.trackQ",
+    "meja": "meja1",
+    "timestamp": "2025-09-19T09:07:20.130Z"
+  },
+  {
+    "barcode": "https://www.digitalkargo.id/shipper.tvkfing/termservice.php?termService=/AtM6FEPvkfQ",
+    "meja": "meja1",
+    "timestamp": "2025-09-19T09:14:27.245Z"
+  },
+  {
+    "barcode": "https://www.digitalkargo.id/shipper.trackQNG?TERMSERVICE>PHP?termService=/AtM6FEPvkfQ",
+    "meja": "meja1",
+    "timestamp": "2025-09-19T09:15:08.874Z"
   }
 ]
