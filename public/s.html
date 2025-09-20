@@ -190,15 +190,20 @@
 
             try {
                 if (data && data.qrString) {
-                    // Ekstrak nomor dan nama dari string QR
-                    const urlParts = data.qrString.split('?');
-                    const params = urlParts[1].split('#');
-                    const nomor = params[0].split('=')[1];
-                    const nama = params[1].replace(/_/g, ' ');
+                    // Parse URL format: https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.
+                    const url = new URL(data.qrString);
+                    
+                    // Ekstrak nomor dari query parameter
+                    const nomor = url.searchParams.get('nomor');
+                    
+                    // Ekstrak nama dari fragment (hash), replace underscore dengan spasi dan koma dengan spasi
+                    let nama = url.hash.substring(1); // Hapus karakter #
+                    nama = nama.replace(/_/g, ' ').replace(/,/g, ' ');
 
                     const container = document.querySelector('.container');
-                    container.innerHTML = `   
+                    container.innerHTML = `
                         <div class="info"><span>${nama}</span></div>
+                        <div class="info"><span>${nomor}</span></div>
                     `;
 
                     // Atur timer untuk menghapus elemen setelah 5 detik
