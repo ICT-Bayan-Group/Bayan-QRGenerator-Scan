@@ -57,8 +57,8 @@
     <script>
         const socket = io();
 
-        const phoneID = "meja1";
-        //const phoneID = localStorage.getItem('phoneID') || crypto.randomUUID();
+        //const phoneID = "meja1";
+      const phoneID = localStorage.getItem('phoneID') || crypto.randomUUID();
         console.log("id Telpon ", phoneID);
         socket.emit('joinRoom', phoneID);
 
@@ -126,49 +126,48 @@
 
             let lastScanTime = 0;
             const scanInterval = 100; // Interval scanning dalam milidetik
+            let scanning = true;
 
             function tick() {
                 const now = Date.now();
                 if (video.readyState === video.HAVE_ENOUGH_DATA && now - lastScanTime > scanInterval) {
                     lastScanTime = now;
 
-                    // Menggambar video ke canvas dengan ukuran yang dioptimalkan
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
                     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
                     const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                        inversionAttempts: 'both', // Mencoba kedua mode inversion
-                        canOverwriteImage: true, // Mengizinkan overwrite image untuk performa lebih baik
-                        grayscaleWeights: { // Optimasi bobot grayscale
-                            red: 0.299,
-                            green: 0.587,
-                            blue: 0.114
-                        }
+                        inversionAttempts: 'both',
+                        canOverwriteImage: true,
+                        grayscaleWeights: { red: 0.299, green: 0.587, blue: 0.114 }
                     });
 
                     if (code) {
                         video.classList.add('scanning');
                         resultDiv.textContent = `QR Code detected: ${code.data}`;
                         socket.emit('joinRoom', phoneID);
-                        socket.emit('joinRoom', phoneID);
 
-                        // Gabungkan barcode + phoneID dalam 1 object
                         socket.emit('barcodeScanned', {
                             MejaID: phoneID,
                             barcodeData: code.data
                         });
 
-                        // Handle sound
                         if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                            // Show the audio init button if on iOS
                             document.getElementById('initAudio').style.display = 'block';
                         }
-                        scanSound.play(); // Memainkan suara notifikasi
+                        scanSound.play();
+
+                        // Stop scanning setelah berhasil
+                        scanning = false;
+                        return; // tidak panggil tick lagi
                     } else {
                         video.classList.remove('scanning');
                     }
                 }
-                requestAnimationFrame(tick);
+
+                if (scanning) {
+                    requestAnimationFrame(tick);
+                }
             }
             tick();
         }
