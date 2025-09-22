@@ -82,6 +82,65 @@ if (!fs.existsSync(dataPath)) {
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Add custom route for your message
+app.get('/', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Hayo Nyari Apa?</title>
+            <style>
+                body {
+                    font-family: 'Arial', sans-serif;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    height: 100vh;
+                    margin: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: white;
+                }
+                .container {
+                    text-align: center;
+                    padding: 2rem;
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 20px;
+                    backdrop-filter: blur(10px);
+                    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+                }
+                h1 {
+                    font-size: 2.5rem;
+                    margin-bottom: 1rem;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                }
+                .emoji {
+                    font-size: 3rem;
+                    margin: 1rem 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="emoji">🤔</div>
+                <h1>hayo nyari apa disinii?</h1>
+                <h2>gaada apa apa WWKWKWK</h2>
+                <div class="emoji">😂</div>
+            </div>
+        </body>
+        </html>
+    `);
+});
+
+// You can also add a simple API route if needed
+app.get('/api/message', (req, res) => {
+    res.json({ 
+        message: "hayo nyari apa disinii? gaada apa apa WWKWKWK",
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Socket.IO connection handler
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -147,7 +206,6 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     });
 });
-
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0'; // Listen on all network interfaces
