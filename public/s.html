@@ -10,10 +10,62 @@
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            background-image: url('BackS.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Styled Meja Selector - positioned at top center */
+        #MejaID {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            visibility: visible;
+            opacity: 1;
+            padding: 12px 16px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            background-color: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            min-width: 150px;
+            text-align: center;
+            color: transparent;
+            
+            transition: all 0.3s ease;
+        }
+
+        #MejaID:hover {
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        #MejaID:focus {
+            outline: none;
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Style for select options */
+        #MejaID option {
+            color: #2E7D32;
+            background-color: white;
+            padding: 8px;
+        }
+
+        #MejaID option:first-child {
+            color: #666;
+            font-style: italic;
         }
 
         .container {
@@ -64,20 +116,6 @@
             background-color: #f0f0f0;
             border-radius: 5px;
         }
-
-        body {
-            background-image: url('BackS.png');
-            /* Ganti dengan path gambar Anda */
-            background-size: cover;
-            /* Gambar menutupi seluruh halaman */
-            background-position: center;
-            /* Gambar berada di tengah */
-            background-repeat: no-repeat;
-            /* Menghindari pengulangan gambar */
-            height: 100vh;
-            /* Membuat tinggi halaman seukuran dengan layar */
-            margin: 5;
-        }
     </style>
 </head>
 
@@ -87,6 +125,14 @@
         <option value="">Select Meja</option>
         <option value="meja1">Meja 1</option>
         <option value="meja2">Meja 2</option>
+        <option value="meja3">Meja 3</option>
+        <option value="meja4">Meja 4</option>
+        <option value="meja5">Meja 5</option>
+        <option value="meja6">Meja 6</option>
+        <option value="meja7">Meja 7</option>
+        <option value="meja8">Meja 8</option>
+        <option value="meja9">Meja 9</option>
+        <option value="meja10">Meja 10</option>
     </select>
 
     <div class="container">
@@ -190,15 +236,20 @@
 
             try {
                 if (data && data.qrString) {
-                    // Ekstrak nomor dan nama dari string QR
-                    const urlParts = data.qrString.split('?');
-                    const params = urlParts[1].split('#');
-                    const nomor = params[0].split('=')[1];
-                    const nama = params[1].replace(/_/g, ' ');
+                    // Parse URL format: https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.
+                    const url = new URL(data.qrString);
+                    
+                    // Ekstrak nomor dari query parameter
+                    const nomor = url.searchParams.get('nomor');
+                    
+                    // Ekstrak nama dari fragment (hash), replace underscore dengan spasi dan koma dengan spasi
+                    let nama = url.hash.substring(1); // Hapus karakter #
+                    nama = nama.replace(/_/g, ' ').replace(/,/g, ' ');
 
                     const container = document.querySelector('.container');
-                    container.innerHTML = `   
+                    container.innerHTML = `
                         <div class="info"><span>${nama}</span></div>
+                        <div class="info"><span>${nomor}</span></div>
                     `;
 
                     // Atur timer untuk menghapus elemen setelah 5 detik
