@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,32 +10,38 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         #scanner {
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
             text-align: center;
         }
+
         #video {
             width: 100%;
             border: 2px solid #ccc;
             border-radius: 5px;
             margin-bottom: 20px;
         }
+
         #result {
             margin-top: 20px;
             padding: 15px;
             background-color: #f0f0f0;
             border-radius: 5px;
         }
+
         .scanning {
             border: 2px solid green !important;
         }
+
         .error {
             color: red;
         }
     </style>
 </head>
+
 <body>
     <div id="scanner">
         <h1>QR Code Scanner</h1>
@@ -49,11 +56,17 @@
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script>
         const socket = io();
+
+        const phoneID = "meja1";
+        //const phoneID = localStorage.getItem('phoneID') || crypto.randomUUID();
+        console.log("id Telpon ", phoneID);
+        socket.emit('joinRoom', phoneID);
+
         const video = document.getElementById('video');
         const resultDiv = document.getElementById('result');
         const cameraSelect = document.getElementById('cameraSelect');
         let currentStream = null;
-        
+
         // Audio untuk notifikasi
         const scanSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2127/2127-preview.mp3');
         scanSound.volume = 0.5;
@@ -63,7 +76,7 @@
             try {
                 const devices = await navigator.mediaDevices.enumerateDevices();
                 const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                
+
                 if (videoDevices.length > 1) {
                     videoDevices.forEach((device, i) => {
                         const option = document.createElement('option');
@@ -105,7 +118,7 @@
         function scanQRCode() {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-            
+
             // Optimasi ukuran canvas
             const scale = 0.8; // Mengurangi ukuran canvas untuk performa lebih baik
             canvas.width = video.videoWidth * scale;
@@ -118,10 +131,10 @@
                 const now = Date.now();
                 if (video.readyState === video.HAVE_ENOUGH_DATA && now - lastScanTime > scanInterval) {
                     lastScanTime = now;
-                    
+
                     // Menggambar video ke canvas dengan ukuran yang dioptimalkan
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    
+
                     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
                     const code = jsQR(imageData.data, imageData.width, imageData.height, {
                         inversionAttempts: 'both', // Mencoba kedua mode inversion
@@ -136,13 +149,21 @@
                     if (code) {
                         video.classList.add('scanning');
                         resultDiv.textContent = `QR Code detected: ${code.data}`;
-                        socket.emit('barcodeScanned', code.data);
-        // Handle sound
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            // Show the audio init button if on iOS
-            document.getElementById('initAudio').style.display = 'block';
-        }
-        scanSound.play(); // Memainkan suara notifikasi
+                        socket.emit('joinRoom', phoneID);
+                        socket.emit('joinRoom', phoneID);
+
+                        // Gabungkan barcode + phoneID dalam 1 object
+                        socket.emit('barcodeScanned', {
+                            MejaID: phoneID,
+                            barcodeData: code.data
+                        });
+
+                        // Handle sound
+                        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                            // Show the audio init button if on iOS
+                            document.getElementById('initAudio').style.display = 'block';
+                        }
+                        scanSound.play(); // Memainkan suara notifikasi
                     } else {
                         video.classList.remove('scanning');
                     }
@@ -160,7 +181,7 @@
         // Initialize scanner
         getCameras();
         startScanning();
-        
+
         // Handle iOS audio initialization
         document.getElementById('initAudio').addEventListener('click', () => {
             // Play silent audio to enable future audio playback
@@ -174,4 +195,5 @@
         });
     </script>
 </body>
+
 </html>
