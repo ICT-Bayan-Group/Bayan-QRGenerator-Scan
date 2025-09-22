@@ -223,7 +223,7 @@
             `;
         }
 
-        // Tangkap event scanSuccess dari server
+       // Tangkap event scanSuccess dari server
         socket.on('scanSuccess', function (data) {
             const currentMeja = localStorage.getItem("MejaID") || "Unknown"; // Ambil dari localStorage
             console.log('Received scanSuccess event:', data);
@@ -251,7 +251,7 @@
                         <div class="info"><span>${nama}</span></div>
                         <div class="info"><span>${nomor}</span></div>
                     `;
-
+                        console.log(`markotop`);
                     // Atur timer untuk menghapus elemen setelah 5 detik
 
                     //  setTimeout(() => {
@@ -264,6 +264,46 @@
             } catch (error) {
                 console.error('Error processing scanSuccess:', error);
                 displayError(error.message);
+            }
+        });
+
+        // Tangkap event barcodeExists dari server untuk QR yang sudah pernah terscan
+        socket.on('barcodeExists', (data) => {
+            console.log(`markotop jemosdad`);
+            const currentMeja = localStorage.getItem("MejaID") || "Unknown";
+            console.log('Received barcodeExists event:', data);
+
+            // ✅ Cek apakah event ini untuk meja yang sama
+            if (data.meja !== currentMeja) {
+                console.log(`⚠️ Abaikan data karena meja berbeda. Client di ${currentMeja}, data dari ${data.meja}`);
+                return;
+            }
+
+            try {
+                const timestamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : 'tidak diketahui';
+                
+                const container = document.querySelector('.container');
+                container.innerHTML = `
+                    <h1 style="color: #ff6b35;">QR Sudah Terscan!</h1>
+                    <div class="info" style="color: #ff6b35; font-size: 2.5rem;">
+                        Barcode sudah pernah discan sebelumnya
+                    </div>
+                    <div class="info" style="color: #ffe600; font-size: 1.5rem;">
+                        Waktu scan sebelumnya: <span>${timestamp}</span>
+                    </div>
+                `;
+
+                // Auto-clear setelah 5 detik
+                setTimeout(() => {
+                    container.innerHTML = `
+                        <!--  <h1>Menunggu Scan...</h1> -->
+                        <!--  <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
+                    `;
+                }, 5000);
+
+            } catch (error) {
+                console.error('Error processing barcodeExists:', error);
+                displayError('Error menampilkan pesan QR sudah terscan');
             }
         });
 

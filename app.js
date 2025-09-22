@@ -136,7 +136,7 @@ app.get('/', (req, res) => {
 // You can also add a simple API route if needed
 app.get('/api/message', (req, res) => {
     res.json({ 
-        message: "hayo nyari apa disinii? gaada apa apa WWKWKWK",
+       message: "hayo nyari apa disinii? gaada apa apa WWKWKWK",
         timestamp: new Date().toISOString()
     });
 });
@@ -178,7 +178,9 @@ io.on('connection', (socket) => {
                 console.log('New barcode added:', newEntry);
             } else {
                 console.log('Barcode already exists:', existingEntry);
-                socket.emit('barcodeExists', {
+                console.log('markotop');
+
+                io.emit('barcodeExists', {
                     message: 'Barcode already scanned',
                     timestamp: existingEntry.timestamp
                 });
