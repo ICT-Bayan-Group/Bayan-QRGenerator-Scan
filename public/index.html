@@ -987,12 +987,13 @@
         socket.on('barcodeExists', (data) => {
             displayResult(`Barcode already exists (scanned at ${new Date(data.timestamp).toLocaleTimeString()})`, 'error');
         });
-
+        
         socket.on('roomJoined', (data) => {
             console.log('Successfully joined room:', data);
             displayResult(`Joined room: ${data.meja}`, 'success');
         });
 
+    
         socket.on('saveError', (data) => {
             displayResult(`Error saving data: ${data.message}`, 'error');
         });

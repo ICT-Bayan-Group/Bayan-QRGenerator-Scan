@@ -4,70 +4,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner</title>
+    <title>QR Code Scanner - Bayan Run 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
+        * {
+            font-family: 'Montserrat', sans-serif !important;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to bottom, #560000ff 0%, #8b0202ff 50%, #021f6eff 50%, #00113fff 100%);
+            min-height: 100vh;
         }
 
-        #scanner {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
+        /* QR Scanner specific styles */
         #video {
             width: 100%;
-            border: 2px solid #ccc;
-            border-radius: 5px;
+            border: 3px solid #ccc;
+            border-radius: 15px;
             margin-bottom: 20px;
-        }
-
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .scanning {
-            border: 2px solid green !important;
+            border: 3px solid #10b981 !important;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
 
         .error {
-            color: red;
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        /* Success Popup Styles */
+        .success-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 8888;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .success-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .success-popup-content {
+            background: linear-gradient(135deg, #560000ff 0%, #8b0202ff 30%, #021f6eff 70%, #00113fff 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(20px) scale(0.9);
+            transition: transform 0.3s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .success-popup.show .success-popup-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .logo-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-small {
+            width: 80px;
+            height: 80px;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: logoFadeIn 0.5s ease-out forwards;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+            margin: 0 auto;
+        }
+
+        .logo-glow-small {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        .success-title {
+            opacity: 0;
+            transform: translateY(15px);
+            animation: titleFadeIn 0.5s ease-out 0.2s forwards;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .success-subtitle {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: subtitleFadeIn 0.5s ease-out 0.4s forwards;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-details {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: detailsFadeIn 0.5s ease-out 0.6s forwards;
+        }
+
+        .success-details h4 {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .participant-name {
+            color: #fbbf24;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .participant-bib {
+            color: #34d399;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .close-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: buttonFadeIn 0.5s ease-out 0.8s forwards;
+        }
+
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Loading bars for success popup */
+        .loading-bars-small {
+            display: flex;
+            gap: 3px;
+            margin: 1rem 0;
+            justify-content: center;
+        }
+
+        .loading-bar-small {
+            width: 3px;
+            height: 20px;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.3), #ffffff);
+            border-radius: 2px;
+            opacity: 0;
+            animation: barFadeIn 0.4s ease-out forwards, barPulse 1.5s ease-in-out infinite;
+        }
+
+        .loading-bar-small:nth-child(1) { animation-delay: 0.6s, 0.6s; }
+        .loading-bar-small:nth-child(2) { animation-delay: 0.7s, 0.7s; }
+        .loading-bar-small:nth-child(3) { animation-delay: 0.8s, 0.8s; }
+        .loading-bar-small:nth-child(4) { animation-delay: 0.9s, 0.9s; }
+        .loading-bar-small:nth-child(5) { animation-delay: 1s, 1s; }
+
+        /* Animations */
+        @keyframes logoFadeIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(1); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1.1); 
+            }
+        }
+
+        @keyframes titleFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes subtitleFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes detailsFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes buttonFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes barFadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes barPulse {
+            0%, 100% { 
+                transform: scaleY(1); 
+                opacity: 0.7; 
+            }
+            50% { 
+                transform: scaleY(1.5); 
+                opacity: 1; 
+            }
+        }
+
+        /* Camera select styling */
+        select {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            color: #374151;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Result styling */
+        #result {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            color: white;
+            font-weight: 600;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 640px) {
+            .success-popup-content {
+                padding: 2rem 1.5rem;
+                max-width: 350px;
+            }
+            
+            .success-title {
+                font-size: 1.25rem;
+            }
+            
+            .logo-small {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-glow-small {
+                width: 80px;
+                height: 80px;
+            }
         }
     </style>
 </head>
 
-<body>
-    <div id="scanner">
-        <h1>QR Code Scanner</h1>
-        <select id="cameraSelect" style="margin-bottom: 10px;"></select>
-        <video id="video" autoplay playsinline></video>
-        <div id="result"></div>
-        <!-- Tombol untuk memicu audio pertama kali di iOS -->
-        <button id="initAudio" style="display: none;">Enable Sound</button>
+<body class="min-h-screen py-6 sm:py-8">
+    <!-- Main Content -->
+    <div class="max-w-2xl mx-auto px-4 sm:px-6">
+        <!-- Header -->
+        <div class="text-center mb-8 sm:mb-10">
+            <div class="mb-6">
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white italic tracking-wide drop-shadow-lg">
+                QR CODE SCANNER
+            </h1>
+            <p class="text-white font-bold mt-2 text-lg uppercase tracking-wider">BAYAN RUN 2025</p>
+        </div>
+
+        <!-- Scanner Container -->
+        <div class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 mb-8">
+            <div id="scanner" class="text-center">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center justify-center">
+                    <span class="mr-2">📱</span>
+                    Scanner QR Code
+                </h2>
+                
+                <!-- Camera Selection -->
+                <select id="cameraSelect" class="mb-4 w-full max-w-xs mx-auto block">
+                    <option value="">Pilih Kamera...</option>
+                </select>
+                
+                <!-- Video Element -->
+                <video id="video" autoplay playsinline class="mx-auto bg-gray-100"></video>
+                
+                <!-- Result Display -->
+                <div id="result" class="mt-4">
+                    <span class="text-gray-300">Arahkan kamera ke QR Code...</span>
+                </div>
+                
+                <!-- iOS Audio Init Button -->
+                <button id="initAudio" class="hidden mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    Enable Sound
+                </button>
+            </div>
+        </div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
+    <!-- Success Popup -->
+    <div id="success-popup" class="success-popup">
+        <div class="success-popup-content">
+            <div class="logo-container">
+                <div class="logo-glow-small"></div>
+                <!-- Replace with actual logo -->
+            </div>
+            
+            <h3 class="success-title">
+                QR Code Terdeteksi!
+            </h3>
+            
+            <p class="success-subtitle">
+                Data peserta berhasil dipindai
+            </p>
+            
+            <div class="loading-bars-small">
+                <div class="loading-bar-small"></div>
+                <div class="loading-bar-small"></div>
+                <div class="loading-bar-small"></div>
+                <div class="loading-bar-small"></div>
+                <div class="loading-bar-small"></div>
+            </div>
+            
+            <div class="success-details">
+                <h4>Detail Peserta:</h4>
+                <div class="participant-name" id="participant-name">-</div>
+                <div class="participant-bib" id="participant-bib">-</div>
+            </div>
+            
+            <button class="close-button" onclick="closeSuccessPopup()">
+                Tutup
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-white text-sm font-semibold mt-8">
+        <p>&copy; 2025 ICT Bayan Group. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script>
-        const socket = io();
+        // Initialize socket connection (if using socket.io)
+        // const socket = io();
 
-        //const phoneID = "meja1";
-      const phoneID = localStorage.getItem('phoneID') || crypto.randomUUID();
-        console.log("id Telpon ", phoneID);
-        socket.emit('joinRoom', phoneID);
+        // Get or generate phone ID
+        const phoneID = localStorage.getItem('phoneID') || crypto.randomUUID();
+        localStorage.setItem('phoneID', phoneID);
+        console.log("Phone ID:", phoneID);
+
+        // Socket connection (uncomment if using socket.io)
+        // socket.emit('joinRoom', phoneID);
 
         const video = document.getElementById('video');
         const resultDiv = document.getElementById('result');
         const cameraSelect = document.getElementById('cameraSelect');
         let currentStream = null;
+        let isScanning = false;
 
-        // Audio untuk notifikasi
+        // Audio for notifications
         const scanSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2127/2127-preview.mp3');
         scanSound.volume = 0.5;
 
@@ -77,17 +451,38 @@
                 const devices = await navigator.mediaDevices.enumerateDevices();
                 const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
-                if (videoDevices.length > 1) {
+                // Clear existing options
+                cameraSelect.innerHTML = '<option value="">Pilih Kamera...</option>';
+
+                if (videoDevices.length > 0) {
                     videoDevices.forEach((device, i) => {
                         const option = document.createElement('option');
                         option.value = device.deviceId;
                         option.text = device.label || `Camera ${i + 1}`;
                         cameraSelect.appendChild(option);
                     });
-                    cameraSelect.style.display = 'block';
+                    
+                    // Auto-select back camera if available
+                    const backCamera = videoDevices.find(device => 
+                        device.label.toLowerCase().includes('back') || 
+                        device.label.toLowerCase().includes('environment')
+                    );
+                    
+                    if (backCamera) {
+                        cameraSelect.value = backCamera.deviceId;
+                        startScanning(backCamera.deviceId);
+                    } else if (videoDevices.length > 0) {
+                        // Use first available camera
+                        cameraSelect.value = videoDevices[0].deviceId;
+                        startScanning(videoDevices[0].deviceId);
+                    }
+                } else {
+                    // Try to start without specific device ID
+                    startScanning();
                 }
             } catch (error) {
                 console.error('Error accessing cameras:', error);
+                resultDiv.innerHTML = `<span class="error">Error accessing cameras: ${error.message}</span>`;
             }
         }
 
@@ -100,7 +495,9 @@
             const constraints = {
                 video: {
                     deviceId: deviceId ? { exact: deviceId } : undefined,
-                    facingMode: 'environment'
+                    facingMode: !deviceId ? 'environment' : undefined,
+                    width: { ideal: 640 },
+                    height: { ideal: 480 }
                 }
             };
 
@@ -108,27 +505,34 @@
                 currentStream = await navigator.mediaDevices.getUserMedia(constraints);
                 video.srcObject = currentStream;
                 await video.play();
+                
+                resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>';
+                isScanning = true;
                 scanQRCode();
             } catch (error) {
+                console.error('Camera error:', error);
                 resultDiv.innerHTML = `<span class="error">Error accessing camera: ${error.message}</span>`;
             }
         }
 
         // QR Code scanning function
         function scanQRCode() {
+            if (!isScanning) return;
+
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
 
-            // Optimasi ukuran canvas
-            const scale = 0.8; // Mengurangi ukuran canvas untuk performa lebih baik
+            // Optimize canvas size for performance
+            const scale = 0.8;
             canvas.width = video.videoWidth * scale;
             canvas.height = video.videoHeight * scale;
 
             let lastScanTime = 0;
-            const scanInterval = 100; // Interval scanning dalam milidetik
-            let scanning = true;
+            const scanInterval = 100; // Scan interval in milliseconds
 
             function tick() {
+                if (!isScanning) return;
+
                 const now = Date.now();
                 if (video.readyState === video.HAVE_ENOUGH_DATA && now - lastScanTime > scanInterval) {
                     lastScanTime = now;
@@ -143,54 +547,172 @@
                     });
 
                     if (code) {
-                        video.classList.add('scanning');
-                        resultDiv.textContent = `QR Code detected: ${code.data}`;
-                        socket.emit('joinRoom', phoneID);
-
-                        socket.emit('barcodeScanned', {
-                            MejaID: phoneID,
-                            barcodeData: code.data
-                        });
-
-                        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                            document.getElementById('initAudio').style.display = 'block';
-                        }
-                        scanSound.play();
-
-                        // Stop scanning setelah berhasil
-                        scanning = false;
-                        return; // tidak panggil tick lagi
+                        handleQRCodeDetected(code.data);
+                        return; // Stop scanning after successful detection
                     } else {
                         video.classList.remove('scanning');
                     }
                 }
 
-                if (scanning) {
+                if (isScanning) {
                     requestAnimationFrame(tick);
                 }
             }
             tick();
         }
 
+        // Handle QR Code detection
+        function handleQRCodeDetected(qrData) {
+            video.classList.add('scanning');
+            isScanning = false; // Stop continuous scanning
+            
+            // Play sound notification
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                document.getElementById('initAudio').style.display = 'block';
+            }
+            scanSound.play().catch(e => console.log('Audio play failed:', e));
+
+            // Parse QR Code data
+            const parsedData = parseQRData(qrData);
+            
+            // Show success popup
+            showSuccessPopup(parsedData);
+
+            // Update result display
+            resultDiv.innerHTML = `<span class="text-green-400 font-bold">✅ QR Code detected!</span>`;
+
+            // Send data via socket (if using socket.io)
+            /*
+            socket.emit('joinRoom', phoneID);
+            socket.emit('barcodeScanned', {
+                MejaID: phoneID,
+                barcodeData: qrData
+            });
+            */
+
+            console.log('QR Code detected:', qrData);
+            console.log('Parsed data:', parsedData);
+        }
+
+        // Parse QR Code data to extract name and BIB number
+        function parseQRData(qrData) {
+            try {
+                // Parse URL format: https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.
+                if (qrData.includes('http') && qrData.includes('nomor=')) {
+                    const url = new URL(qrData);
+                    
+                    // Ekstrak nomor dari query parameter
+                    const nomor = url.searchParams.get('nomor') || 'Unknown';
+                    
+                    // Ekstrak nama dari fragment (hash), replace underscore dengan spasi dan koma dengan spasi
+                    let nama = url.hash.substring(1); // Hapus karakter #
+                    if (nama) {
+                        nama = nama.replace(/_/g, ' ').replace(/,/g, ' ');
+                    } else {
+                        nama = 'Unknown Participant';
+                    }
+                    
+                    return {
+                        name: nama,
+                        bib: nomor,
+                        originalData: qrData
+                    };
+                }
+                
+                // If not a URL, try to parse direct format
+                if (qrData.includes('#')) {
+                    const [bib, name] = qrData.split('#');
+                    return {
+                        name: name.replace(/_/g, ' ').replace(/,/g, ' '),
+                        bib: bib,
+                        originalData: qrData
+                    };
+                }
+                
+                // Default parsing
+                return {
+                    name: 'Unknown Participant',
+                    bib: 'Unknown',
+                    originalData: qrData
+                };
+            } catch (error) {
+                console.error('Error parsing QR data:', error);
+                return {
+                    name: 'Parse Error',
+                    bib: 'Error',
+                    originalData: qrData
+                };
+            }
+        }
+
+        // Show success popup
+        function showSuccessPopup(data) {
+            const popup = document.getElementById('success-popup');
+            const nameEl = document.getElementById('participant-name');
+            const bibEl = document.getElementById('participant-bib');
+            
+            nameEl.textContent = data.name;
+            bibEl.textContent = `BIB ${data.bib}`;
+            
+            popup.classList.add('show');
+        }
+
+        // Close success popup
+        function closeSuccessPopup() {
+            const popup = document.getElementById('success-popup');
+            popup.classList.remove('show');
+            
+            // Resume scanning after a short delay
+            setTimeout(() => {
+                video.classList.remove('scanning');
+                resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>';
+                isScanning = true;
+                scanQRCode();
+            }, 500);
+        }
+
         // Camera selection handler
         cameraSelect.addEventListener('change', () => {
-            startScanning(cameraSelect.value);
+            if (cameraSelect.value) {
+                startScanning(cameraSelect.value);
+            }
         });
-
-        // Initialize scanner
-        getCameras();
-        startScanning();
 
         // Handle iOS audio initialization
         document.getElementById('initAudio').addEventListener('click', () => {
             // Play silent audio to enable future audio playback
             const silentAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
-            silentAudio.play();
+            silentAudio.play().catch(e => console.log('Silent audio failed:', e));
             document.getElementById('initAudio').style.display = 'none';
         });
 
+        // Socket event handlers (uncomment if using socket.io)
+        /*
         socket.on('barcodeAdded', (data) => {
-            resultDiv.textContent = `QR Code ${data.barcode} saved at ${new Date(data.timestamp).toLocaleTimeString()}`;
+            resultDiv.innerHTML = `<span class="text-green-400">QR Code ${data.barcode} saved at ${new Date(data.timestamp).toLocaleTimeString()}</span>`;
+        });
+        */
+
+        // Initialize scanner
+        window.addEventListener('load', () => {
+            getCameras();
+        });
+
+        // Handle page visibility to pause/resume scanning
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                isScanning = false;
+            } else if (currentStream) {
+                isScanning = true;
+                scanQRCode();
+            }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
         });
     </script>
 </body>
