@@ -42,23 +42,13 @@
     "timestamp": "2025-09-19T09:15:08.874Z"
   },
   {
+    "barcode": "https://coaching.bayanevent.com/verify.html?nomor=6353#Tgk._Himawan_Pratama",
+    "meja": "50e422cc-3d0c-4a0b-bdd3-0f33dad26d14",
+    "timestamp": "2025-09-23T08:09:13.008Z"
+  },
+  {
     "barcode": "https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.",
-<<<<<<< HEAD
     "meja": "meja1",
-    "timestamp": "2025-09-22T06:57:32.950Z"
-  },
-  {
-    "barcode": "https://coaching.bayanevent.com/verify.html?nomor=6353#Tgk._Himawan_Pratama",
-    "meja": "meja1",
-    "timestamp": "2025-09-22T06:57:47.072Z"
-=======
-    "meja": "48f269a9-12e0-4619-9ea5-7192571e36b7",
-    "timestamp": "2025-09-22T08:15:33.969Z"
-  },
-  {
-    "barcode": "https://coaching.bayanevent.com/verify.html?nomor=6353#Tgk._Himawan_Pratama",
-    "meja": "cd06a5a5-d0b7-40b2-8a9f-6bc5f6c0ce83",
-    "timestamp": "2025-09-22T08:18:13.297Z"
->>>>>>> 96428bb945e6e3a32f7130346e929a1ba274f7b2
+    "timestamp": "2025-09-23T09:00:37.931Z"
   }
 ]
