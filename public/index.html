@@ -674,8 +674,8 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
-                <h1 class="page-title">Scanner QR Canggih</h1>
-                <p class="page-description">Scanner QR canggih dengan deteksi duplikat dan validasi real-time</p>
+                <h1 class="page-title">Scanner QR</h1>
+                <p class="page-description">Scanner QR dengan deteksi duplikat dan validasi real-time</p>
             </header>
 
             <div class="scanner-grid">
@@ -879,7 +879,7 @@
 
             // Pengecekan duplikat client-side
             if (isDuplicateQR(barcodeData)) {
-                displayResult(`🚫 QR DUPLIKAT terdeteksi: ${barcodeData.substring(0, 50)}...`, 'duplicate');
+                displayResult(`🚫 QR DUPLIKAT terdeteksi: ${barcodeData}...`, 'duplicate');
                 duplicateDetected++;
                 updateResultsCount();
                 
@@ -900,7 +900,7 @@
             markQRAsProcessed(barcodeData);
             
             console.log(`Memproses QR: ${barcodeData} untuk Meja: ${MejaID}`);
-            displayResult(`✅ Memproses: ${barcodeData.substring(0, 50)}...`, 'success');
+            displayResult(`✅ Memproses: ${barcodeData}...`, 'success');
             
             socket.emit('barcodeScanned', { 
                 MejaID: MejaID, 

@@ -116,6 +116,52 @@
             background-color: #f0f0f0;
             border-radius: 5px;
         }
+
+        /* Duplicate warning styles */
+        .duplicate-notification {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background: linear-gradient(135deg, #ff5722, #e64a19);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(255, 87, 34, 0.4);
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .duplicate-notification.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Duplicate warning shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .duplicate-warning {
+            animation: shake 0.5s ease-in-out 2;
+        }
+
+
     </style>
 </head>
 
@@ -135,6 +181,13 @@
         <option value="meja10">Meja 10</option>
     </select>
 
+    <!-- Duplicate notification -->
+    <div id="duplicateNotification" class="duplicate-notification">
+        🚫 QR sudah pernah discan sebelumnya!
+    </div>
+
+
+
     <div class="container">
         <!-- <h1>Menunggu Scan...</h1> -->
         <!-- <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
@@ -144,6 +197,96 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
+
+        // Global variables for duplicate detection
+        let processedBarcodes = new Map(); // Track processed QR codes with timestamps
+        let duplicateDetected = 0;
+        const DUPLICATE_NOTIFICATION_TIMEOUT = 2000; // 2 seconds between duplicate notifications for same QR
+        const QR_DISPLAY_TIMEOUT = 5000; // 5 seconds to display each QR result
+
+        // Audio notifications
+        const duplicateSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEbBj2Y3vLLcSQGK4DN8NeHNwgZa7ztz6BODwtMqeXsz2g');
+        duplicateSound.volume = 0.5;
+
+        // Function to check if we should show duplicate notification (throttled)
+        function shouldShowDuplicateNotification(qrString) {
+            const qrHash = btoa(qrString).slice(0, 32);
+            const now = Date.now();
+            
+            // Check if we recently showed notification for this QR
+            if (processedBarcodes.has(qrHash)) {
+                const lastNotification = processedBarcodes.get(qrHash);
+                if (now - lastNotification < DUPLICATE_NOTIFICATION_TIMEOUT) {
+                    return false; // Don't show notification too frequently
+                }
+            }
+            
+            // Update the timestamp for this QR
+            processedBarcodes.set(qrHash, now);
+            return true;
+        }
+
+        // Function to show duplicate notification (throttled)
+        function showDuplicateNotification(qrString) {
+            // Only show notification if enough time has passed since last notification for this QR
+            if (!shouldShowDuplicateNotification(qrString)) {
+                return;
+            }
+
+            const notification = document.getElementById('duplicateNotification');
+            const container = document.querySelector('.container');
+            
+            // Show notification
+            notification.classList.add('show');
+            container.classList.add('duplicate-warning');
+            
+            // Play duplicate sound
+            try {
+                duplicateSound.currentTime = 0;
+                duplicateSound.play().catch(e => console.log('Audio play failed:', e));
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                container.classList.remove('duplicate-warning');
+            }, 3000);
+        }
+
+        // Function to display QR data
+        function displayQRData(qrString) {
+            try {
+                // Parse URL format: https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.
+                const url = new URL(qrString);
+                
+                // Extract nomor from query parameter
+                const nomor = url.searchParams.get('nomor');
+                
+                // Extract nama from fragment (hash), replace underscore with space and comma with space
+                let nama = url.hash.substring(1); // Remove # character
+                nama = nama.replace(/_/g, ' ').replace(/,/g, ' ');
+
+                const container = document.querySelector('.container');
+                container.innerHTML = `
+                    <div class="info"><span>${nama}</span></div>
+                    <div class="info"><span>${nomor}</span></div>
+                `;
+
+                // Clear content after timeout to prepare for next scan
+                setTimeout(() => {
+                    container.innerHTML = `
+                        <!--  <h1>Menunggu Scan...</h1> -->
+                        <!--  <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
+                    `;
+                }, QR_DISPLAY_TIMEOUT);
+
+            } catch (error) {
+                console.error('Error parsing QR data:', error);
+                displayError('Format QR tidak valid');
+            }
+        }
 
         // Event listener untuk select MejaID
         document.getElementById('MejaID').addEventListener('change', function () {
@@ -179,22 +322,11 @@
             updateConnectionStatus('Connected');
         });
 
-        //   socket.on('disconnect', () => {
-        //     console.log('Disconnected from socket server');
-        //   updateConnectionStatus('Disconnected');
-        //    displayError('Koneksi ke server terputus, mencoba menghubungkan kembali...');
-        //  });
-
         socket.on('connect_error', (error) => {
             console.error('Socket connection error:', error);
             updateConnectionStatus('Connection Error');
             displayError('Gagal terhubung ke server, mencoba kembali...');
         });
-
-        // socket.on('reconnecting', (attempt) => {
-        //   console.log(`Reconnecting attempt: ${attempt}`);
-        //   updateConnectionStatus(`Reconnecting (attempt ${attempt})`);
-        // });
 
         socket.on('reconnect_failed', () => {
             console.error('Reconnection failed');
@@ -223,12 +355,12 @@
             `;
         }
 
-       // Tangkap event scanSuccess dari server
+        // Enhanced scanSuccess event handler - always display data, throttle duplicate notifications
         socket.on('scanSuccess', function (data) {
-            const currentMeja = localStorage.getItem("MejaID") || "Unknown"; // Ambil dari localStorage
+            const currentMeja = localStorage.getItem("MejaID") || "Unknown";
             console.log('Received scanSuccess event:', data);
 
-            // ✅ Cek apakah event ini untuk meja yang sama
+            // Check if event is for the same table
             if (data.meja !== currentMeja) {
                 console.log(`⚠️ Abaikan data karena meja berbeda. Client di ${currentMeja}, data dari ${data.meja}`);
                 return;
@@ -236,28 +368,10 @@
 
             try {
                 if (data && data.qrString) {
-                    // Parse URL format: https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.
-                    const url = new URL(data.qrString);
+                    // Always display the QR data regardless of whether it's a duplicate
+                    displayQRData(data.qrString);
                     
-                    // Ekstrak nomor dari query parameter
-                    const nomor = url.searchParams.get('nomor');
-                    
-                    // Ekstrak nama dari fragment (hash), replace underscore dengan spasi dan koma dengan spasi
-                    let nama = url.hash.substring(1); // Hapus karakter #
-                    nama = nama.replace(/_/g, ' ').replace(/,/g, ' ');
-
-                    const container = document.querySelector('.container');
-                    container.innerHTML = `
-                        <div class="info"><span>${nama}</span></div>
-                        <div class="info"><span>${nomor}</span></div>
-                    `;
-                        console.log(`markotop`);
-                    // Atur timer untuk menghapus elemen setelah 5 detik
-
-                    //  setTimeout(() => {
-                    //    container.innerHTML = ''; // Hapus konten
-                    // }, 5000); // 5000 ms = 5 detik
-
+                    console.log('✅ Displaying QR data:', data.qrString);
                 } else {
                     throw new Error('Data QR tidak valid diterima');
                 }
@@ -267,47 +381,57 @@
             }
         });
 
-        // Tangkap event barcodeExists dari server untuk QR yang sudah pernah terscan
+        // Handle server-side duplicate detection - show notification but don't block display
         socket.on('barcodeExists', (data) => {
-            console.log(`markotop jemosdad`);
-            const currentMeja = localStorage.getItem("MejaID") || "Unknown";
-            console.log('Received barcodeExists event:', data);
+            console.log('Server detected duplicate:', data);
+            
+            // Show duplicate notification for server-detected duplicates
+            showDuplicateNotification('duplicate_detected');
+        });
 
-            // ✅ Cek apakah event ini untuk meja yang sama
+        // Also handle client-side duplicate detection for immediate feedback
+        let lastProcessedQR = null;
+        let lastProcessedTime = 0;
+
+        // Enhanced scanSuccess event handler with immediate duplicate detection
+        socket.on('scanSuccess', function (data) {
+            const currentMeja = localStorage.getItem("MejaID") || "Unknown";
+            console.log('Received scanSuccess event:', data);
+
+            // Check if event is for the same table
             if (data.meja !== currentMeja) {
                 console.log(`⚠️ Abaikan data karena meja berbeda. Client di ${currentMeja}, data dari ${data.meja}`);
                 return;
             }
 
             try {
-                const timestamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : 'tidak diketahui';
-                
-                const container = document.querySelector('.container');
-                container.innerHTML = `
-                    <h1 style="color: #ff6b35;">QR Sudah Terscan!</h1>
-                    <div class="info" style="color: #ff6b35; font-size: 2.5rem;">
-                        Barcode sudah pernah discan sebelumnya
-                    </div>
-                    <div class="info" style="color: #ffe600; font-size: 1.5rem;">
-                        Waktu scan sebelumnya: <span>${timestamp}</span>
-                    </div>
-                `;
-
-                // Auto-clear setelah 5 detik
-                setTimeout(() => {
-                    container.innerHTML = `
-                        <!--  <h1>Menunggu Scan...</h1> -->
-                        <!--  <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
-                    `;
-                }, 5000);
-
+                if (data && data.qrString) {
+                    const currentTime = Date.now();
+                    
+                    // Check for immediate duplicate (same QR scanned within 3 seconds)
+                    if (lastProcessedQR === data.qrString && (currentTime - lastProcessedTime) < 3000) {
+                        console.log('🚫 Immediate duplicate detected:', data.qrString);
+                        showDuplicateNotification(data.qrString);
+                    }
+                    
+                    // Always display the QR data regardless of whether it's a duplicate
+                    displayQRData(data.qrString);
+                    
+                    // Update last processed tracking
+                    lastProcessedQR = data.qrString;
+                    lastProcessedTime = currentTime;
+                    
+                    console.log('✅ Displaying QR data:', data.qrString);
+                } else {
+                    throw new Error('Data QR tidak valid diterima');
+                }
             } catch (error) {
-                console.error('Error processing barcodeExists:', error);
-                displayError('Error menampilkan pesan QR sudah terscan');
+                console.error('Error processing scanSuccess:', error);
+                displayError(error.message);
             }
         });
 
-        // Tampilkan pesan menunggu saat pertama kali load
+        // Initialize the welcome screen
         document.querySelector('.container').innerHTML = `
           <!--  <h1>Menunggu Scan...</h1> -->
           <!--  <div class="info">Silakan scan barcode untuk melanjutkan</div> -->
