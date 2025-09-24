@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barcode Scanner - Dashboard</title>
+    <title>Scanner QR - Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -411,6 +411,17 @@
             margin-left: 1rem;
         }
 
+        /* Duplicate warning styles */
+        .duplicate-count {
+            background: linear-gradient(135deg, #ff5722, #e64a19);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
         #results {
             list-style: none;
             max-height: 400px;
@@ -431,6 +442,15 @@
         #results li:hover {
             background: rgba(255, 120, 73, 0.1);
             transform: translateX(5px);
+        }
+
+        #results li.duplicate {
+            border-left-color: #ff5722;
+            background: rgba(255, 87, 34, 0.1);
+        }
+
+        #results li.duplicate:hover {
+            background: rgba(255, 87, 34, 0.2);
         }
 
         .status-indicator {
@@ -456,6 +476,11 @@
         }
 
         .error {
+            color: #ff5722;
+            font-weight: bold;
+        }
+
+        .duplicate {
             color: #ff5722;
             font-weight: bold;
         }
@@ -510,7 +535,6 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -527,13 +551,10 @@
 
         /* Scanner status animation */
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
                 opacity: 1;
             }
-
             50% {
                 transform: scale(1.1);
                 opacity: 0.8;
@@ -543,6 +564,17 @@
         .status-active {
             animation: pulse 2s infinite;
         }
+
+        /* Duplicate warning animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .duplicate-warning {
+            animation: shake 0.5s ease-in-out 2;
+        }
     </style>
 </head>
 
@@ -551,8 +583,8 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h2 class="sidebar-title">Bayan Dashboard</h2>
-                <p class="sidebar-subtitle">QR Tools & Utilities</p>
+                <h2 class="sidebar-title">Dashboard Bayan</h2>
+                <p class="sidebar-subtitle">Alat QR & Utilitas</p>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -561,7 +593,7 @@
                             <path
                                 d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zM9.5 14.5v3h-3v-3h3M11 13H5v6h6v-6zM17.5 6.5v3h-3v-3h3M19 5h-6v6h6V5zM13 13h1.5v1.5H13zM14.5 14.5H16V16h-1.5zM16 13h1.5v1.5H16zM13 16h1.5v1.5H13zM14.5 17.5H16V19h-1.5zM16 16h1.5v1.5H16zM17.5 14.5H19V16h-1.5zM17.5 17.5H19V19h-1.5zM22 7h-2V4h-3V2h5zM22 22v-5h-2v3h-3v2zM2 22h5v-2H4v-3H2zM2 2v5h2V4h3V2z" />
                         </svg>
-                        QR Scanner
+                        Scanner QR
                     </a>
                 </li>
                 <li class="nav-item">
@@ -570,7 +602,7 @@
                             <path
                                 d="M8 16h8v2H8v-2zm0-4h8v2H8v-2zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z" />
                         </svg>
-                        JSON to CSV Generator
+                        Generator JSON ke CSV
                     </a>
                 </li>
                 <li class="nav-item">
@@ -579,7 +611,7 @@
                             <path
                                 d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                         </svg>
-                        CSV to QR Generator
+                        Generator CSV ke QR
                     </a>
                 </li>
                 <li class="nav-item">
@@ -588,7 +620,7 @@
                             <path
                                 d="M2 6h1v12H2V6zm2 0h1v12H4V6zm2 0h3v12H6V6zm4 0h1v12h-1V6zm3 0h1v12h-1V6zm2 0h3v12h-3V6zm4 0h1v12h-1V6z" />
                         </svg>
-                        Monitor Welcome
+                        Monitor Selamat Datang
                     </a>
                 </li>
                 <li class="nav-item meja-selector">
@@ -634,7 +666,6 @@
                             <input type="radio" id="meja10" name="mejaSelection" value="meja10" class="meja-radio">
                             <label for="meja10" class="meja-button">Meja 10</label>
                         </div>
-
                     </div>
                 </li>
             </ul>
@@ -643,9 +674,8 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
-                <h1 class="page-title">Barcode Scanner</h1>
-                <p class="page-description">Scan barcodes and QR codes using camera or manual input with real-time
-                    processing</p>
+                <h1 class="page-title">Scanner QR Canggih</h1>
+                <p class="page-description">Scanner QR canggih dengan deteksi duplikat dan validasi real-time</p>
             </header>
 
             <div class="scanner-grid">
@@ -656,7 +686,7 @@
                             <path
                                 d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
                         </svg>
-                        Camera Scanner
+                        Scanner Kamera
                         <span id="scannerStatus" class="status-indicator status-inactive"></span>
                     </h3>
 
@@ -667,13 +697,13 @@
                             <svg class="button-icon" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />
                             </svg>
-                            Start Camera Scan
+                            Mulai Scan Kamera
                         </button>
                         <button class="scan-button stop" onclick="stopScan()">
                             <svg class="button-icon" viewBox="0 0 24 24">
                                 <path d="M6 6h12v12H6z" />
                             </svg>
-                            Stop Camera Scan
+                            Hentikan Scan Kamera
                         </button>
                     </div>
                 </div>
@@ -684,19 +714,10 @@
                         <svg class="card-icon" viewBox="0 0 24 24">
                             <path d="M3,5H21V7H3V5M3,13V11H21V13H3M3,19V17H21V19H3Z" />
                         </svg>
-                        Manual Input
+                        Input Manual
                     </h3>
 
-                    <input type="text" id="barcodeInput" placeholder="Type or paste barcode here..." autofocus>
-
-                    <div style="color: #666; font-size: 0.9rem; line-height: 1.5;">
-                        <p><strong>Tips:</strong></p>
-                        <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                            <li>Focus this field and use a USB barcode scanner</li>
-                            <li>Or manually type/paste barcode values</li>
-                            <li>Press Enter or tab out to process</li>
-                        </ul>
-                    </div>
+                    <input type="text" id="barcodeInput" placeholder="Ketik atau paste kode QR di sini..." autofocus>
                 </div>
 
                 <!-- Results Card -->
@@ -706,8 +727,9 @@
                             <path
                                 d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M19,19H5V5H19V19Z" />
                         </svg>
-                        <h3 class="results-title">Scan Results</h3>
-                        <span id="resultsCount" class="results-count">0 scans</span>
+                        <h3 class="results-title">Hasil Scan</h3>
+                        <span id="resultsCount" class="results-count">0 scan</span>
+                        <span id="duplicateCount" class="duplicate-count">0 duplikat</span>
                     </div>
                     <ul id="results"></ul>
                 </div>
@@ -719,25 +741,83 @@
     <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
     <script>
-        // Global variables
+        // Variabel global yang diperbaiki untuk pencegahan duplikat
         const socket = io({
             secure: true,
-            rejectUnauthorized: false // For self-signed certificates
+            rejectUnauthorized: false
         });
+        
         const barcodeInput = document.getElementById('barcodeInput');
         const resultsDiv = document.getElementById('results');
         const cameraPreview = document.getElementById('cameraPreview');
         const scannerStatus = document.getElementById('scannerStatus');
         const resultsCount = document.getElementById('resultsCount');
+        const duplicateCount = document.getElementById('duplicateCount');
+        
         let scannerActive = false;
         let scannedCount = 0;
-        let processedBarcodes = new Set(); // Prevent duplicate processing
+        let duplicateDetected = 0;
+        
+        // Sistem pencegahan duplikat yang diperbaiki
+        let processedBarcodes = new Map(); // Simpan dengan timestamp
+        let recentScans = new Set(); // Cache scan terbaru
+        const DUPLICATE_TIMEOUT = 5000; // 5 detik cooldown
+        const SCAN_HISTORY_LIMIT = 100; // Simpan 100 scan terakhir di memori
 
-        // Audio untuk notifikasi
+        // Notifikasi audio
         const scanSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEbBj2Y3vLLcSQGK4DN8NeHNwgZa7ztz6BODwtMqeXsz2g');
+        const duplicateSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEbBj2Y3vLLcSQGK4DN8NeHNwgZa7ztz6BODwtMqeXsz2g');
+        
         scanSound.volume = 0.3;
+        duplicateSound.volume = 0.5;
 
-        // Event listener untuk radio button Meja selection
+        // Function deteksi duplikat yang diperbaiki
+        function isDuplicateQR(qrData) {
+            const qrHash = btoa(qrData).slice(0, 32); // Hash yang diperbaiki
+            const now = Date.now();
+            
+            // Cek cache scan terbaru
+            if (recentScans.has(qrHash)) {
+                return true;
+            }
+            
+            // Cek barcode yang sudah diproses dengan timestamp
+            if (processedBarcodes.has(qrHash)) {
+                const lastScanTime = processedBarcodes.get(qrHash);
+                if (now - lastScanTime < DUPLICATE_TIMEOUT) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // Function untuk menandai QR sebagai sudah diproses
+        function markQRAsProcessed(qrData) {
+            const qrHash = btoa(qrData).slice(0, 32);
+            const now = Date.now();
+            
+            // Tambah ke scan terbaru
+            recentScans.add(qrHash);
+            
+            // Tambah ke yang sudah diproses dengan timestamp
+            processedBarcodes.set(qrHash, now);
+            
+            // Bersihkan entri lama
+            if (processedBarcodes.size > SCAN_HISTORY_LIMIT) {
+                const entries = Array.from(processedBarcodes.entries());
+                entries.sort((a, b) => a[1] - b[1]); // Urutkan berdasarkan timestamp
+                const toRemove = entries.slice(0, Math.floor(SCAN_HISTORY_LIMIT / 2));
+                toRemove.forEach(([hash]) => processedBarcodes.delete(hash));
+            }
+            
+            // Hapus dari scan terbaru setelah timeout
+            setTimeout(() => {
+                recentScans.delete(qrHash);
+            }, DUPLICATE_TIMEOUT);
+        }
+
+        // Event listener untuk pemilihan radio button Meja
         const mejaRadios = document.querySelectorAll('input[name="mejaSelection"]');
         mejaRadios.forEach(radio => {
             radio.addEventListener('change', function() {
@@ -745,19 +825,18 @@
                     const meja = this.value;
                     const button = this.nextElementSibling;
                     
-                    console.log('Meja selected:', meja); // Debug log
+                    console.log('Meja dipilih:', meja);
                     
-                    localStorage.setItem("MejaID", meja);
+                    // Simpan di memori (persyaratan artifact)
+                    window.selectedMeja = meja;
                     socket.emit('joinRoom', meja);
-                    console.log(`Client join room: ${meja}`);
+                    console.log(`Client bergabung ke room: ${meja}`);
                     
-                    // Add connected state after a short delay
                     setTimeout(() => {
                         button.classList.add('connected');
-                        displayResult(`Connected to ${meja}`, 'success');
+                        displayResult(`Terhubung ke ${meja}`, 'success');
                     }, 300);
                     
-                    // Remove connected class from other buttons
                     mejaRadios.forEach(otherRadio => {
                         if (otherRadio !== this) {
                             otherRadio.nextElementSibling.classList.remove('connected');
@@ -767,7 +846,7 @@
             });
         });
 
-        // Handle barcode input from manual entry
+        // Handler input barcode yang diperbaiki
         barcodeInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -779,7 +858,6 @@
             }
         });
 
-        // Also handle on blur for tab navigation
         barcodeInput.addEventListener('blur', (event) => {
             const barcodeData = event.target.value.trim();
             if (barcodeData) {
@@ -788,68 +866,90 @@
             }
         });
 
-        // Process barcode data
+        // Pemrosesan barcode yang diperbaiki dengan deteksi duplikat
         function processBarcodeData(barcodeData) {
-            // Prevent duplicate processing
-            if (processedBarcodes.has(barcodeData)) {
-                return;
-            }
-            processedBarcodes.add(barcodeData);
-            
-            // Remove from set after 2 seconds to allow re-scanning
-            setTimeout(() => {
-                processedBarcodes.delete(barcodeData);
-            }, 2000);
-
-            const MejaID = localStorage.getItem("MejaID");
+            const MejaID = window.selectedMeja;
             
             if (!MejaID) {
-                displayResult('Please select a Meja first!', 'error');
+                displayResult('❌ Silakan pilih Meja terlebih dahulu!', 'error');
+                barcodeInput.classList.add('duplicate-warning');
+                setTimeout(() => barcodeInput.classList.remove('duplicate-warning'), 1000);
                 return;
             }
 
-            console.log(`Processing barcode: ${barcodeData} for Meja: ${MejaID}`);
-            displayResult(`Processing: ${barcodeData}`, 'success');
+            // Pengecekan duplikat client-side
+            if (isDuplicateQR(barcodeData)) {
+                displayResult(`🚫 QR DUPLIKAT terdeteksi: ${barcodeData.substring(0, 50)}...`, 'duplicate');
+                duplicateDetected++;
+                updateResultsCount();
+                
+                // Putar suara duplikat dan efek shake
+                try {
+                    duplicateSound.currentTime = 0;
+                    duplicateSound.play().catch(e => console.log('Audio play gagal:', e));
+                } catch (e) {
+                    console.log('Error audio:', e);
+                }
+                
+                barcodeInput.classList.add('duplicate-warning');
+                setTimeout(() => barcodeInput.classList.remove('duplicate-warning'), 1000);
+                return;
+            }
+
+            // Tandai sebagai sudah diproses untuk mencegah re-scanning langsung
+            markQRAsProcessed(barcodeData);
+            
+            console.log(`Memproses QR: ${barcodeData} untuk Meja: ${MejaID}`);
+            displayResult(`✅ Memproses: ${barcodeData.substring(0, 50)}...`, 'success');
             
             socket.emit('barcodeScanned', { 
                 MejaID: MejaID, 
                 barcodeData: barcodeData 
             });
             
-            // Play sound
+            // Putar suara sukses
             try {
                 scanSound.currentTime = 0;
-                scanSound.play().catch(e => console.log('Audio play failed:', e));
+                scanSound.play().catch(e => console.log('Audio play gagal:', e));
             } catch (e) {
-                console.log('Audio error:', e);
+                console.log('Error audio:', e);
             }
         }
 
-        // Display result function
+        // Function tampilkan hasil yang diperbaiki
         function displayResult(message, type = 'success') {
             const li = document.createElement('li');
-            li.innerHTML = `<span class="${type}">${message} - ${new Date().toLocaleTimeString()}</span>`;
+            li.className = type === 'duplicate' ? 'duplicate' : '';
+            
+            const icon = type === 'success' ? '✅' : type === 'duplicate' ? '🚫' : '❌';
+            li.innerHTML = `<span class="${type}">${icon} ${message} - ${new Date().toLocaleTimeString('id-ID')}</span>`;
+            
             resultsDiv.prepend(li);
-            scannedCount++;
+            
+            if (type === 'success') {
+                scannedCount++;
+            }
+            
             updateResultsCount();
             
-            // Remove old results after 20 items
-            while (resultsDiv.children.length > 20) {
+            // Hapus hasil lama setelah 30 item
+            while (resultsDiv.children.length > 30) {
                 resultsDiv.removeChild(resultsDiv.lastChild);
             }
         }
 
-        // Update scanner status indicator
+        // Update indikator status scanner
         function updateScannerStatus(active) {
             scannerStatus.className = active ? 'status-indicator status-active' : 'status-indicator status-inactive';
         }
 
-        // Update results count
+        // Update hitungan hasil yang diperbaiki
         function updateResultsCount() {
-            resultsCount.textContent = `${scannedCount} scan${scannedCount !== 1 ? 's' : ''}`;
+            resultsCount.textContent = `${scannedCount} scan`;
+            duplicateCount.textContent = `${duplicateDetected} duplikat`;
         }
 
-        // Camera scanner functions
+        // Function scanner kamera
         async function startScan() {
             if (scannerActive) return;
             
@@ -868,7 +968,7 @@
                 scannerActive = true;
                 updateScannerStatus(true);
 
-                // Initialize Quagga for barcode scanning
+                // Inisialisasi Quagga untuk scanning barcode
                 Quagga.init({
                     inputStream: {
                         name: "Live",
@@ -889,28 +989,26 @@
                     frequency: 10
                 }, function (err) {
                     if (err) {
-                        console.error('Quagga initialization failed:', err);
-                        displayResult('Camera scanner initialization failed', 'error');
+                        console.error('Inisialisasi Quagga gagal:', err);
+                        displayResult('Inisialisasi scanner kamera gagal', 'error');
                         return;
                     }
                     Quagga.start();
-                    displayResult('Camera scanner started successfully', 'success');
+                    displayResult('Scanner kamera berhasil dimulai', 'success');
                 });
 
-                // Handle Quagga detection
                 Quagga.onDetected(function (result) {
                     const code = result.codeResult.code;
-                    if (code && code.length > 3) { // Basic validation
+                    if (code && code.length > 3) {
                         processBarcodeData(code);
                     }
                 });
 
-                // Initialize QR Code scanner
                 startQRScanner();
 
             } catch (error) {
-                console.error('Camera access error:', error);
-                displayResult('Camera access denied or not available', 'error');
+                console.error('Error akses kamera:', error);
+                displayResult('Akses kamera ditolak atau tidak tersedia', 'error');
                 scannerActive = false;
                 updateScannerStatus(false);
             }
@@ -925,20 +1023,19 @@
                 updateScannerStatus(false);
                 cameraPreview.style.display = 'none';
 
-                // Stop camera stream
                 if (cameraPreview.srcObject) {
                     const tracks = cameraPreview.srcObject.getTracks();
                     tracks.forEach(track => track.stop());
                     cameraPreview.srcObject = null;
                 }
                 
-                displayResult('Camera scanner stopped', 'success');
+                displayResult('Scanner kamera dihentikan', 'success');
             } catch (error) {
-                console.error('Error stopping scanner:', error);
+                console.error('Error menghentikan scanner:', error);
             }
         }
 
-        // QR Code scanner using jsQR
+        // Scanner QR Code menggunakan jsQR
         function startQRScanner() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -969,59 +1066,59 @@
             scanQRCode();
         }
 
-        // Socket event handlers
+        // Event handler socket yang diperbaiki
         socket.on('connect', () => {
-            console.log('Connected to socket server');
-            displayResult('Connected to server', 'success');
+            console.log('Terhubung ke server socket');
+            displayResult('Terhubung ke server', 'success');
         });
 
         socket.on('disconnect', () => {
-            console.log('Disconnected from socket server');
-            displayResult('Disconnected from server', 'error');
+            console.log('Terputus dari server socket');
+            displayResult('Terputus dari server', 'error');
         });
 
         socket.on('barcodeAdded', (data) => {
-            displayResult(`Barcode ${data.barcode} saved successfully`, 'success');
+            displayResult(`QR ${data.barcode}... berhasil disimpan`, 'success');
         });
 
         socket.on('barcodeExists', (data) => {
-            displayResult(`Barcode already exists (scanned at ${new Date(data.timestamp).toLocaleTimeString()})`, 'error');
+            const timestamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('id-ID') : 'tidak diketahui';
+            displayResult(`QR sudah ada (discan pada ${timestamp})`, 'duplicate');
+            duplicateDetected++;
+            updateResultsCount();
         });
         
         socket.on('roomJoined', (data) => {
-            console.log('Successfully joined room:', data);
-            displayResult(`Joined room: ${data.meja}`, 'success');
+            console.log('Berhasil bergabung ke room:', data);
+            displayResult(`Bergabung ke room: ${data.meja}`, 'success');
         });
 
-    
         socket.on('saveError', (data) => {
-            displayResult(`Error saving data: ${data.message}`, 'error');
+            displayResult(`Error menyimpan data: ${data.message}`, 'error');
         });
 
-        // Socket connection error handling
         socket.on('connect_error', (error) => {
-            console.error('Socket connection error:', error);
-            displayResult('Failed to connect to server', 'error');
+            console.error('Error koneksi socket:', error);
+            displayResult('Gagal terhubung ke server', 'error');
         });
 
-        // Auto-focus input on page load
+        // Manajemen fokus yang diperbaiki
         window.addEventListener('load', () => {
             barcodeInput.focus();
         });
 
-        // Re-focus input when clicking anywhere on the page (for barcode scanners)
         document.addEventListener('click', (e) => {
             if (e.target !== barcodeInput && !e.target.closest('.scanner-controls')) {
                 setTimeout(() => barcodeInput.focus(), 100);
             }
         });
 
-        // Initialize
+        // Inisialisasi
         updateScannerStatus(false);
         updateResultsCount();
         
-        // Join room if MejaID is already selected
-        const savedMeja = localStorage.getItem("MejaID");
+        // Auto-join room yang tersimpan
+        const savedMeja = window.selectedMeja;
         if (savedMeja) {
             const savedRadio = document.getElementById(savedMeja);
             if (savedRadio) {
