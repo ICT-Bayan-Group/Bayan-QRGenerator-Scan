@@ -258,11 +258,11 @@
         // Function to display QR data
         function displayQRData(qrString) {
             try {
-                // Parse URL format: https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.
+                // Parse URL format: https://coaching.bayanevent.com/verify.html?email=1830#Ir._Kenari_Siregar,_S.T.
                 const url = new URL(qrString);
                 
-                // Extract nomor from query parameter
-                const nomor = url.searchParams.get('nomor');
+                // Extract email from query parameter
+                const email = url.searchParams.get('email');
                 
                 // Extract nama from fragment (hash), replace underscore with space and comma with space
                 let nama = url.hash.substring(1); // Remove # character
@@ -271,7 +271,7 @@
                 const container = document.querySelector('.container');
                 container.innerHTML = `
                     <div class="info"><span>${nama}</span></div>
-                    <div class="info"><span>${nomor}</span></div>
+                    <div class="info"><span>${email}</span></div>
                 `;
 
                 // Clear content after timeout to prepare for next scan
@@ -340,7 +340,7 @@
             container.innerHTML = `
                 <h1>Selamat Datang!</h1>
                 <div class="info">Nama: <span>${data.nama}</span></div>
-                <div class="info">Nomor: <span>${data.nomor}</span></div>
+                <div class="info">Email: <span>${data.email}</span></div>
                 <button class="back-btn" onclick="window.history.back()">Kembali</button>
             `;
         }

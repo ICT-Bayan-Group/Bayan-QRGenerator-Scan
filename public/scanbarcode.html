@@ -7,6 +7,20 @@
     <title>QR Code Scanner - Bayan Run 2025</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#560000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="QR Scanner">
+    <meta name="msapplication-TileColor" content="#560000">
+    <meta name="description" content="QR Code Scanner for Bayan Run 2025 Event">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlFSIENvZGUgU2Nhbm5lciAtIEJheWFuIFJ1biAyMDI1IiwKICAic2hvcnRfbmFtZSI6ICJRUiBTY2FubmVyIiwKICAiZGVzY3JpcHRpb24iOiAiUVIgQ29kZSBTY2FubmVyIGZvciBCYXlhbiBSdW4gMjAyNSBFdmVudCIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiM1NjAwMDAiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiM1NjAwMDAiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1UazJJaUJvWldsbmFIUTlJakU1TmlJZ2RtbGxkMEp2ZUQwaU1DQXdJREU1TmlBeE9UWWlJR1pwYkd3OUlpVXpOek0zTXpNaUlIaHRiRzV6UFNKb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnlJK1BISmxZM1FnZUQwaU1qUWlJSGs5SWpJMElpQjNhV1IwYUQwaU1UUTRJaUJvWldsbmFIUTlJakUwT0NJZ2NuZzlJakV5SWlCbWFXeHNQU0lsTmpNMk16WXPJSUE4TDBkQTkxQUVvWU1HRGlxMnNWa3phOUJhS2RiMStHWkZQZ2R4SVVZakVKSE16RFFrTHhsM1lhNE55a0dMNGlaaHNzTDhaVXlFRTVOTVRqNHpWUVBGMlFLa01MTjg0dXFWNkh5MEtONnZNNjFNZEFsUGVxYnNiSTFiUzIzc3ArVmNLcXk5VjNPMENwV0trQi80WHhkQWlmMG8xUkZqSHRQSk5ZQ2E3SDE2VVBpaU92WTliNE9HblNlUEtiRHFBcm1SQ3hJcndCL0lTSmc3bGVjMHNxQzJPY1RzTXgzNW1nMytEYWo2Rk9NWDQ1ek45ODROR1JYM1F3YzR0b1QrUUJWR3pFRGVvU2E0a1VCaDFsOG9SZT0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU5USTRJaUJvWldsbmFIUTlJalV5T0NJZ2RtbGxkMEp2ZUQwaU1DQXdJRFV5T0NBMU1qZ2lJR1pwYkd3OUlpVXpOek0zTXpNaUlIaHRiRzV6UFNKb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnlJK1BISmxZM1FnZUQwaU5qa2lJSGs5SWpZNUlpQjNhV1IwYUQwaU16azFJaUJvWldsbmFIUTlJak01TlNJZ2NuZzlJakl5SWlCbWFXeHNQU0lsTXpjek56TXpJaTA4TDBkQTlWQ3VuL0VRZTRCWDNiclE1eWl5WDVLMHUxMW51NjYvSUpFQVkrSGFGNXl3d0VXOUZIY3RQY0N3clJWWWYxc0FSb1ZsRXpXSXdVcC9uc1BWSzFINHlSWCttcHYveHIxNGlMdVpjdEV6K21GWW4yOHlvSVhNRUNVMWJEeE8xRm9NUEZwRGZFK1JjVk9RWmZHTHJOblhUUHpOZlNGQ1FjNVlJbkF3Mzl2QkZsRVZYNUdINmdydVJGOGlUUTduRmVoTFIrbDIrTVdCNENLRGN1TGhkMjZSZmdzaVBVSUJzUk9peGp4YzBzRjM0WU1yWWIvWGlzTXlnT3lFSUJmQWp1Z1lNbUNLWThyaWZVakVxUE5WZzJEaDBJRW8rcVJ3L29mZkppUEw3Q3hJakNjKzBLb0pmc2pJVk12K205YXBPZz09IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0iIzM3MzMzMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSI0IiB5PSI0IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHJ4PSIyIiBmaWxsPSIjNTYwMDAwIi8+PC9zdmc+">
+
     <!-- Google Fonts - Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,7 +69,7 @@
         }
 
         /* Success Popup Styles */
-    .success-popup {
+        .success-popup {
             position: fixed;
             top: 0;
             left: 0;
@@ -78,7 +92,8 @@
             opacity: 1;
             visibility: visible;
         }
-  .success-popup-content {
+        
+        .success-popup-content {
             background: linear-gradient(135deg, #560000ff 0%, #8b0202ff 30%, #021f6eff 70%, #00113fff 100%);
             border-radius: 30px;
             padding: 4rem 3rem;
@@ -170,7 +185,7 @@
             margin-bottom: 0.25rem;
         }
 
-        .participant-bib {
+        .participant-email {
             color: #34d399;
             font-weight: 600;
             font-size: 0.9rem;
@@ -316,6 +331,53 @@
             text-align: center;
         }
 
+        /* PWA Install Button */
+        .install-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #560000;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(86, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            display: none;
+        }
+
+        .install-button:hover {
+            background: #8b0202;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(86, 0, 0, 0.4);
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 9999;
+        }
+
+        .status-online {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-offline {
+            background: #ef4444;
+            color: white;
+        }
+
         /* Responsive design */
         @media (max-width: 640px) {
             .success-popup-content {
@@ -336,11 +398,28 @@
                 width: 80px;
                 height: 80px;
             }
+
+            .install-button {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 
 <body class="min-h-screen py-6 sm:py-8">
+    <!-- Status Indicator -->
+    <div id="status-indicator" class="status-indicator status-online">
+        📶 Online
+    </div>
+
+    <!-- Install Button -->
+    <button id="install-button" class="install-button">
+        📱 Install App
+    </button>
+
     <!-- Main Content -->
     <div class="max-w-2xl mx-auto px-4 sm:px-6">
         <!-- Header -->
@@ -367,7 +446,7 @@
                 </select>
                 
                 <!-- Video Element -->
-                <video id="video" autoplay playsinline class="mx-auto bg-gray-100"></video>
+                <video id="video" autoplay playsinline muted class="mx-auto bg-gray-100"></video>
                 
                 <!-- Result Display -->
                 <div id="result" class="mt-4">
@@ -401,7 +480,7 @@
             <div class="success-details">
                 <h4>Detail Peserta:</h4>
                 <div class="participant-name" id="participant-name">-</div>
-                <div class="participant-bib" id="participant-bib">-</div>
+                <div class="participant-email" id="participant-email">-</div>
             </div>
             
             <button class="close-button" onclick="closeSuccessPopup()">
@@ -416,32 +495,162 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script>
-        // Initialize socket connection (if using socket.io)
-        // const socket = io();
+        // PWA Variables
+        let deferredPrompt;
+        let isOnline = navigator.onLine;
 
-        // Get or generate phone ID
-        const phoneID = localStorage.getItem('phoneID') || crypto.randomUUID();
-        localStorage.setItem('phoneID', phoneID);
+        // App State
+        const appState = {
+            phoneID: 'meja1',
+            socketConnected: false,
+            scannedData: []
+        };
+
+        // Initialize App
+        const phoneID = appState.phoneID;
         console.log("Phone ID:", phoneID);
 
-        // Socket connection (uncomment if using socket.io)
-        // socket.emit('joinRoom', phoneID);
-
+        // DOM Elements
         const video = document.getElementById('video');
         const resultDiv = document.getElementById('result');
         const cameraSelect = document.getElementById('cameraSelect');
+        const statusIndicator = document.getElementById('status-indicator');
+        const installButton = document.getElementById('install-button');
+
+        // Scanner State
         let currentStream = null;
         let isScanning = false;
 
         // Audio for notifications
-        const scanSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2127/2127-preview.mp3');
-        scanSound.volume = 0.5;
+        const scanSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSh+zPLZgCUELnbR8diLPwoUaLjy5ptBEgBRq+jtuGYdBkpgsd3kvGMdBUtcqN3jsGAPB0Ecb6nh4JNFGANKmufmw24bBzGH2/LCeCYEKo/Q8siHPwhJm9vxwH8gCCGI2vPGeTIIGnDY89yPOAYWYMPvy3U4BziR1vLNdyoEKHPL8dmQQAtGpOPwUwEAQQAAQwEAOQEAABsB');
+        scanSound.volume = 0.3;
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZXZlbnQgPT4gewogICAgZXZlbnQud2FpdFVudGlsKAogICAgICAgIHNlbGYuc2tpcFdhaXRpbmcoKQogICAgKTsKfSk7CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2FjdGl2YXRlJywgZXZlbnQgPT4gewogICAgZXZlbnQud2FpdFVudGlsKAogICAgICAgIHNlbGYuY2xpZW50cy5jbGFpbSgpCiAgICApOwp9KTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7CiAgICBldmVudC5yZXNwb25kV2l0aCgKICAgICAgICBjYWNoZXMubWF0Y2goZXZlbnQucmVxdWVzdCkudGhlbihyZXNwb25zZSA9PiB7CiAgICAgICAgICAgIHJldHVybiByZXNwb25zZSB8fCBmZXRjaChldmVudC5yZXF1ZXN0KTsKICAgICAgICB9KQogICAgKTsKfSk7');
+                    console.log('Service Worker registered successfully');
+                } catch (error) {
+                    console.log('Service Worker registration failed:', error);
+                }
+            });
+        }
+
+        // PWA Install Prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                deferredPrompt = null;
+                installButton.style.display = 'none';
+            }
+        });
+
+        // Network Status
+        function updateNetworkStatus() {
+            isOnline = navigator.onLine;
+            statusIndicator.className = isOnline ? 'status-indicator status-online' : 'status-indicator status-offline';
+            statusIndicator.textContent = isOnline ? '📶 Online' : '📵 Offline';
+        }
+
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+
+        // Socket Connection Management
+        let socket = null;
+        
+        function initializeSocket() {
+            // Initialize socket.io connection
+            if (typeof io !== 'undefined' && isOnline) {
+                try {
+                    socket = io({
+                        secure: true,
+                        rejectUnauthorized: false
+                    });
+                    
+                    socket.on('connect', () => {
+                        socket.emit('joinRoom', phoneID);
+                        appState.socketConnected = true;
+                        console.log('Socket connected');
+                        updateConnectionStatus('connected');
+                    });
+                    
+                    socket.on('disconnect', () => {
+                        appState.socketConnected = false;
+                        console.log('Socket disconnected');
+                        updateConnectionStatus('disconnected');
+                    });
+                    
+                    socket.on('barcodeAdded', (data) => {
+                        console.log('Barcode added confirmation:', data);
+                        resultDiv.innerHTML = `<span class="text-green-400">QR Code ${data.barcode}... berhasil disimpan</span>`;
+                    });
+                    
+                    socket.on('barcodeExists', (data) => {
+                        const timestamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('id-ID') : 'tidak diketahui';
+                        resultDiv.innerHTML = `<span class="text-orange-400">QR sudah ada (scan: ${timestamp})</span>`;
+                    });
+                    
+                    socket.on('roomJoined', (data) => {
+                        console.log('Joined room:', data);
+                    });
+                    
+                    socket.on('saveError', (data) => {
+                        console.error('Save error:', data);
+                        resultDiv.innerHTML = `<span class="error">Error menyimpan: ${data.message}</span>`;
+                    });
+                    
+                } catch (error) {
+                    console.log('Socket connection failed:', error);
+                    socket = null;
+                    appState.socketConnected = false;
+                    updateConnectionStatus('failed');
+                }
+            } else {
+                console.log('Socket.io not available or offline');
+                updateConnectionStatus('offline');
+            }
+        }
+        
+        function updateConnectionStatus(status) {
+            switch(status) {
+                case 'connected':
+                    statusIndicator.className = 'status-indicator status-online';
+                    statusIndicator.textContent = '🔗 Terhubung Server';
+                    break;
+                case 'disconnected':
+                    statusIndicator.className = 'status-indicator status-offline';
+                    statusIndicator.textContent = '📵 Terputus Server';
+                    break;
+                case 'failed':
+                    statusIndicator.className = 'status-indicator status-offline';
+                    statusIndicator.textContent = '⚠️ Server Gagal';
+                    break;
+                case 'offline':
+                    statusIndicator.className = 'status-indicator status-offline';
+                    statusIndicator.textContent = '📱 Mode Offline';
+                    break;
+            }
+        }
 
         // Get available cameras
         async function getCameras() {
             try {
+                // Request permission first
+                const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                tempStream.getTracks().forEach(track => track.stop());
+
                 const devices = await navigator.mediaDevices.enumerateDevices();
                 const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
@@ -459,7 +668,8 @@
                     // Auto-select back camera if available
                     const backCamera = videoDevices.find(device => 
                         device.label.toLowerCase().includes('back') || 
-                        device.label.toLowerCase().includes('environment')
+                        device.label.toLowerCase().includes('environment') ||
+                        device.label.toLowerCase().includes('rear')
                     );
                     
                     if (backCamera) {
@@ -477,6 +687,11 @@
             } catch (error) {
                 console.error('Error accessing cameras:', error);
                 resultDiv.innerHTML = `<span class="error">Error accessing cameras: ${error.message}</span>`;
+                
+                // Show helpful message for camera permission
+                if (error.name === 'NotAllowedError') {
+                    resultDiv.innerHTML = `<span class="error">Camera permission denied. Please enable camera access and refresh the page.</span>`;
+                }
             }
         }
 
@@ -490,39 +705,55 @@
                 video: {
                     deviceId: deviceId ? { exact: deviceId } : undefined,
                     facingMode: !deviceId ? 'environment' : undefined,
-                    width: { ideal: 640 },
-                    height: { ideal: 480 }
+                    width: { ideal: 1280, min: 640 },
+                    height: { ideal: 720, min: 480 }
                 }
             };
 
             try {
                 currentStream = await navigator.mediaDevices.getUserMedia(constraints);
                 video.srcObject = currentStream;
-                await video.play();
                 
-                resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>';
-                isScanning = true;
-                scanQRCode();
+                video.onloadedmetadata = () => {
+                    video.play().then(() => {
+                        resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>';
+                        isScanning = true;
+                        scanQRCode();
+                    }).catch(error => {
+                        console.error('Video play error:', error);
+                        resultDiv.innerHTML = `<span class="error">Error starting video: ${error.message}</span>`;
+                    });
+                };
             } catch (error) {
                 console.error('Camera error:', error);
-                resultDiv.innerHTML = `<span class="error">Error accessing camera: ${error.message}</span>`;
+                let errorMessage = 'Error accessing camera';
+                
+                if (error.name === 'NotAllowedError') {
+                    errorMessage = 'Camera permission denied. Please enable camera access.';
+                } else if (error.name === 'NotFoundError') {
+                    errorMessage = 'No camera found. Please check your device.';
+                } else if (error.name === 'NotReadableError') {
+                    errorMessage = 'Camera is being used by another application.';
+                }
+                
+                resultDiv.innerHTML = `<span class="error">${errorMessage}</span>`;
             }
         }
 
         // QR Code scanning function
         function scanQRCode() {
-            if (!isScanning) return;
+            if (!isScanning || !video.videoWidth || !video.videoHeight) return;
 
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
 
             // Optimize canvas size for performance
-            const scale = 0.8;
+            const scale = 0.5;
             canvas.width = video.videoWidth * scale;
             canvas.height = video.videoHeight * scale;
 
             let lastScanTime = 0;
-            const scanInterval = 100; // Scan interval in milliseconds
+            const scanInterval = 150; // Scan interval in milliseconds
 
             function tick() {
                 if (!isScanning) return;
@@ -532,19 +763,22 @@
                     lastScanTime = now;
 
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
                     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                        inversionAttempts: 'both',
-                        canOverwriteImage: true,
-                        grayscaleWeights: { red: 0.299, green: 0.587, blue: 0.114 }
-                    });
+                    
+                    try {
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: 'both',
+                            canOverwriteImage: true
+                        });
 
-                    if (code) {
-                        handleQRCodeDetected(code.data);
-                        return; // Stop scanning after successful detection
-                    } else {
-                        video.classList.remove('scanning');
+                        if (code && code.data.trim()) {
+                            handleQRCodeDetected(code.data.trim());
+                            return; // Stop scanning after successful detection
+                        } else {
+                            video.classList.remove('scanning');
+                        }
+                    } catch (error) {
+                        console.error('QR scanning error:', error);
                     }
                 }
 
@@ -557,83 +791,128 @@
 
         // Handle QR Code detection
         function handleQRCodeDetected(qrData) {
+            if (!qrData || qrData.length === 0) return;
+            
             video.classList.add('scanning');
             isScanning = false; // Stop continuous scanning
             
             // Play sound notification
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                document.getElementById('initAudio').style.display = 'block';
+            try {
+                // For iOS devices, show audio init button if needed
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    document.getElementById('initAudio').classList.remove('hidden');
+                }
+                scanSound.play().catch(e => console.log('Audio play failed:', e));
+            } catch (error) {
+                console.log('Audio error:', error);
             }
-            scanSound.play().catch(e => console.log('Audio play failed:', e));
 
             // Parse QR Code data
             const parsedData = parseQRData(qrData);
             
+            // Store scanned data locally
+            const scanEntry = {
+                ...parsedData,
+                timestamp: new Date().toISOString(),
+                phoneID: phoneID
+            };
+            appState.scannedData.push(scanEntry);
+            
+            // Store in localStorage as backup
+            try {
+                const existingData = JSON.parse(localStorage.getItem('scannedQRCodes') || '[]');
+                existingData.push(scanEntry);
+                localStorage.setItem('scannedQRCodes', JSON.stringify(existingData));
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+            }
+
             // Show success popup
             showSuccessPopup(parsedData);
 
             // Update result display
             resultDiv.innerHTML = `<span class="text-green-400 font-bold">✅ QR Code detected!</span>`;
 
-            // Send data via socket (if using socket.io)
-            /*
-            socket.emit('joinRoom', phoneID);
-            socket.emit('barcodeScanned', {
-                MejaID: phoneID,
-                barcodeData: qrData
-            });
-            */
+            // Send data via socket if available and online
+            if (socket && isOnline && appState.socketConnected) {
+                try {
+                    socket.emit('barcodeScanned', {
+                        MejaID: phoneID,
+                        barcodeData: qrData,
+                        parsedData: parsedData,
+                        timestamp: scanEntry.timestamp
+                    });
+                    console.log('Data sent via socket');
+                } catch (error) {
+                    console.error('Socket send error:', error);
+                }
+            } else {
+                // Fallback: Send via HTTP POST if socket unavailable
+                sendDataViaHTTP(qrData, parsedData, scanEntry.timestamp);
+            }
 
             console.log('QR Code detected:', qrData);
             console.log('Parsed data:', parsedData);
         }
 
-        // Parse QR Code data to extract name and BIB number
+        // Parse QR Code data to extract name and email
         function parseQRData(qrData) {
             try {
                 // Parse URL format: https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.
-                if (qrData.includes('http') && qrData.includes('nomor=')) {
+                if (qrData.includes('http') && qrData.includes('email=')) {
                     const url = new URL(qrData);
                     
-                    // Ekstrak nomor dari query parameter
-                    const nomor = url.searchParams.get('nomor') || 'Unknown';
+                    // Extract number from query parameter
+                    const email = url.searchParams.get('email') || 'Unknown';
                     
-                    // Ekstrak nama dari fragment (hash), replace underscore dengan spasi dan koma dengan spasi
-                    let nama = url.hash.substring(1); // Hapus karakter #
+                    // Extract name from fragment (hash), replace underscore with space and comma with space
+                    let nama = url.hash.substring(1); // Remove # character
                     if (nama) {
-                        nama = nama.replace(/_/g, ' ').replace(/,/g, ' ');
+                        nama = nama.replace(/_/g, ' ').replace(/,/g, ' ').trim();
                     } else {
                         nama = 'Unknown Participant';
                     }
                     
                     return {
                         name: nama,
-                        bib: nomor,
+                        email: email,
                         originalData: qrData
                     };
                 }
                 
                 // If not a URL, try to parse direct format
                 if (qrData.includes('#')) {
-                    const [bib, name] = qrData.split('#');
+                    const [email, name] = qrData.split('#');
                     return {
-                        name: name.replace(/_/g, ' ').replace(/,/g, ' '),
-                        bib: bib,
+                        name: (name || 'Unknown Participant').replace(/_/g, ' ').replace(/,/g, ' ').trim(),
+                        email: (email || 'Unknown').trim(),
                         originalData: qrData
                     };
                 }
                 
-                // Default parsing
+                // Try to parse JSON format
+                try {
+                    const jsonData = JSON.parse(qrData);
+                    return {
+                        name: jsonData.name || jsonData.participant || 'Unknown Participant',
+                        email: jsonData.email || jsonData.number || jsonData.id || 'Unknown',
+                        originalData: qrData
+                    };
+                } catch (jsonError) {
+                    // Not JSON, continue with default parsing
+                }
+                
+                // Default parsing - treat entire string as data
                 return {
-                    name: 'Unknown Participant',
-                    bib: 'Unknown',
+                    name: qrData.length > 50 ? qrData.substring(0, 50) + '...' : qrData,
+                    email: 'N/A',
                     originalData: qrData
                 };
             } catch (error) {
                 console.error('Error parsing QR data:', error);
                 return {
                     name: 'Parse Error',
-                    bib: 'Error',
+                    email: 'Error',
                     originalData: qrData
                 };
             }
@@ -643,11 +922,11 @@
         function showSuccessPopup(data) {
             const popup = document.getElementById('success-popup');
             const nameEl = document.getElementById('participant-name');
-            const bibEl = document.getElementById('participant-bib');
+            const emailEl = document.getElementById('participant-email');
             
             nameEl.textContent = data.name;
-            bibEl.textContent = `BIB ${data.bib}`;
-            
+            emailEl.textContent = data.email !== 'N/A' ? `Email: ${data.email}` : 'No Email Provided';
+
             popup.classList.add('show');
         }
 
@@ -675,30 +954,73 @@
         // Handle iOS audio initialization
         document.getElementById('initAudio').addEventListener('click', () => {
             // Play silent audio to enable future audio playback
-            const silentAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
-            silentAudio.play().catch(e => console.log('Silent audio failed:', e));
-            document.getElementById('initAudio').style.display = 'none';
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            gainNode.gain.value = 0;
+            oscillator.frequency.value = 440;
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.1);
+            
+            document.getElementById('initAudio').classList.add('hidden');
         });
 
-        // Socket event handlers (uncomment if using socket.io)
-        /*
-        socket.on('barcodeAdded', (data) => {
-            resultDiv.innerHTML = `<span class="text-green-400">QR Code ${data.barcode} saved at ${new Date(data.timestamp).toLocaleTimeString()}</span>`;
-        });
-        */
+        // Fallback HTTP POST function
+        async function sendDataViaHTTP(qrData, parsedData, timestamp) {
+            try {
+                const response = await fetch('/api/barcode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        MejaID: phoneID,
+                        barcodeData: qrData,
+                        parsedData: parsedData,
+                        timestamp: timestamp
+                    })
+                });
 
-        // Initialize scanner
-        window.addEventListener('load', () => {
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Data sent via HTTP:', result);
+                    resultDiv.innerHTML = `<span class="text-green-400 font-bold">✅ Data tersimpan via HTTP!</span>`;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('HTTP send error:', error);
+                resultDiv.innerHTML = `<span class="text-yellow-400 font-bold">⚠️ Data tersimpan offline</span>`;
+            }
+        }
+
+        // Socket event handlers (for when backend is available)
+        function setupSocketListeners() {
+            if (!socket) return;
+            // Socket listeners already set up in initializeSocket()
+        }
+
+        // Initialize app
+        function initializeApp() {
+            updateNetworkStatus();
+            initializeSocket();
+            setupSocketListeners();
             getCameras();
-        });
+        }
 
         // Handle page visibility to pause/resume scanning
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 isScanning = false;
-            } else if (currentStream) {
-                isScanning = true;
-                scanQRCode();
+            } else if (currentStream && video.srcObject) {
+                setTimeout(() => {
+                    isScanning = true;
+                    scanQRCode();
+                }, 500);
             }
         });
 
@@ -707,7 +1029,49 @@
             if (currentStream) {
                 currentStream.getTracks().forEach(track => track.stop());
             }
+            if (socket) {
+                socket.disconnect();
+            }
         });
+
+        // PWA specific event listeners
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            installButton.style.display = 'none';
+        });
+
+        // Handle orientation change for mobile devices
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                if (isScanning && currentStream) {
+                    isScanning = false;
+                    setTimeout(() => {
+                        isScanning = true;
+                        scanQRCode();
+                    }, 500);
+                }
+            }, 500);
+        });
+
+        // Initialize when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+
+        // Expose functions globally for HTML onclick handlers
+        window.closeSuccessPopup = closeSuccessPopup;
+
+        // Debug function to check stored data
+        window.getScannedData = () => {
+            console.log('In-memory data:', appState.scannedData);
+            console.log('localStorage data:', JSON.parse(localStorage.getItem('scannedQRCodes') || '[]'));
+            return {
+                memory: appState.scannedData,
+                localStorage: JSON.parse(localStorage.getItem('scannedQRCodes') || '[]')
+            };
+        };
     </script>
 </body>
 
