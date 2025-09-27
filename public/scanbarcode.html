@@ -922,10 +922,10 @@
         function showSuccessPopup(data) {
             const popup = document.getElementById('success-popup');
             const nameEl = document.getElementById('participant-name');
-            const emailEl = document.getElementById('participant-email');
+           const emailEl = document.getElementById('participant-email');
             
             nameEl.textContent = data.name;
-            emailEl.textContent = data.email !== 'N/A' ? `Email: ${data.email}` : 'No Email Provided';
+            //emailEl.textContent = data.email !== 'N/A' ? `Email: ${data.email}` : 'No Email Provided';
 
             popup.classList.add('show');
         }
