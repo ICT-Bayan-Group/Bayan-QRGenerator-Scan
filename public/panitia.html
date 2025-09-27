@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner QR - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #ff7849 0%, #ff6b35 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 120, 73, 0.1);
+            color: #ff7849;
+            border-left-color: #ff7849;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 120, 73, 0.15);
+            color: #ff7849;
+            border-left-color: #ff7849;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            fill: currentColor;
+        }
+
+        /* Modern Toggle Switch for Meja Selection */
+        .nav-item.meja-selector {
+            margin: 1rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meja-selector-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meja-toggle-container {
+             display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 120, 73, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .meja-toggle-container:hover {
+            box-shadow: 0 12px 35px rgba(255, 120, 73, 0.2);
+            border-color: rgba(255, 120, 73, 0.3);
+        }
+
+        .meja-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .meja-radio {
+            display: none;
+        }
+
+        .meja-button {
+            display: block;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #666;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meja-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .meja-button:hover {
+            color: #ff7849;
+            transform: translateY(-1px);
+        }
+
+        .meja-button:hover::before {
+            background: #ff7849;
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        .meja-radio:checked + .meja-button {
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(255, 120, 73, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .meja-radio:checked + .meja-button::before {
+            background: white;
+            transform: translateY(-50%) scale(1.3);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Ripple effect */
+        .meja-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .meja-button:active::after {
+            width: 100px;
+            height: 100px;
+        }
+
+        /* Connected state animation */
+        @keyframes connectedPulse {
+            0%, 100% { 
+                box-shadow: 0 8px 20px rgba(255, 120, 73, 0.4);
+            }
+            50% { 
+                box-shadow: 0 8px 30px rgba(16, 172, 132, 0.6);
+            }
+        }
+
+        .meja-radio:checked + .meja-button.connected {
+            background: linear-gradient(135deg, #10ac84, #0d9b6f);
+            animation: connectedPulse 2s ease-in-out infinite;
+        }
+
+        .meja-radio:checked + .meja-button.connected::before {
+            background: white;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-description {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .scanner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .scanner-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .scanner-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 1rem;
+            fill: #ff7849;
+        }
+
+        #cameraPreview {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            aspect-ratio: 4/3;
+            margin: 1rem 0;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 120, 73, 0.2);
+            background: #f8f9fa;
+            display: none;
+        }
+
+        .scanner-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .scan-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 120, 73, 0.3);
+            display: flex;
+            align-items: center;
+        }
+
+        .scan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 120, 73, 0.4);
+        }
+
+        .scan-button:active {
+            transform: translateY(0);
+        }
+
+        .scan-button.stop {
+            background: linear-gradient(135deg, #ff5722, #e64a19);
+            box-shadow: 0 5px 20px rgba(255, 87, 34, 0.3);
+        }
+
+        .scan-button.stop:hover {
+            box-shadow: 0 10px 30px rgba(255, 87, 34, 0.4);
+        }
+
+        .button-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            fill: currentColor;
+        }
+
+        #barcodeInput {
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px solid rgba(255, 120, 73, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            background: rgba(248, 249, 250, 0.8);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        #barcodeInput:focus {
+            outline: none;
+            border-color: #ff7849;
+            box-shadow: 0 0 0 3px rgba(255, 120, 73, 0.1);
+        }
+
+        #barcodeInput::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .results-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            grid-column: 1 / -1;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+
+        .results-count {
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+
+        /* Duplicate warning styles */
+        .duplicate-count {
+            background: linear-gradient(135deg, #ff5722, #e64a19);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        #results {
+            list-style: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #results li {
+            background: rgba(248, 249, 250, 0.8);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #ff7849;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        #results li:hover {
+            background: rgba(255, 120, 73, 0.1);
+            transform: translateX(5px);
+        }
+
+        #results li.duplicate {
+            border-left-color: #ff5722;
+            background: rgba(255, 87, 34, 0.1);
+        }
+
+        #results li.duplicate:hover {
+            background: rgba(255, 87, 34, 0.2);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 1rem;
+        }
+
+        .status-active {
+            background: #10ac84;
+            box-shadow: 0 0 10px rgba(16, 172, 132, 0.5);
+        }
+
+        .status-inactive {
+            background: #ddd;
+        }
+
+        .success {
+            color: #10ac84;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #ff5722;
+            font-weight: bold;
+        }
+
+        .duplicate {
+            color: #ff5722;
+            font-weight: bold;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .scanner-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .scanner-card {
+                padding: 1.5rem;
+            }
+
+            .scanner-controls {
+                flex-direction: column;
+            }
+
+            .meja-toggle-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scanner-card {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .content-header {
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        /* Scanner status animation */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .status-active {
+            animation: pulse 2s infinite;
+        }
+
+        /* Duplicate warning animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .duplicate-warning {
+            animation: shake 0.5s ease-in-out 2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Bayan Run</h2>
+                <p class="sidebar-subtitle">QR Scanner</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item meja-selector">
+                    <label class="meja-selector-label">PILIH MEJA SCAN</label>
+                    <div class="meja-toggle-container">
+                        <div class="meja-option">
+                            <input type="radio" id="meja1" name="mejaSelection" value="meja1" class="meja-radio">
+                            <label for="meja1" class="meja-button">Meja 1</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja2" name="mejaSelection" value="meja2" class="meja-radio">
+                            <label for="meja2" class="meja-button">Meja 2</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja3" name="mejaSelection" value="meja3" class="meja-radio">
+                            <label for="meja3" class="meja-button">Meja 3</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja4" name="mejaSelection" value="meja4" class="meja-radio">
+                            <label for="meja4" class="meja-button">Meja 4</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja5" name="mejaSelection" value="meja5" class="meja-radio">
+                            <label for="meja5" class="meja-button">Meja 5</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja6" name="mejaSelection" value="meja6" class="meja-radio">
+                            <label for="meja6" class="meja-button">Meja 6</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja7" name="mejaSelection" value="meja7" class="meja-radio">
+                            <label for="meja7" class="meja-button">Meja 7</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja8" name="mejaSelection" value="meja8" class="meja-radio">
+                            <label for="meja8" class="meja-button">Meja 8</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja9" name="mejaSelection" value="meja9" class="meja-radio">
+                            <label for="meja9" class="meja-button">Meja 9</label>
+                        </div>
+                        <div class="meja-option">
+                            <input type="radio" id="meja10" name="mejaSelection" value="meja10" class="meja-radio">
+                            <label for="meja10" class="meja-button">Meja 10</label>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 class="page-title">Scanner QR</h1>
+                <p class="page-description">Scanner QR dengan deteksi duplikat dan validasi real-time</p>
+            </header>
+
+            <div class="scanner-grid">
+                <!-- Camera Scanner Card -->
+                <div class="scanner-card">
+                    <h3 class="card-title">
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path
+                                d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
+                        </svg>
+                        Scanner Kamera
+                        <span id="scannerStatus" class="status-indicator status-inactive"></span>
+                    </h3>
+
+                    <video id="cameraPreview"></video>
+
+                    <div class="scanner-controls">
+                        <button class="scan-button" onclick="startScan()">
+                            <svg class="button-icon" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                            Mulai Scan Kamera
+                        </button>
+                        <button class="scan-button stop" onclick="stopScan()">
+                            <svg class="button-icon" viewBox="0 0 24 24">
+                                <path d="M6 6h12v12H6z" />
+                            </svg>
+                            Hentikan Scan Kamera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Manual Input Card -->
+                <div class="scanner-card">
+                    <h3 class="card-title">
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path d="M3,5H21V7H3V5M3,13V11H21V13H3M3,19V17H21V19H3Z" />
+                        </svg>
+                        Input Manual
+                    </h3>
+
+                    <input type="text" id="barcodeInput" placeholder="Ketik atau paste kode QR di sini..." autofocus>
+                </div>
+
+                <!-- Results Card -->
+                <div class="results-card">
+                    <div class="results-header">
+                        <svg class="card-icon" viewBox="0 0 24 24" style="margin-right: 1rem;">
+                            <path
+                                d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M19,19H5V5H19V19Z" />
+                        </svg>
+                        <h3 class="results-title">Hasil Scan</h3>
+                        <span id="resultsCount" class="results-count">0 scan</span>
+                        <span id="duplicateCount" class="duplicate-count">0 duplikat</span>
+                    </div>
+                    <ul id="results"></ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <script>
+        // Variabel global yang diperbaiki untuk pencegahan duplikat
+        const socket = io({
+            secure: true,
+            rejectUnauthorized: false
+        });
+        
+        const barcodeInput = document.getElementById('barcodeInput');
+        const resultsDiv = document.getElementById('results');
+        const cameraPreview = document.getElementById('cameraPreview');
+        const scannerStatus = document.getElementById('scannerStatus');
+        const resultsCount = document.getElementById('resultsCount');
+        const duplicateCount = document.getElementById('duplicateCount');
+        
+        let scannerActive = false;
+        let scannedCount = 0;
+        let duplicateDetected = 0;
+        
+        // Sistem pencegahan duplikat yang diperbaiki
+        let processedBarcodes = new Map(); // Simpan dengan timestamp
+        let recentScans = new Set(); // Cache scan terbaru
+        const DUPLICATE_TIMEOUT = 5000; // 5 detik cooldown
+        const SCAN_HISTORY_LIMIT = 100; // Simpan 100 scan terakhir di memori
+
+        // Notifikasi audio
+        const scanSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEbBj2Y3vLLcSQGK4DN8NeHNwgZa7ztz6BODwtMqeXsz2g');
+        const duplicateSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEbBj2Y3vLLcSQGK4DN8NeHNwgZa7ztz6BODwtMqeXsz2g');
+        
+        scanSound.volume = 0.3;
+        duplicateSound.volume = 0.5;
+
+        // Function deteksi duplikat yang diperbaiki
+        function isDuplicateQR(qrData) {
+            const qrHash = btoa(qrData).slice(0, 32); // Hash yang diperbaiki
+            const now = Date.now();
+            
+            // Cek cache scan terbaru
+            if (recentScans.has(qrHash)) {
+                return true;
+            }
+            
+            // Cek barcode yang sudah diproses dengan timestamp
+            if (processedBarcodes.has(qrHash)) {
+                const lastScanTime = processedBarcodes.get(qrHash);
+                if (now - lastScanTime < DUPLICATE_TIMEOUT) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // Function untuk menandai QR sebagai sudah diproses
+        function markQRAsProcessed(qrData) {
+            const qrHash = btoa(qrData).slice(0, 32);
+            const now = Date.now();
+            
+            // Tambah ke scan terbaru
+            recentScans.add(qrHash);
+            
+            // Tambah ke yang sudah diproses dengan timestamp
+            processedBarcodes.set(qrHash, now);
+            
+            // Bersihkan entri lama
+            if (processedBarcodes.size > SCAN_HISTORY_LIMIT) {
+                const entries = Array.from(processedBarcodes.entries());
+                entries.sort((a, b) => a[1] - b[1]); // Urutkan berdasarkan timestamp
+                const toRemove = entries.slice(0, Math.floor(SCAN_HISTORY_LIMIT / 2));
+                toRemove.forEach(([hash]) => processedBarcodes.delete(hash));
+            }
+            
+            // Hapus dari scan terbaru setelah timeout
+            setTimeout(() => {
+                recentScans.delete(qrHash);
+            }, DUPLICATE_TIMEOUT);
+        }
+
+        // Event listener untuk pemilihan radio button Meja
+        const mejaRadios = document.querySelectorAll('input[name="mejaSelection"]');
+        mejaRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    const meja = this.value;
+                    const button = this.nextElementSibling;
+                    
+                    console.log('Meja dipilih:', meja);
+                    
+                    // Simpan di memori (persyaratan artifact)
+                    window.selectedMeja = meja;
+                    socket.emit('joinRoom', meja);
+                    console.log(`Client bergabung ke room: ${meja}`);
+                    
+                    setTimeout(() => {
+                        button.classList.add('connected');
+                        displayResult(`Terhubung ke ${meja}`, 'success');
+                    }, 300);
+                    
+                    mejaRadios.forEach(otherRadio => {
+                        if (otherRadio !== this) {
+                            otherRadio.nextElementSibling.classList.remove('connected');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Handler input barcode yang diperbaiki
+        barcodeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const barcodeData = event.target.value.trim();
+                if (barcodeData) {
+                    processBarcodeData(barcodeData);
+                    event.target.value = '';
+                }
+            }
+        });
+
+        barcodeInput.addEventListener('blur', (event) => {
+            const barcodeData = event.target.value.trim();
+            if (barcodeData) {
+                processBarcodeData(barcodeData);
+                event.target.value = '';
+            }
+        });
+
+        // Pemrosesan barcode yang diperbaiki dengan deteksi duplikat
+        function processBarcodeData(barcodeData) {
+            const MejaID = window.selectedMeja;
+            
+            if (!MejaID) {
+                displayResult('❌ Silakan pilih Meja terlebih dahulu!', 'error');
+                barcodeInput.classList.add('duplicate-warning');
+                setTimeout(() => barcodeInput.classList.remove('duplicate-warning'), 1000);
+                return;
+            }
+
+            // Pengecekan duplikat client-side
+            if (isDuplicateQR(barcodeData)) {
+                displayResult(`🚫 QR DUPLIKAT terdeteksi: ${barcodeData}...`, 'duplicate');
+                duplicateDetected++;
+                updateResultsCount();
+                
+                // Putar suara duplikat dan efek shake
+                try {
+                    duplicateSound.currentTime = 0;
+                    duplicateSound.play().catch(e => console.log('Audio play gagal:', e));
+                } catch (e) {
+                    console.log('Error audio:', e);
+                }
+                
+                barcodeInput.classList.add('duplicate-warning');
+                setTimeout(() => barcodeInput.classList.remove('duplicate-warning'), 1000);
+                return;
+            }
+
+            // Tandai sebagai sudah diproses untuk mencegah re-scanning langsung
+            markQRAsProcessed(barcodeData);
+            
+            console.log(`Memproses QR: ${barcodeData} untuk Meja: ${MejaID}`);
+            displayResult(`✅ Memproses: ${barcodeData}...`, 'success');
+            
+            socket.emit('barcodeScanned', { 
+                MejaID: MejaID, 
+                barcodeData: barcodeData 
+            });
+            
+            // Putar suara sukses
+            try {
+                scanSound.currentTime = 0;
+                scanSound.play().catch(e => console.log('Audio play gagal:', e));
+            } catch (e) {
+                console.log('Error audio:', e);
+            }
+        }
+
+        // Function tampilkan hasil yang diperbaiki
+        function displayResult(message, type = 'success') {
+            const li = document.createElement('li');
+            li.className = type === 'duplicate' ? 'duplicate' : '';
+            
+            const icon = type === 'success' ? '✅' : type === 'duplicate' ? '🚫' : '❌';
+            li.innerHTML = `<span class="${type}">${icon} ${message} - ${new Date().toLocaleTimeString('id-ID')}</span>`;
+            
+            resultsDiv.prepend(li);
+            
+            if (type === 'success') {
+                scannedCount++;
+            }
+            
+            updateResultsCount();
+            
+            // Hapus hasil lama setelah 30 item
+            while (resultsDiv.children.length > 30) {
+                resultsDiv.removeChild(resultsDiv.lastChild);
+            }
+        }
+
+        // Update indikator status scanner
+        function updateScannerStatus(active) {
+            scannerStatus.className = active ? 'status-indicator status-active' : 'status-indicator status-inactive';
+        }
+
+        // Update hitungan hasil yang diperbaiki
+        function updateResultsCount() {
+            resultsCount.textContent = `${scannedCount} scan`;
+            duplicateCount.textContent = `${duplicateDetected} duplikat`;
+        }
+
+        // Function scanner kamera
+        async function startScan() {
+            if (scannerActive) return;
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "environment",
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                
+                cameraPreview.srcObject = stream;
+                await cameraPreview.play();
+                cameraPreview.style.display = 'block';
+                scannerActive = true;
+                updateScannerStatus(true);
+
+                // Inisialisasi Quagga untuk scanning barcode
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: cameraPreview,
+                        constraints: {
+                            facingMode: "environment",
+                            width: { min: 640, ideal: 1280, max: 1920 },
+                            height: { min: 480, ideal: 720, max: 1080 }
+                        }
+                    },
+                    decoder: {
+                        readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader"],
+                        multiple: false
+                    },
+                    locate: true,
+                    numOfWorkers: navigator.hardwareConcurrency || 2,
+                    frequency: 10
+                }, function (err) {
+                    if (err) {
+                        console.error('Inisialisasi Quagga gagal:', err);
+                        displayResult('Inisialisasi scanner kamera gagal', 'error');
+                        return;
+                    }
+                    Quagga.start();
+                    displayResult('Scanner kamera berhasil dimulai', 'success');
+                });
+
+                Quagga.onDetected(function (result) {
+                    const code = result.codeResult.code;
+                    if (code && code.length > 3) {
+                        processBarcodeData(code);
+                    }
+                });
+
+                startQRScanner();
+
+            } catch (error) {
+                console.error('Error akses kamera:', error);
+                displayResult('Akses kamera ditolak atau tidak tersedia', 'error');
+                scannerActive = false;
+                updateScannerStatus(false);
+            }
+        }
+
+        function stopScan() {
+            if (!scannerActive) return;
+
+            try {
+                Quagga.stop();
+                scannerActive = false;
+                updateScannerStatus(false);
+                cameraPreview.style.display = 'none';
+
+                if (cameraPreview.srcObject) {
+                    const tracks = cameraPreview.srcObject.getTracks();
+                    tracks.forEach(track => track.stop());
+                    cameraPreview.srcObject = null;
+                }
+                
+                displayResult('Scanner kamera dihentikan', 'success');
+            } catch (error) {
+                console.error('Error menghentikan scanner:', error);
+            }
+        }
+
+        // Scanner QR Code menggunakan jsQR
+        function startQRScanner() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function scanQRCode() {
+                if (!scannerActive || !cameraPreview.videoWidth) {
+                    requestAnimationFrame(scanQRCode);
+                    return;
+                }
+
+                canvas.width = cameraPreview.videoWidth;
+                canvas.height = cameraPreview.videoHeight;
+                
+                ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth",
+                });
+                
+                if (code && code.data && code.data.length > 3) {
+                    processBarcodeData(code.data);
+                }
+                
+                requestAnimationFrame(scanQRCode);
+            }
+            
+            scanQRCode();
+        }
+
+        // Event handler socket yang diperbaiki
+        socket.on('connect', () => {
+            console.log('Terhubung ke server socket');
+            displayResult('Terhubung ke server', 'success');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Terputus dari server socket');
+            displayResult('Terputus dari server', 'error');
+        });
+
+        socket.on('barcodeAdded', (data) => {
+            displayResult(`QR ${data.barcode}... berhasil disimpan`, 'success');
+        });
+
+        socket.on('barcodeExists', (data) => {
+            const timestamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('id-ID') : 'tidak diketahui';
+            displayResult(`QR sudah ada (discan pada ${timestamp})`, 'duplicate');
+            duplicateDetected++;
+            updateResultsCount();
+        });
+        
+        socket.on('roomJoined', (data) => {
+            console.log('Berhasil bergabung ke room:', data);
+            displayResult(`Bergabung ke room: ${data.meja}`, 'success');
+        });
+
+        socket.on('saveError', (data) => {
+            displayResult(`Error menyimpan data: ${data.message}`, 'error');
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Error koneksi socket:', error);
+            displayResult('Gagal terhubung ke server', 'error');
+        });
+
+        // Manajemen fokus yang diperbaiki
+        window.addEventListener('load', () => {
+            barcodeInput.focus();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target !== barcodeInput && !e.target.closest('.scanner-controls')) {
+                setTimeout(() => barcodeInput.focus(), 100);
+            }
+        });
+
+        // Inisialisasi
+        updateScannerStatus(false);
+        updateResultsCount();
+        
+        // Auto-join room yang tersimpan
+        const savedMeja = window.selectedMeja;
+        if (savedMeja) {
+            const savedRadio = document.getElementById(savedMeja);
+            if (savedRadio) {
+                savedRadio.checked = true;
+                savedRadio.nextElementSibling.classList.add('connected');
+                socket.emit('joinRoom', savedMeja);
+                console.log(`Auto-joined room: ${savedMeja}`);
+            }
+        }
+    </script>
+</body>
+
+</html>
