@@ -73,10 +73,16 @@ const server = https.createServer({
 const io = new Server(server);
 
 const dataPath = path.join(__dirname, 'peserta.json');
+const scanHadiahPath = path.join(__dirname, 'scanhadiah.json');
 
 // Initialize peserta.json if it doesn't exist
 if (!fs.existsSync(dataPath)) {
     fs.writeFileSync(dataPath, JSON.stringify([]));
+}
+
+// Initialize scanhadiah.json if it doesn't exist
+if (!fs.existsSync(scanHadiahPath)) {
+    fs.writeFileSync(scanHadiahPath, JSON.stringify([]));
 }
 
 // Serve static files
@@ -151,6 +157,7 @@ io.on('connection', (socket) => {
         console.log(`Socket joined room: ${meja}`);
     });
 
+    // Handler untuk scan peserta (original logic - unchanged)
     socket.on('barcodeScanned', (data) => {
         try {
             const barcode = data.barcodeData;
@@ -201,6 +208,68 @@ io.on('connection', (socket) => {
         } catch (error) {
             console.error('Error saving data:', error);
             socket.emit('saveError', { message: 'Failed to save data' });
+        }
+    });
+
+    // Handler BARU untuk scan hadiah
+    socket.on('hadiahScanned', (data) => {
+        try {
+            const barcode = data.barcodeData;
+            const meja = data.MejaID;
+            const parsedData = data.parsedData || {};
+
+            console.log(`Hadiah scanned dari Meja ${meja}: ${barcode}`);
+
+            let scanHadiah = [];
+            if (fs.existsSync(scanHadiahPath)) {
+                const fileContent = fs.readFileSync(scanHadiahPath, 'utf8');
+                scanHadiah = JSON.parse(fileContent);
+            }
+
+            const existingEntry = scanHadiah.find(entry => entry.barcode === barcode);
+            let entryToBroadcast = null;
+
+            if (!existingEntry) {
+                const newEntry = {
+                    barcode,
+                    meja,
+                    name: parsedData.name || 'Unknown',
+                    email: parsedData.email || 'Unknown',
+                    timestamp: new Date().toISOString()
+                };
+                scanHadiah.push(newEntry);
+                entryToBroadcast = newEntry;
+                console.log('New hadiah scan added:', newEntry);
+            } else {
+                console.log('Hadiah already scanned:', existingEntry);
+
+                io.emit('hadiahExists', {
+                    message: 'Hadiah already scanned',
+                    timestamp: existingEntry.timestamp,
+                    name: existingEntry.name
+                });
+                entryToBroadcast = existingEntry;
+            }
+
+            fs.writeFileSync(scanHadiahPath, JSON.stringify(scanHadiah, null, 2));
+
+            console.log(`Hadiah data saved. Total entries: ${scanHadiah.length}`);
+
+            // Broadcast ke semua client
+            io.emit('hadiahScanSuccess', { 
+                qrString: barcode, 
+                meja,
+                name: entryToBroadcast.name,
+                email: entryToBroadcast.email
+            });
+
+            if (entryToBroadcast) {
+                io.emit('hadiahAdded', entryToBroadcast);
+            }
+
+        } catch (error) {
+            console.error('Error saving hadiah data:', error);
+            socket.emit('hadiahSaveError', { message: 'Failed to save hadiah data' });
         }
     });
 
