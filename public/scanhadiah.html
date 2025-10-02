@@ -1,1072 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner - Bayan Run 2025</title>
+    <title>QR Scanner Hadiah - Bayan Run 2025</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#560000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="QR Scanner">
-    <meta name="msapplication-TileColor" content="#560000">
-    <meta name="description" content="QR Code Scanner for Bayan Run 2025 Event">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlFSIENvZGUgU2Nhbm5lciAtIEJheWFuIFJ1biAyMDI1IiwKICAic2hvcnRfbmFtZSI6ICJRUiBTY2FubmVyIiwKICAiZGVzY3JpcHRpb24iOiAiUVIgQ29kZSBTY2FubmVyIGZvciBCYXlhbiBSdW4gMjAyNSBFdmVudCIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiM1NjAwMDAiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiM1NjAwMDAiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1UazJJaUJvWldsbmFIUTlJakU1TmlJZ2RtbGxkMEp2ZUQwaU1DQXdJREU1TmlBeE9UWWlJR1pwYkd3OUlpVXpOek0zTXpNaUlIaHRiRzV6UFNKb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnlJK1BISmxZM1FnZUQwaU1qUWlJSGs5SWpJMElpQjNhV1IwYUQwaU1UUTRJaUJvWldsbmFIUTlJakUwT0NJZ2NuZzlJakV5SWlCbWFXeHNQU0lsTmpNMk16WXPJSUE4TDBkQTkxQUVvWU1HRGlxMnNWa3phOUJhS2RiMStHWkZQZ2R4SVVZakVKSE16RFFrTHhsM1lhNE55a0dMNGlaaHNzTDhaVXlFRTVOTVRqNHpWUVBGMlFLa01MTjg0dXFWNkh5MEtONnZNNjFNZEFsUGVxYnNiSTFiUzIzc3ArVmNLcXk5VjNPMENwV0trQi80WHhkQWlmMG8xUkZqSHRQSk5ZQ2E3SDE2VVBpaU92WTliNE9HblNlUEtiRHFBcm1SQ3hJcndCL0lTSmc3bGVjMHNxQzJPY1RzTXgzNW1nMytEYWo2Rk9NWDQ1ek45ODROR1JYM1F3YzR0b1QrUUJWR3pFRGVvU2E0a1VCaDFsOG9SZT0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU5USTRJaUJvWldsbmFIUTlJalV5T0NJZ2RtbGxkMEp2ZUQwaU1DQXdJRFV5T0NBMU1qZ2lJR1pwYkd3OUlpVXpOek0zTXpNaUlIaHRiRzV6UFNKb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnlJK1BISmxZM1FnZUQwaU5qa2lJSGs5SWpZNUlpQjNhV1IwYUQwaU16azFJaUJvWldsbmFIUTlJak01TlNJZ2NuZzlJakl5SWlCbWFXeHNQU0lsTXpjek56TXpJaTA4TDBkQTlWQ3VuL0VRZTRCWDNiclE1eWl5WDVLMHUxMW51NjYvSUpFQVkrSGFGNXl3d0VXOUZIY3RQY0N3clJWWWYxc0FSb1ZsRXpXSXdVcC9uc1BWSzFINHlSWCttcHYveHIxNGlMdVpjdEV6K21GWW4yOHlvSVhNRUNVMWJEeE8xRm9NUEZwRGZFK1JjVk9RWmZHTHJOblhUUHpOZlNGQ1FjNVlJbkF3Mzl2QkZsRVZYNUdINmdydVJGOGlUUTduRmVoTFIrbDIrTVdCNENLRGN1TGhkMjZSZmdzaVBVSUJzUk9peGp4YzBzRjM0WU1yWWIvWGlzTXlnT3lFSUJmQWp1Z1lNbUNLWThyaWZVakVxUE5WZzJEaDBJRW8rcVJ3L29mZkppUEw3Q3hJakNjKzBLb0pmc2pJVk12K205YXBPZz09IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0iIzM3MzMzMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSI0IiB5PSI0IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHJ4PSIyIiBmaWxsPSIjNTYwMDAwIi8+PC9zdmc+">
-
-    <!-- Google Fonts - Montserrat -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'montserrat': ['Montserrat', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Montserrat', sans-serif !important;
-        }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(to bottom, #560000ff 0%, #8b0202ff 50%, #021f6eff 50%, #00113fff 100%);
-            min-height: 100vh;
-        }
-
-        /* QR Scanner specific styles */
-        #video {
-            width: 100%;
-            border: 3px solid #ccc;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .scanning {
-            border: 3px solid #10b981 !important;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
-        }
-
-        .error {
-            color: #ef4444;
-            font-weight: 600;
-        }
-
-        /* Success Popup Styles */
-        .success-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 8888;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
-            padding: 1rem;
-        }
-
-        .success-popup.show {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .success-popup-content {
-            background: linear-gradient(135deg, #560000ff 0%, #8b0202ff 30%, #021f6eff 70%, #00113fff 100%);
-            border-radius: 30px;
-            padding: 4rem 3rem;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            max-width: 650px;
-            width: 95%;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: translateY(30px) scale(0.85);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .success-popup.show .success-popup-content {
-            transform: translateY(0) scale(1);
-        }
-
-        .logo-container {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .logo-small {
-            width: 80px;
-            height: 80px;
-            opacity: 0;
-            transform: scale(0.8);
-            animation: logoFadeIn 0.5s ease-out forwards;
-            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-            margin: 0 auto;
-        }
-
-        .logo-glow-small {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: glowPulse 2s ease-in-out infinite;
-        }
-
-        .success-title {
-            opacity: 0;
-            transform: translateY(15px);
-            animation: titleFadeIn 0.5s ease-out 0.2s forwards;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .success-subtitle {
-            opacity: 0;
-            transform: translateY(10px);
-            animation: subtitleFadeIn 0.5s ease-out 0.4s forwards;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-        }
-
-        .success-details {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: detailsFadeIn 0.5s ease-out 0.6s forwards;
-        }
-
-        .success-details h4 {
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .participant-name {
-            color: #fbbf24;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .participant-email {
-            color: #34d399;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .close-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            font-weight: 600;
-            padding: 0.75rem 2rem;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: buttonFadeIn 0.5s ease-out 0.8s forwards;
-        }
-
-        .close-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-1px);
-        }
-
-        /* Loading bars for success popup */
-        .loading-bars-small {
-            display: flex;
-            gap: 3px;
-            margin: 1rem 0;
-            justify-content: center;
-        }
-
-        .loading-bar-small {
-            width: 3px;
-            height: 20px;
-            background: linear-gradient(to top, rgba(255, 255, 255, 0.3), #ffffff);
-            border-radius: 2px;
-            opacity: 0;
-            animation: barFadeIn 0.4s ease-out forwards, barPulse 1.5s ease-in-out infinite;
-        }
-
-        .loading-bar-small:nth-child(1) { animation-delay: 0.6s, 0.6s; }
-        .loading-bar-small:nth-child(2) { animation-delay: 0.7s, 0.7s; }
-        .loading-bar-small:nth-child(3) { animation-delay: 0.8s, 0.8s; }
-        .loading-bar-small:nth-child(4) { animation-delay: 0.9s, 0.9s; }
-        .loading-bar-small:nth-child(5) { animation-delay: 1s, 1s; }
-
-        /* Animations */
-        @keyframes logoFadeIn {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { 
-                opacity: 0; 
-                transform: translate(-50%, -50%) scale(1); 
-            }
-            50% { 
-                opacity: 1; 
-                transform: translate(-50%, -50%) scale(1.1); 
-            }
-        }
-
-        @keyframes titleFadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes subtitleFadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes detailsFadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes buttonFadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes barFadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes barPulse {
-            0%, 100% { 
-                transform: scaleY(1); 
-                opacity: 0.7; 
-            }
-            50% { 
-                transform: scaleY(1.5); 
-                opacity: 1; 
-            }
-        }
-
-        /* Camera select styling */
-        select {
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            color: #374151;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        /* Result styling */
-        #result {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 1rem;
-            color: white;
-            font-weight: 600;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        /* PWA Install Button */
-        .install-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #560000;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(86, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            z-index: 9999;
-            display: none;
-        }
-
-        .install-button:hover {
-            background: #8b0202;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(86, 0, 0, 0.4);
-        }
-
-        /* Status indicator */
-        .status-indicator {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 9999;
-        }
-
-        .status-online {
-            background: #10b981;
-            color: white;
-        }
-
-        .status-offline {
-            background: #ef4444;
-            color: white;
-        }
-
-        /* Responsive design */
-        @media (max-width: 640px) {
-            .success-popup-content {
-                padding: 2rem 1.5rem;
-                max-width: 350px;
-            }
-            
-            .success-title {
-                font-size: 1.25rem;
-            }
-            
-            .logo-small {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .logo-glow-small {
-                width: 80px;
-                height: 80px;
-            }
-
-            .install-button {
-                bottom: 15px;
-                right: 15px;
-                padding: 10px 16px;
-                font-size: 12px;
-            }
-        }
+        * { font-family: 'Montserrat', sans-serif !important; }
+        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(to bottom, #560000ff 0%, #8b0202ff 50%, #021f6eff 50%, #00113fff 100%); min-height: 100vh; }
+        #video { width: 100%; border: 3px solid #ccc; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+        .scanning { border: 3px solid #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+        .success-popup, .error-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 8888; opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0.4s; padding: 1rem; }
+        .error-popup { background: rgba(0, 0, 0, 0.9); z-index: 9999; }
+        .success-popup.show, .error-popup.show { opacity: 1; visibility: visible; }
+        .success-popup-content { background: linear-gradient(135deg, #560000ff 0%, #8b0202ff 30%, #021f6eff 70%, #00113fff 100%); border-radius: 30px; padding: 3rem 2.5rem; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4); text-align: center; max-width: 500px; width: 95%; transform: translateY(30px) scale(0.85); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid rgba(255, 255, 255, 0.15); }
+        .error-popup-content { background: linear-gradient(135deg, #560000ff 0%, #8b0202ff 30%, #dc2626 70%, #ef4444 100%); border-radius: 30px; padding: 3rem 2.5rem; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5); text-align: center; max-width: 500px; width: 95%; transform: translateY(30px) scale(0.85); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid rgba(255, 255, 255, 0.15); }
+        .success-popup.show .success-popup-content, .error-popup.show .error-popup-content { transform: translateY(0) scale(1); }
+        .success-title, .error-title { color: white; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .error-title { font-size: 1.75rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); opacity: 0; transform: translateY(15px); animation: titleFadeIn 0.5s ease-out 0.3s forwards; }
+        .success-details, .error-details { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .error-details { background: rgba(0, 0, 0, 0.2); padding: 1rem; margin-bottom: 2rem; opacity: 0; transform: translateY(10px); animation: detailsFadeIn 0.5s ease-out 0.7s forwards; }
+        .error-details p { color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; font-weight: 500; margin: 0; }
+        .participant-name { color: #fbbf24; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .participant-email { color: #34d399; font-weight: 600; font-size: 0.9rem; margin-top: 0.25rem; }
+        .close-button, .error-close-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 600; padding: 0.75rem 2rem; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+        .error-close-button { background: rgba(255, 255, 255, 0.25); border: 2px solid rgba(255, 255, 255, 0.4); font-weight: 700; padding: 0.875rem 2.5rem; border-radius: 15px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0; transform: translateY(10px); animation: buttonFadeIn 0.5s ease-out 0.9s forwards; }
+        .close-button:hover, .error-close-button:hover { background: rgba(255, 255, 255, 0.35); transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2); }
+        .error-icon-container { position: relative; margin-bottom: 1.5rem; display: flex; justify-content: center; align-items: center; }
+        .error-icon { width: 100px; height: 100px; background: rgba(255, 255, 255, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.5); animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; border: 3px solid rgba(255, 255, 255, 0.3); }
+        .error-icon-inner { font-size: 3.5rem; animation: iconShake 0.5s ease-in-out 0.6s; }
+        .error-icon-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, transparent 70%); border-radius: 50%; animation: glowPulseError 2s ease-in-out infinite; }
+        .error-message { opacity: 0; transform: translateY(10px); animation: messageFadeIn 0.5s ease-out 0.5s forwards; color: rgba(255, 255, 255, 0.95); font-size: 1rem; font-weight: 500; margin-bottom: 2rem; line-height: 1.6; }
+        @keyframes iconBounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes iconShake { 0%, 100% { transform: rotate(0deg); } 10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); } 20%, 40%, 60%, 80% { transform: rotate(10deg); } }
+        @keyframes glowPulseError { 0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); } }
+        @keyframes titleFadeIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes messageFadeIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes detailsFadeIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes buttonFadeIn { to { opacity: 1; transform: translateY(0); } }
+        #result { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 1rem; color: white; font-weight: 600; min-height: 60px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        select { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-weight: 600; color: #374151; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .status-indicator { position: fixed; top: 20px; right: 20px; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; z-index: 9999; }
+        .status-online { background: #10b981; color: white; }
+        .status-offline { background: #ef4444; color: white; }
+        @media (max-width: 640px) { .success-popup-content, .error-popup-content { padding: 2rem 1.5rem; max-width: 350px; } .error-icon { width: 80px; height: 80px; } .error-icon-inner { font-size: 2.5rem; } }
     </style>
 </head>
-
 <body class="min-h-screen py-6 sm:py-8">
-    <!-- Status Indicator -->
-    <div id="status-indicator" class="status-indicator status-online">
-        📶 Online
-    </div>
-
-    <!-- Install Button -->
-    <button id="install-button" class="install-button">
-        📱 Install App
-    </button>
-
-    <!-- Main Content -->
+    <div id="status-indicator" class="status-indicator status-online">📶 Online</div>
     <div class="max-w-2xl mx-auto px-4 sm:px-6">
-        <!-- Header -->
         <div class="text-center mb-8 sm:mb-10">
-            <div class="mb-6">
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white italic tracking-wide drop-shadow-lg">
-                QR CODE SCANNER
-            </h1>
-            <p class="text-white font-bold mt-2 text-lg uppercase tracking-wider">BAYAN RUN 2025</p>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white italic tracking-wide drop-shadow-lg">QR CODE SCANNER</h1>
+            <p class="text-white font-bold mt-2 text-lg uppercase tracking-wider">BAYAN RUN 2025 - HADIAH</p>
         </div>
-
-        <!-- Scanner Container -->
         <div class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 mb-8">
             <div id="scanner" class="text-center">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center justify-center">
-                    <span class="mr-2">📱</span>
-                    SCAN HADIAH
-                </h2>
-                
-                <!-- Camera Selection -->
-                <select id="cameraSelect" class="mb-4 w-full max-w-xs mx-auto block">
-                    <option value="">Pilih Kamera...</option>
-                </select>
-                
-                <!-- Video Element -->
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center justify-center"><span class="mr-2">🎁</span>SCAN HADIAH</h2>
+                <select id="cameraSelect" class="mb-4 w-full max-w-xs mx-auto block"><option value="">Pilih Kamera...</option></select>
                 <video id="video" autoplay playsinline muted class="mx-auto bg-gray-100"></video>
-                
-                <!-- Result Display -->
-                <div id="result" class="mt-4">
-                    <span class="text-gray-300">Arahkan kamera ke QR Code...</span>
-                </div>
-                
-                <!-- iOS Audio Init Button -->
-                <button id="initAudio" class="hidden mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                    Enable Sound
-                </button>
+                <div id="result" class="mt-4"><span class="text-gray-300">Arahkan kamera ke QR Code...</span></div>
             </div>
         </div>
     </div>
-
-    <!-- Success Popup -->
     <div id="success-popup" class="success-popup">
         <div class="success-popup-content">
-            <div class="logo-container">
-                <div class="logo-glow-small"></div>
-                <!-- Replace with actual logo -->
-            </div>
-            
-            <h3 class="success-title">
-                QR Code Terdeteksi!
-            </h3>
-            
-            <p class="success-subtitle">
-                Data peserta berhasil dipindai
-            </p>
-            
+            <h3 class="success-title">🎉 Hadiah Terdeteksi!</h3>
+            <p style="color: white; font-size: 0.9rem; margin-bottom: 1.5rem;">Data pemenang berhasil dipindai</p>
             <div class="success-details">
-                <h4>Detail Peserta:</h4>
+                <h4 style="color: white; font-weight: 600; margin-bottom: 0.75rem;">Detail Pemenang:</h4>
                 <div class="participant-name" id="participant-name">-</div>
                 <div class="participant-email" id="participant-bib">-</div>
-                <div class="participant-email" id="participant-hadiah">-</div>
+                <div class="participant-email" id="participant-hadiah" style="color: #fbbf24; font-size: 1rem; font-weight: 700; margin-top: 0.5rem;">-</div>
             </div>
-            
-            <button class="close-button" onclick="closeSuccessPopup()">
-                Tutup
-            </button>
+            <button class="close-button" onclick="closeSuccessPopup()">Tutup</button>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="text-center text-white text-sm font-semibold mt-8">
-        <p>&copy; 2025 ICT Bayan Group. All Rights Reserved.</p>
-    </footer>
-
-    <!-- Scripts -->
+    <div id="error-popup" class="error-popup">
+        <div class="error-popup-content">
+            <div class="error-icon-container">
+                <div class="error-icon-glow"></div>
+                <div class="error-icon"><span class="error-icon-inner">⚠️</span></div>
+            </div>
+            <h3 class="error-title" id="error-title">Error</h3>
+            <p class="error-message" id="error-message">Error message</p>
+            <div class="error-details" id="error-details-container" style="display: none;"><p id="error-details-text"></p></div>
+            <button class="error-close-button" onclick="closeErrorPopup()">Tutup & Scan Ulang</button>
+        </div>
+    </div>
+    <footer class="text-center text-white text-sm font-semibold mt-8"><p>&copy; 2025 ICT Bayan Group. All Rights Reserved.</p></footer>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script>
-        // PWA Variables
-        let deferredPrompt;
-        let isOnline = navigator.onLine;
-
-        // App State
-        const appState = {
-            phoneID: 'meja1',
-            socketConnected: false,
-            scannedData: []
-        };
-
-        // Initialize App
+        const appState = { phoneID: 'meja1', socketConnected: false, scannedData: [] };
         const phoneID = appState.phoneID;
-        console.log("Phone ID:", phoneID);
-
-        // DOM Elements
         const video = document.getElementById('video');
         const resultDiv = document.getElementById('result');
         const cameraSelect = document.getElementById('cameraSelect');
         const statusIndicator = document.getElementById('status-indicator');
-        const installButton = document.getElementById('install-button');
-
-        // Scanner State
-        let currentStream = null;
-        let isScanning = false;
-
-        // Audio for notifications
-        const scanSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSh+zPLZgCUELnbR8diLPwoUaLjy5ptBEgBRq+jtuGYdBkpgsd3kvGMdBUtcqN3jsGAPB0Ecb6nh4JNFGANKmufmw24bBzGH2/LCeCYEKo/Q8siHPwhJm9vxwH8gCCGI2vPGeTIIGnDY89yPOAYWYMPvy3U4BziR1vLNdyoEKHPL8dmQQAtGpOPwUwEAQQAAQwEAOQEAABsB');
+        let currentStream = null, isScanning = false, isOnline = navigator.onLine, socket = null;
+        const scanSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSh+zPLZgCUELnbR8diLPwoUaLjy5ptBEgBRq+jtuGYdBkpgsd3kvGMdBUtcqN3jsGAPB0Ecb6nh4JNFGANKmufmw24bB');
         scanSound.volume = 0.3;
-
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', async () => {
-                try {
-                    const registration = await navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZXZlbnQgPT4gewogICAgZXZlbnQud2FpdFVudGlsKAogICAgICAgIHNlbGYuc2tpcFdhaXRpbmcoKQogICAgKTsKfSk7CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2FjdGl2YXRlJywgZXZlbnQgPT4gewogICAgZXZlbnQud2FpdFVudGlsKAogICAgICAgIHNlbGYuY2xpZW50cy5jbGFpbSgpCiAgICApOwp9KTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7CiAgICBldmVudC5yZXNwb25kV2l0aCgKICAgICAgICBjYWNoZXMubWF0Y2goZXZlbnQucmVxdWVzdCkudGhlbihyZXNwb25zZSA9PiB7CiAgICAgICAgICAgIHJldHVybiByZXNwb25zZSB8fCBmZXRjaChldmVudC5yZXF1ZXN0KTsKICAgICAgICB9KQogICAgKTsKfSk7');
-                    console.log('Service Worker registered successfully');
-                } catch (error) {
-                    console.log('Service Worker registration failed:', error);
-                }
-            });
-        }
-
-        // PWA Install Prompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installButton.style.display = 'block';
-        });
-
-        installButton.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to install prompt: ${outcome}`);
-                deferredPrompt = null;
-                installButton.style.display = 'none';
-            }
-        });
-
-        // Network Status
-        function updateNetworkStatus() {
-            isOnline = navigator.onLine;
-            statusIndicator.className = isOnline ? 'status-indicator status-online' : 'status-indicator status-offline';
-            statusIndicator.textContent = isOnline ? '📶 Online' : '📵 Offline';
-        }
-
-        window.addEventListener('online', updateNetworkStatus);
-        window.addEventListener('offline', updateNetworkStatus);
-
-        // Socket Connection Management
-        let socket = null;
         
-        function initializeSocket() {
-            // Initialize socket.io connection
-            if (typeof io !== 'undefined' && isOnline) {
-                try {
-                    socket = io({
-                        secure: true,
-                        rejectUnauthorized: false
-                    });
-                    
-                    socket.on('connect', () => {
-                        socket.emit('joinRoom', phoneID);
-                        appState.socketConnected = true;
-                        console.log('Socket connected');
-                        updateConnectionStatus('connected');
-                    });
-                    
-                    socket.on('disconnect', () => {
-                        appState.socketConnected = false;
-                        console.log('Socket disconnected');
-                        updateConnectionStatus('disconnected');
-                    });
-                    
-                    socket.on('hadiahAdded', (data) => {
-                        console.log('Hadiah added confirmation:', data);
-                        resultDiv.innerHTML = `<span class="text-green-400">QR Code ${data.barcode}... berhasil disimpan</span>`;
-                    });
-                    
-                    socket.on('hadiahExists', (data) => {
-                        const timestamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('id-ID') : 'tidak diketahui';
-                        resultDiv.innerHTML = `<span class="text-orange-400">QR sudah ada (scan: ${timestamp})</span>`;
-                    });
-                    
-                    socket.on('roomJoined', (data) => {
-                        console.log('Joined room:', data);
-                    });
-                    
-                    socket.on('saveError', (data) => {
-                        console.error('Save error:', data);
-                        resultDiv.innerHTML = `<span class="error">Error menyimpan: ${data.message}</span>`;
-                    });
-                    
-                } catch (error) {
-                    console.log('Socket connection failed:', error);
-                    socket = null;
-                    appState.socketConnected = false;
-                    updateConnectionStatus('failed');
-                }
-            } else {
-                console.log('Socket.io not available or offline');
-                updateConnectionStatus('offline');
-            }
-        }
+        function updateNetworkStatus() { isOnline = navigator.onLine; statusIndicator.className = isOnline ? 'status-indicator status-online' : 'status-indicator status-offline'; statusIndicator.textContent = isOnline ? '📶 Online' : '📵 Offline'; }
+        function initializeSocket() { if (typeof io !== 'undefined' && isOnline) { try { socket = io({ secure: true, rejectUnauthorized: false }); socket.on('connect', () => { socket.emit('joinRoom', phoneID); appState.socketConnected = true; }); socket.on('hadiahAdded', (data) => { resultDiv.innerHTML = `<span class="text-green-400">Hadiah berhasil disimpan</span>`; }); socket.on('hadiahExists', (data) => { resultDiv.innerHTML = `<span class="text-orange-400">Hadiah sudah diambil</span>`; }); } catch (error) { socket = null; } } }
         
-        function updateConnectionStatus(status) {
-            switch(status) {
-                case 'connected':
-                    statusIndicator.className = 'status-indicator status-online';
-                    statusIndicator.textContent = '🔗 Terhubung Server';
-                    break;
-                case 'disconnected':
-                    statusIndicator.className = 'status-indicator status-offline';
-                    statusIndicator.textContent = '📵 Terputus Server';
-                    break;
-                case 'failed':
-                    statusIndicator.className = 'status-indicator status-offline';
-                    statusIndicator.textContent = '⚠️ Server Gagal';
-                    break;
-                case 'offline':
-                    statusIndicator.className = 'status-indicator status-offline';
-                    statusIndicator.textContent = '📱 Mode Offline';
-                    break;
-            }
-        }
-
-        // Get available cameras
-        async function getCameras() {
-            try {
-                // Request permission first
-                const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                tempStream.getTracks().forEach(track => track.stop());
-
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-
-                // Clear existing options
-                cameraSelect.innerHTML = '<option value="">Pilih Kamera...</option>';
-
-                if (videoDevices.length > 0) {
-                    videoDevices.forEach((device, i) => {
-                        const option = document.createElement('option');
-                        option.value = device.deviceId;
-                        option.text = device.label || `Camera ${i + 1}`;
-                        cameraSelect.appendChild(option);
-                    });
-                    
-                    // Auto-select back camera if available
-                    const backCamera = videoDevices.find(device => 
-                        device.label.toLowerCase().includes('back') || 
-                        device.label.toLowerCase().includes('environment') ||
-                        device.label.toLowerCase().includes('rear')
-                    );
-                    
-                    if (backCamera) {
-                        cameraSelect.value = backCamera.deviceId;
-                        startScanning(backCamera.deviceId);
-                    } else if (videoDevices.length > 0) {
-                        // Use first available camera
-                        cameraSelect.value = videoDevices[0].deviceId;
-                        startScanning(videoDevices[0].deviceId);
-                    }
-                } else {
-                    // Try to start without specific device ID
-                    startScanning();
-                }
-            } catch (error) {
-                console.error('Error accessing cameras:', error);
-                resultDiv.innerHTML = `<span class="error">Error accessing cameras: ${error.message}</span>`;
-                
-                // Show helpful message for camera permission
-                if (error.name === 'NotAllowedError') {
-                    resultDiv.innerHTML = `<span class="error">Camera permission denied. Please enable camera access and refresh the page.</span>`;
-                }
-            }
-        }
-
-        // Start scanning with selected camera
-        async function startScanning(deviceId) {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-
-            const constraints = {
-                video: {
-                    deviceId: deviceId ? { exact: deviceId } : undefined,
-                    facingMode: !deviceId ? 'environment' : undefined,
-                    width: { ideal: 1280, min: 640 },
-                    height: { ideal: 720, min: 480 }
-                }
-            };
-
-            try {
-                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = currentStream;
-                
-                video.onloadedmetadata = () => {
-                    video.play().then(() => {
-                        resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>';
-                        isScanning = true;
-                        scanQRCode();
-                    }).catch(error => {
-                        console.error('Video play error:', error);
-                        resultDiv.innerHTML = `<span class="error">Error starting video: ${error.message}</span>`;
-                    });
-                };
-            } catch (error) {
-                console.error('Camera error:', error);
-                let errorMessage = 'Error accessing camera';
-                
-                if (error.name === 'NotAllowedError') {
-                    errorMessage = 'Camera permission denied. Please enable camera access.';
-                } else if (error.name === 'NotFoundError') {
-                    errorMessage = 'No camera found. Please check your device.';
-                } else if (error.name === 'NotReadableError') {
-                    errorMessage = 'Camera is being used by another application.';
-                }
-                
-                resultDiv.innerHTML = `<span class="error">${errorMessage}</span>`;
-            }
-        }
-
-        // QR Code scanning function
-        function scanQRCode() {
-            if (!isScanning || !video.videoWidth || !video.videoHeight) return;
-
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-
-            // Optimize canvas size for performance
-            const scale = 0.5;
-            canvas.width = video.videoWidth * scale;
-            canvas.height = video.videoHeight * scale;
-
-            let lastScanTime = 0;
-            const scanInterval = 150; // Scan interval in milliseconds
-
-            function tick() {
-                if (!isScanning) return;
-
-                const now = Date.now();
-                if (video.readyState === video.HAVE_ENOUGH_DATA && now - lastScanTime > scanInterval) {
-                    lastScanTime = now;
-
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                    
-                    try {
-                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: 'both',
-                            canOverwriteImage: true
-                        });
-
-                        if (code && code.data.trim()) {
-                            handleQRCodeDetected(code.data.trim());
-                            return; // Stop scanning after successful detection
-                        } else {
-                            video.classList.remove('scanning');
-                        }
-                    } catch (error) {
-                        console.error('QR scanning error:', error);
-                    }
-                }
-
-                if (isScanning) {
-                    requestAnimationFrame(tick);
-                }
-            }
-            tick();
-        }
-
-        // Handle QR Code detection
-        function handleQRCodeDetected(qrData) {
-            if (!qrData || qrData.length === 0) return;
-            
-            video.classList.add('scanning');
-            isScanning = false; // Stop continuous scanning
-            
-            // Play sound notification
-            try {
-                // For iOS devices, show audio init button if needed
-                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    document.getElementById('initAudio').classList.remove('hidden');
-                }
-                scanSound.play().catch(e => console.log('Audio play failed:', e));
-            } catch (error) {
-                console.log('Audio error:', error);
-            }
-
-            // Parse QR Code data
-            const parsedData = parseQRData(qrData);
-            
-            // Store scanned data locally
-            const scanEntry = {
-                ...parsedData,
-                timestamp: new Date().toISOString(),
-                phoneID: phoneID
-            };
-            appState.scannedData.push(scanEntry);
-            
-            // Store in localStorage as backup
-            try {
-                const existingData = JSON.parse(localStorage.getItem('scannedQRCodes') || '[]');
-                existingData.push(scanEntry);
-                localStorage.setItem('scannedQRCodes', JSON.stringify(existingData));
-            } catch (error) {
-                console.error('Error saving to localStorage:', error);
-            }
-
-            // Show success popup
-            showSuccessPopup(parsedData);
-
-            // Update result display
-            resultDiv.innerHTML = `<span class="text-green-400 font-bold">✅ QR Code detected!</span>`;
-
-            // Send data via socket if available and online
-            if (socket && isOnline && appState.socketConnected) {
-                try {
-                    socket.emit('hadiahScanned', {
-                        MejaID: phoneID,
-                        barcodeData: qrData,
-                        parsedData: parsedData,
-                        timestamp: scanEntry.timestamp
-                    });
-                    console.log('Data sent via socket');
-                } catch (error) {
-                    console.error('Socket send error:', error);
-                }
-            } else {
-                // Fallback: Send via HTTP POST if socket unavailable
-                sendDataViaHTTP(qrData, parsedData, scanEntry.timestamp);
-            }
-
-            console.log('QR Code detected:', qrData);
-            console.log('Parsed data:', parsedData);
-        }
-
-   // Parse QR Code data to extract name, BIB, and hadiah
-        function parseQRData(qrData) {
-            try {
-                // Parse text format from Python generate_qr_text
-                // Expected format:
-                // PEMENANG UNDIAN BAYAN RUN 2025
-                // Nama: [name]
-                // BIB: [bib]
-                // Hadiah: [hadiah]
-                // Telepon: [phone]
-                // Email: [email]
-                
-                let nama = 'Unknown';
-                let bib = 'N/A';
-                let hadiah = 'Unknown';
-                
-                // Split by lines
-                const lines = qrData.split('\n');
-                
-                for (let line of lines) {
-                    line = line.trim();
-                    
-                    // Extract Nama
-                    if (line.startsWith('Nama:')) {
-                        nama = line.replace('Nama:', '').trim();
-                    }
-                    // Extract BIB
-                    else if (line.startsWith('BIB:')) {
-                        bib = line.replace('BIB:', '').trim();
-                    }
-                    // Extract Hadiah
-                    else if (line.startsWith('Hadiah:')) {
-                        hadiah = line.replace('Hadiah:', '').trim();
-                    }
-                }
-                
-                return {
-                    name: nama,
-                    bib: bib,
-                    hadiah: hadiah,
-                    originalData: qrData
-                };
-                
-            } catch (error) {
-                console.error('Error parsing QR data:', error);
-                return {
-                    name: 'Parse Error',
-                    bib: 'N/A',
-                    hadiah: 'Error',
-                    originalData: qrData
-                };
-            }
-        }
-
-        // Show success popup
-        function showSuccessPopup(data) {
-            const popup = document.getElementById('success-popup');
-            const nameEl = document.getElementById('participant-name');
-            const bibEl = document.getElementById('participant-bib');
-            const hadiahEl = document.getElementById('participant-hadiah');
-
-            nameEl.textContent = data.name;
-            bibEl.textContent = `BIB: ${data.bib}`;
-            hadiahEl.textContent = `Hadiah: ${data.hadiah}`;
-
-            popup.classList.add('show');
-        }
-
-        // Close success popup
-        function closeSuccessPopup() {
-            const popup = document.getElementById('success-popup');
-            popup.classList.remove('show');
-            
-            // Resume scanning after a short delay
-            setTimeout(() => {
-                video.classList.remove('scanning');
-                resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>';
-                isScanning = true;
-                scanQRCode();
-            }, 500);
-        }
-
-        // Camera selection handler
-        cameraSelect.addEventListener('change', () => {
-            if (cameraSelect.value) {
-                startScanning(cameraSelect.value);
-            }
-        });
-
-        // Handle iOS audio initialization
-        document.getElementById('initAudio').addEventListener('click', () => {
-            // Play silent audio to enable future audio playback
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            gainNode.gain.value = 0;
-            oscillator.frequency.value = 440;
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.1);
-            
-            document.getElementById('initAudio').classList.add('hidden');
-        });
-
-        // Fallback HTTP POST function
-        async function sendDataViaHTTP(qrData, parsedData, timestamp) {
-            try {
-                const response = await fetch('/api/barcode', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        MejaID: phoneID,
-                        barcodeData: qrData,
-                        parsedData: parsedData,
-                        timestamp: timestamp
-                    })
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('Data sent via HTTP:', result);
-                    resultDiv.innerHTML = `<span class="text-green-400 font-bold">✅ Data tersimpan via HTTP!</span>`;
-                } else {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-            } catch (error) {
-                console.error('HTTP send error:', error);
-                resultDiv.innerHTML = `<span class="text-yellow-400 font-bold">⚠️ Data tersimpan offline</span>`;
-            }
-        }
-
-        // Socket event handlers (for when backend is available)
-        function setupSocketListeners() {
-            if (!socket) return;
-            // Socket listeners already set up in initializeSocket()
-        }
-
-        // Initialize app
-        function initializeApp() {
-            updateNetworkStatus();
-            initializeSocket();
-            setupSocketListeners();
-            getCameras();
-        }
-
-        // Handle page visibility to pause/resume scanning
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                isScanning = false;
-            } else if (currentStream && video.srcObject) {
-                setTimeout(() => {
-                    isScanning = true;
-                    scanQRCode();
-                }, 500);
-            }
-        });
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-            if (socket) {
-                socket.disconnect();
-            }
-        });
-
-        // PWA specific event listeners
-        window.addEventListener('appinstalled', () => {
-            console.log('PWA was installed');
-            installButton.style.display = 'none';
-        });
-
-        // Handle orientation change for mobile devices
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => {
-                if (isScanning && currentStream) {
-                    isScanning = false;
-                    setTimeout(() => {
-                        isScanning = true;
-                        scanQRCode();
-                    }, 500);
-                }
-            }, 500);
-        });
-
-        // Initialize when DOM is loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeApp);
-        } else {
-            initializeApp();
-        }
-
-        // Expose functions globally for HTML onclick handlers
-        window.closeSuccessPopup = closeSuccessPopup;
-
-        // Debug function to check stored data
-        window.getScannedData = () => {
-            console.log('In-memory data:', appState.scannedData);
-            console.log('localStorage data:', JSON.parse(localStorage.getItem('scannedQRCodes') || '[]'));
-            return {
-                memory: appState.scannedData,
-                localStorage: JSON.parse(localStorage.getItem('scannedQRCodes') || '[]')
-            };
-        };
+        async function getCameras() { try { const tempStream = await navigator.mediaDevices.getUserMedia({ video: true }); tempStream.getTracks().forEach(track => track.stop()); const devices = await navigator.mediaDevices.enumerateDevices(); const videoDevices = devices.filter(device => device.kind === 'videoinput'); cameraSelect.innerHTML = '<option value="">Pilih Kamera...</option>'; if (videoDevices.length > 0) { videoDevices.forEach((device, i) => { const option = document.createElement('option'); option.value = device.deviceId; option.text = device.label || `Camera ${i + 1}`; cameraSelect.appendChild(option); }); const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment')); if (backCamera) { cameraSelect.value = backCamera.deviceId; startScanning(backCamera.deviceId); } else if (videoDevices.length > 0) { cameraSelect.value = videoDevices[0].deviceId; startScanning(videoDevices[0].deviceId); } } else { startScanning(); } } catch (error) { resultDiv.innerHTML = `<span class="error">Error accessing cameras</span>`; } }
+        
+        async function startScanning(deviceId) { if (currentStream) { currentStream.getTracks().forEach(track => track.stop()); } const constraints = { video: { deviceId: deviceId ? { exact: deviceId } : undefined, facingMode: !deviceId ? 'environment' : undefined, width: { ideal: 1280 }, height: { ideal: 720 } } }; try { currentStream = await navigator.mediaDevices.getUserMedia(constraints); video.srcObject = currentStream; video.onloadedmetadata = () => { video.play().then(() => { resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>'; isScanning = true; scanQRCode(); }); }; } catch (error) { resultDiv.innerHTML = `<span class="error">Error accessing camera</span>`; } }
+        
+        function scanQRCode() { if (!isScanning || !video.videoWidth || !video.videoHeight) return; const canvas = document.createElement('canvas'); const context = canvas.getContext('2d'); const scale = 0.5; canvas.width = video.videoWidth * scale; canvas.height = video.videoHeight * scale; let lastScanTime = 0; const scanInterval = 150; function tick() { if (!isScanning) return; const now = Date.now(); if (video.readyState === video.HAVE_ENOUGH_DATA && now - lastScanTime > scanInterval) { lastScanTime = now; context.drawImage(video, 0, 0, canvas.width, canvas.height); const imageData = context.getImageData(0, 0, canvas.width, canvas.height); try { const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'both' }); if (code && code.data.trim()) { handleQRCodeDetected(code.data.trim()); return; } else { video.classList.remove('scanning'); } } catch (error) { console.error('QR scanning error:', error); } } if (isScanning) { requestAnimationFrame(tick); } } tick(); }
+        
+        function handleQRCodeDetected(qrData) { if (!qrData || qrData.length === 0) return; video.classList.add('scanning'); isScanning = false; if (!isValidHadiahQR(qrData)) { showErrorAlert('QR Code Tidak Valid', 'QR Code harus berisi data hadiah Bayan Run 2025', 'Format: PEMENANG UNDIAN BAYAN RUN 2025'); return; } if (isDuplicateScan(qrData)) { const previousScan = getPreviousScan(qrData); const scanTime = previousScan ? new Date(previousScan.timestamp).toLocaleString('id-ID') : 'sebelumnya'; showErrorAlert('Hadiah Sudah Pernah Di-Scan', `Hadiah ini sudah di-scan pada: ${scanTime}`, 'Setiap hadiah hanya dapat diambil satu kali'); return; } try { scanSound.play().catch(e => console.log('Audio play failed:', e)); } catch (error) { console.log('Audio error:', error); } const parsedData = parseQRData(qrData); const scanEntry = { ...parsedData, timestamp: new Date().toISOString(), phoneID: phoneID }; appState.scannedData.push(scanEntry); try { const existingData = JSON.parse(localStorage.getItem('scannedHadiah') || '[]'); existingData.push(scanEntry); localStorage.setItem('scannedHadiah', JSON.stringify(existingData)); } catch (error) { console.error('Error saving to localStorage:', error); } showSuccessPopup(parsedData); resultDiv.innerHTML = `<span class="text-green-400 font-bold">✅ Hadiah detected!</span>`; if (socket && isOnline && appState.socketConnected) { try { socket.emit('hadiahScanned', { MejaID: phoneID, barcodeData: qrData, parsedData: parsedData, timestamp: scanEntry.timestamp }); } catch (error) { console.error('Socket send error:', error); } } }
+        
+        function isValidHadiahQR(qrData) { return qrData.includes('PEMENANG') || qrData.includes('Hadiah:') || qrData.includes('BIB:'); }
+        
+        function isDuplicateScan(qrData) { const inMemory = appState.scannedData.some(scan => scan.originalData === qrData); if (inMemory) return true; try { const existingData = JSON.parse(localStorage.getItem('scannedHadiah') || '[]'); return existingData.some(scan => scan.originalData === qrData); } catch (error) { return false; } }
+        
+        function getPreviousScan(qrData) { const memoryData = appState.scannedData.find(scan => scan.originalData === qrData); if (memoryData) return memoryData; try { const existingData = JSON.parse(localStorage.getItem('scannedHadiah') || '[]'); return existingData.find(scan => scan.originalData === qrData); } catch (error) { return null; } }
+        
+        function showErrorAlert(title, message, details = null) { const popup = document.getElementById('error-popup'); const titleEl = document.getElementById('error-title'); const messageEl = document.getElementById('error-message'); const detailsEl = document.getElementById('error-details-container'); const detailsTextEl = document.getElementById('error-details-text'); titleEl.textContent = title; messageEl.textContent = message; if (details) { detailsEl.style.display = 'block'; detailsTextEl.textContent = details; } else { detailsEl.style.display = 'none'; } popup.classList.add('show'); try { const errorSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSh+zPLZgCUELnbR8diLPwoUaLjy5ptBEgBRq+jtuGYdBkpgsd3kvGMdBUtcqN3jsGAPB0Ecb6nh4JNFGANKmufmw24bB'); errorSound.volume = 0.5; errorSound.playbackRate = 0.8; errorSound.play().catch(e => console.log('Error sound failed:', e)); } catch (error) { console.log('Audio error:', error); } }
+        
+        function closeErrorPopup() { const popup = document.getElementById('error-popup'); popup.classList.remove('show'); setTimeout(() => { video.classList.remove('scanning'); resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>'; isScanning = true; scanQRCode(); }, 500); }
+        
+        function parseQRData(qrData) { try { let nama = 'Unknown', bib = 'N/A', hadiah = 'Unknown'; const lines = qrData.split('\n'); for (let line of lines) { line = line.trim(); if (line.startsWith('Nama:')) { nama = line.replace('Nama:', '').trim(); } else if (line.startsWith('BIB:')) { bib = line.replace('BIB:', '').trim(); } else if (line.startsWith('Hadiah:')) { hadiah = line.replace('Hadiah:', '').trim(); } } return { name: nama, bib: bib, hadiah: hadiah, originalData: qrData }; } catch (error) { return { name: 'Parse Error', bib: 'N/A', hadiah: 'Error', originalData: qrData }; } }
+        
+        function showSuccessPopup(data) { const popup = document.getElementById('success-popup'); document.getElementById('participant-name').textContent = data.name; document.getElementById('participant-bib').textContent = `BIB: ${data.bib}`; document.getElementById('participant-hadiah').textContent = `🎁 ${data.hadiah}`; popup.classList.add('show'); }
+        
+        function closeSuccessPopup() { const popup = document.getElementById('success-popup'); popup.classList.remove('show'); setTimeout(() => { video.classList.remove('scanning'); resultDiv.innerHTML = '<span class="text-white">Arahkan kamera ke QR Code...</span>'; isScanning = true; scanQRCode(); }, 500); }
+        
+        cameraSelect.addEventListener('change', () => { if (cameraSelect.value) { startScanning(cameraSelect.value); } });
+        window.addEventListener('online', updateNetworkStatus); window.addEventListener('offline', updateNetworkStatus);
+        function initializeApp() { updateNetworkStatus(); initializeSocket(); getCameras(); }
+        if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initializeApp); } else { initializeApp(); }
+        window.closeSuccessPopup = closeSuccessPopup; window.closeErrorPopup = closeErrorPopup;
     </script>
 </body>
-
 </html>
