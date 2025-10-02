@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert JSON to CSV - Dashboard</title>
+    <title>Scanner Data to CSV</title>
     <style>
         * {
             margin: 0;
@@ -73,13 +73,13 @@
         }
 
         .nav-link:hover {
-            background: rgba(255, 120, 73, 0.1);
+            background: rgba(102, 126, 234, 0.1);
             color: #ff7849;
             border-left-color: #ff7849;
         }
 
         .nav-link.active {
-            background: rgba(255, 120, 73, 0.15);
+            background: rgba(102, 126, 234, 0.15);
             color: #ff7849;
             border-left-color: #ff7849;
             font-weight: 600;
@@ -99,16 +99,22 @@
             overflow-y: auto;
         }
 
-        .content-header {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.4s ease-out;
         }
 
-        .page-title {
+        .title {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
@@ -118,31 +124,26 @@
             background-clip: text;
         }
 
-        .page-description {
+        .description {
             color: #666;
             font-size: 1.1rem;
             line-height: 1.6;
         }
 
-        .converter-card {
+        .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 2.5rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .converter-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: slideInUp 0.6s ease-out;
         }
 
         .input-group {
             margin-bottom: 2rem;
         }
 
-        .input-label {
+        .label {
             display: block;
             font-weight: 600;
             color: #333;
@@ -150,28 +151,101 @@
             font-size: 1.1rem;
         }
 
-        textarea {
+        .file-upload-area {
             width: 100%;
-            height: 250px;
-            padding: 1.5rem;
-            border: 2px solid rgba(255, 120, 73, 0.2);
+            padding: 3rem 2rem;
+            border: 3px dashed rgba(102, 126, 234, 0.3);
             border-radius: 15px;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 0.9rem;
             background: rgba(248, 249, 250, 0.8);
+            text-align: center;
             transition: all 0.3s ease;
-            resize: vertical;
+            cursor: pointer;
         }
 
-        textarea:focus {
-            outline: none;
+        .file-upload-area:hover {
             border-color: #ff7849;
-            box-shadow: 0 0 0 3px rgba(255, 120, 73, 0.1);
+            background: rgba(102, 126, 234, 0.05);
         }
 
-        textarea::placeholder {
+        .file-upload-area.dragover {
+            border-color: #ff7849;
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            fill: #ff7849;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.85rem;
             color: #999;
-            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        .browse-btn {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            color: #ff7849;
+            border: 2px solid #ff7849;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .browse-btn:hover {
+            background: #ff7849;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .file-name {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            color: #ff7849;
+            font-weight: 600;
+            display: none;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff7849;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
         }
 
         .button-group {
@@ -190,12 +264,15 @@
             font-weight: 600;
             font-size: 1rem;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(255, 120, 73, 0.3);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 120, 73, 0.4);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
         button:active {
@@ -212,6 +289,8 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 5px 20px rgba(16, 172, 132, 0.3);
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .download-link:hover {
@@ -238,6 +317,41 @@
             border: 1px solid rgba(255, 107, 107, 0.2);
         }
 
+        .preview {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .preview-table thead {
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+        }
+
+        .preview-table th,
+        .preview-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .preview-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .sidebar {
@@ -258,25 +372,24 @@
                 padding: 1rem;
             }
 
-            .page-title {
+            .title {
                 font-size: 2rem;
             }
 
-            .converter-card {
+            .card {
                 padding: 1.5rem;
-            }
-
-            textarea {
-                height: 200px;
             }
 
             .button-group {
                 flex-direction: column;
                 align-items: stretch;
             }
+
+            button, .download-link {
+                justify-content: center;
+            }
         }
 
-        /* Animations */
         @keyframes slideInUp {
             from {
                 opacity: 0;
@@ -287,18 +400,10 @@
                 transform: translateY(0);
             }
         }
-
-        .converter-card {
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        .content-header {
-            animation: slideInUp 0.4s ease-out;
-        }
     </style>
 </head>
 <body>
-<div class="dashboard">
+    <div class="dashboard">
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -306,8 +411,8 @@
                 <p class="sidebar-subtitle">QR Tools & Utilities</p>
             </div>
             <ul class="nav-menu">
-                 <li class="nav-item">
-                    <a href="/index.html" class="nav-link ">
+                <li class="nav-item">
+                    <a href="/index.html" class="nav-link">
                         <svg class="nav-icon" viewBox="0 0 24 24">
                             <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zM9.5 14.5v3h-3v-3h3M11 13H5v6h6v-6zM17.5 6.5v3h-3v-3h3M19 5h-6v6h6V5zM13 13h1.5v1.5H13zM14.5 14.5H16V16h-1.5zM16 13h1.5v1.5H16zM13 16h1.5v1.5H13zM14.5 17.5H16V19h-1.5zM16 16h1.5v1.5H16zM17.5 14.5H19V16h-1.5zM17.5 17.5H19V19h-1.5zM22 7h-2V4h-3V2h5zM22 22v-5h-2v3h-3v2zM2 22h5v-2H4v-3H2zM2 2v5h2V4h3V2z"/>
                         </svg>
@@ -322,130 +427,311 @@
                         JSON to CSV Generator
                     </a>
                 </li>
-                    <li class="nav-item">
+                <li class="nav-item">
                     <a href="/convert-csv.html" class="nav-link">
                         <svg class="nav-icon" viewBox="0 0 24 24">
                             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                         </svg>
-                        CSV to JSON Generator
+                        CSV Hadiah to JSON 
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="/upload-csv.html" class="nav-link">
                         <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm10 0h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z" />
                         </svg>
                         CSV to QR Generator
                     </a>
                 </li>
-               <li class="nav-item">
-                <a href="/s.html" class="nav-link" target="_blank" rel="noopener noreferrer">
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path d="M2 6h1v12H2V6zm2 0h1v12H4V6zm2 0h3v12H6V6zm4 0h1v12h-1V6zm3 0h1v12h-1V6zm2 0h3v12h-3V6zm4 0h1v12h-1V6z" />
-                    </svg>
-                    Monitor Welcome
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a href="/s.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M2 6h1v12H2V6zm2 0h1v12H4V6zm2 0h3v12H6V6zm4 0h1v12h-1V6zm3 0h1v12h-1V6zm2 0h3v12h-3V6zm4 0h1v12h-1V6z" />
+                        </svg>
+                        Monitor Welcome
+                    </a>
+                </li>
             </ul>
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="content-header">
-                <h1 class="page-title">JSON to CSV Converter</h1>
-                <p class="page-description">Transform your JSON data into CSV format with custom field extraction for barcode processing</p>
-            </header>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Scanner Data to CSV</h1>
+            <p class="description">Convert scanner JSON data to CSV format with parsed email/nomor and name</p>
+        </div>
 
-            <div class="converter-card">
-                <div class="input-group">
-                    <label for="jsonInput" class="input-label">JSON Data Input</label>
-                    <textarea id="jsonInput" placeholder="Paste your JSON data here...
-
-                    Example format:
-                    [
-                    {
-                        &quot;barcode&quot;: &quot;http://example.com?nomor=123#John_Doe&quot;
-                    },
-                    {
-                        &quot;barcode&quot;: &quot;http://example.com?nomor=456#Jane_Smith&quot;
-                    }
-                    ]"></textarea>
-                </div>
-
-                <div class="button-group">
-                    <button onclick="convert()">
-                        <svg width="20" height="20" style="margin-right: 8px;" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z" />
-                        </svg>
-                        Convert to CSV
+        <div class="card">
+            <div class="input-group">
+                <label class="label">Upload Scanner JSON File</label>
+                <div class="file-upload-area" id="dropArea">
+                    <svg class="upload-icon" viewBox="0 0 24 24">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                    </svg>
+                    <p class="upload-text">Drag & drop JSON file here or click to browse</p>
+                    <p class="upload-hint">Expected format: Array of objects with barcode, meja, timestamp</p>
+                    <input type="file" id="jsonFile" accept=".json" style="display: none;">
+                    <button type="button" class="browse-btn" onclick="document.getElementById('jsonFile').click()">
+                        Browse Files
                     </button>
-                    <a id="downloadLink" class="download-link" download="data.csv">
-                        <svg width="20" height="20" style="margin-right: 8px;" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                        </svg>
-                        Download CSV
-                    </a>
                 </div>
-
-                <div id="statusMessage" class="status-message"></div>
+                <div id="fileName" class="file-name"></div>
             </div>
+
+            <div id="stats" class="stats" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRecords">0</div>
+                    <div class="stat-label">Total Records</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="validRecords">0</div>
+                    <div class="stat-label">Valid URLs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="uniqueRecords">0</div>
+                    <div class="stat-label">Unique Emails/Nomor</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button onclick="convert()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z" />
+                    </svg>
+                    Convert to CSV
+                </button>
+                <a id="downloadLink" class="download-link" download="scanner-data.csv">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+                    </svg>
+                    Download CSV
+                </a>
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+
+            <div id="preview" class="preview">
+                <h3 class="preview-title">Preview (First 10 rows)</h3>
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Email/Nomor</th>
+                            <th>Name</th>
+                            <th>Meja</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
         </main>
     </div>
 
     <script>
-        function convert() {
-            const statusMessage = document.getElementById('statusMessage');
-            
-            try {
-                // Get JSON data
-                const jsonData = JSON.parse(document.getElementById('jsonInput').value);
-                
-                // Create CSV content
-                let csvContent = "number,name,link\n";
-                
-                jsonData.forEach(item => {
-                    // Extract nomor and nama from barcode
-                    const barcodeParts = item.barcode.split('?nomor=')[1].split('#');
-                    const nomor = barcodeParts[0];
-                    const nama = barcodeParts[1];
-                    
-                    // Replace underscores with spaces in nama
-                    const namaDenganSpasi = nama.replace(/_/g, ' ');
-                    // Create full link
-                    const fullLink = `http://103.175.219.151:3000/hadiah.html?nomor=${nomor}#${nama}`;
-                    csvContent += `${nomor},${namaDenganSpasi},${fullLink}\n`;
-                });
-                
-                // Create download link
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const downloadLink = document.getElementById('downloadLink');
-                downloadLink.href = url;
-                downloadLink.style.display = 'inline-flex';
-                
-                // Show success message
-                statusMessage.textContent = `Successfully converted ${jsonData.length} records to CSV format!`;
-                statusMessage.className = 'status-message status-success';
-                statusMessage.style.display = 'block';
-                
-                // Auto download
-                downloadLink.click();
-            } catch (error) {
-                // Show error message
-                statusMessage.textContent = 'Error converting JSON: ' + error.message;
-                statusMessage.className = 'status-message status-error';
-                statusMessage.style.display = 'block';
-                
-                // Hide download link on error
-                document.getElementById('downloadLink').style.display = 'none';
+        let uploadedFile = null;
+
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('jsonFile');
+        const fileNameDisplay = document.getElementById('fileName');
+        const statusMessage = document.getElementById('statusMessage');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => {
+                dropArea.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => {
+                dropArea.classList.remove('dragover');
+            }, false);
+        });
+
+        dropArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        }, false);
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'application/json' || file.name.endsWith('.json')) {
+                    uploadedFile = file;
+                    fileNameDisplay.textContent = `📄 ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                    fileNameDisplay.style.display = 'block';
+                    statusMessage.style.display = 'none';
+                    document.getElementById('downloadLink').style.display = 'none';
+                    document.getElementById('preview').style.display = 'none';
+                } else {
+                    statusMessage.textContent = 'Please upload a JSON file';
+                    statusMessage.className = 'status-message status-error';
+                    statusMessage.style.display = 'block';
+                }
             }
         }
 
-        // Clear status message when user starts typing
-        document.getElementById('jsonInput').addEventListener('input', function() {
-            document.getElementById('statusMessage').style.display = 'none';
-            document.getElementById('downloadLink').style.display = 'none';
-        });
+        function parseURL(url) {
+            try {
+                const urlObj = new URL(url);
+                
+                // Extract email from query parameter
+                const email = urlObj.searchParams.get('email');
+                if (email) {
+                    // Decode URL-encoded email
+                    const decodedEmail = decodeURIComponent(email);
+                    // Extract name from hash
+                    const name = urlObj.hash ? decodeURIComponent(urlObj.hash.substring(1)).replace(/_/g, ' ') : '';
+                    return { identifier: decodedEmail, name: name };
+                }
+                
+                // Extract nomor from query parameter
+                const nomor = urlObj.searchParams.get('nomor');
+                if (nomor) {
+                    // Extract name from hash
+                    const name = urlObj.hash ? decodeURIComponent(urlObj.hash.substring(1)).replace(/_/g, ' ') : '';
+                    return { identifier: nomor, name: name };
+                }
+                
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function escapeCSV(value) {
+            if (value === null || value === undefined) {
+                return '';
+            }
+            const str = String(value);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }
+
+        function convert() {
+            if (!uploadedFile) {
+                statusMessage.textContent = 'Please upload a JSON file first';
+                statusMessage.className = 'status-message status-error';
+                statusMessage.style.display = 'block';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    
+                    if (!Array.isArray(jsonData)) {
+                        throw new Error('JSON must be an array of objects');
+                    }
+
+                    if (jsonData.length === 0) {
+                        throw new Error('JSON array is empty');
+                    }
+
+                    // Process data
+                    const csvRows = [];
+                    csvRows.push('Email/Nomor,Name,Meja,Timestamp');
+
+                    const processedData = [];
+                    let validCount = 0;
+                    const uniqueIdentifiers = new Set();
+
+                    jsonData.forEach(item => {
+                        if (!item.barcode) return;
+                        
+                        const parsed = parseURL(item.barcode);
+                        if (parsed) {
+                            validCount++;
+                            uniqueIdentifiers.add(parsed.identifier);
+                            
+                            const row = [
+                                escapeCSV(parsed.identifier),
+                                escapeCSV(parsed.name),
+                                escapeCSV(item.meja || ''),
+                                escapeCSV(item.timestamp || '')
+                            ];
+                            csvRows.push(row.join(','));
+                            processedData.push({
+                                identifier: parsed.identifier,
+                                name: parsed.name,
+                                meja: item.meja || '',
+                                timestamp: item.timestamp || ''
+                            });
+                        }
+                    });
+
+                    if (validCount === 0) {
+                        throw new Error('No valid URLs found in the data');
+                    }
+
+                    // Update stats
+                    document.getElementById('totalRecords').textContent = jsonData.length;
+                    document.getElementById('validRecords').textContent = validCount;
+                    document.getElementById('uniqueRecords').textContent = uniqueIdentifiers.size;
+                    document.getElementById('stats').style.display = 'grid';
+
+                    // Update preview
+                    const previewBody = document.getElementById('previewBody');
+                    previewBody.innerHTML = '';
+                    processedData.slice(0, 10).forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${row.identifier}</td>
+                            <td>${row.name}</td>
+                            <td>${row.meja}</td>
+                            <td>${new Date(row.timestamp).toLocaleString()}</td>
+                        `;
+                        previewBody.appendChild(tr);
+                    });
+                    document.getElementById('preview').style.display = 'block';
+
+                    // Create CSV
+                    const csvContent = csvRows.join('\n');
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.getElementById('downloadLink');
+                    downloadLink.href = url;
+                    downloadLink.style.display = 'inline-flex';
+
+                    statusMessage.textContent = `Successfully converted ${validCount} valid records to CSV format!`;
+                    statusMessage.className = 'status-message status-success';
+                    statusMessage.style.display = 'block';
+
+                } catch (error) {
+                    statusMessage.textContent = 'Error converting JSON: ' + error.message;
+                    statusMessage.className = 'status-message status-error';
+                    statusMessage.style.display = 'block';
+                    document.getElementById('downloadLink').style.display = 'none';
+                }
+            };
+
+            reader.onerror = function() {
+                statusMessage.textContent = 'Error reading file';
+                statusMessage.className = 'status-message status-error';
+                statusMessage.style.display = 'block';
+            };
+
+            reader.readAsText(uploadedFile);
+        }
     </script>
 </body>
 </html>
