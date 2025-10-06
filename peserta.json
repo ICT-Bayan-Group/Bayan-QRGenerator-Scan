@@ -1,57 +1,5 @@
 [
   {
-    "barcode": "https://www.digitalkargo.id/shipper.tracking/termservice.php?termService=/AtM6FEPvkfQ",
-    "timestamp": "2025-08-26T08:19:57.189Z"
-  },
-  {
-    "timestamp": "2025-09-19T06:34:53.215Z"
-  },
-  {
-    "barcode": "https://www.digitalkargo.id/shipper.tracking/termservice.php?termService=/AtM6FEPNVKFQ",
-    "meja": "meja1",
-    "timestamp": "2025-09-19T08:29:57.259Z"
-  },
-  {
-    "barcode": "hervi://hp?teriService=/AtM6FEPvkfQ",
-    "meja": "meja1",
-    "timestamp": "2025-09-19T08:29:57.415Z"
-  },
-  {
-    "barcode": "/termservice.php?termService=/AtM6FEPvkfQ",
-    "meja": "meja1",
-    "timestamp": "2025-09-19T08:29:57.585Z"
-  },
-  {
-    "barcode": "https://www.digitalkargo.id/shipper.tvkfQ",
-    "meja": "meja1",
-    "timestamp": "2025-09-19T09:04:13.249Z"
-  },
-  {
-    "barcode": "https://www.digitalkargo.id/shipper.trackQ",
-    "meja": "meja1",
-    "timestamp": "2025-09-19T09:07:20.130Z"
-  },
-  {
-    "barcode": "https://www.digitalkargo.id/shipper.tvkfing/termservice.php?termService=/AtM6FEPvkfQ",
-    "meja": "meja1",
-    "timestamp": "2025-09-19T09:14:27.245Z"
-  },
-  {
-    "barcode": "https://www.digitalkargo.id/shipper.trackQNG?TERMSERVICE>PHP?termService=/AtM6FEPvkfQ",
-    "meja": "meja1",
-    "timestamp": "2025-09-19T09:15:08.874Z"
-  },
-  {
-    "barcode": "https://coaching.bayanevent.com/verify.html?nomor=6353#Tgk._Himawan_Pratama",
-    "meja": "meja1",
-    "timestamp": "2025-10-02T00:38:28.019Z"
-  },
-  {
-    "barcode": "https://coaching.bayanevent.com/verify.html?nomor=1830#Ir._Kenari_Siregar,_S.T.",
-    "meja": "meja1",
-    "timestamp": "2025-10-02T00:38:38.164Z"
-  },
-  {
     "barcode": "https://coaching.bayanevent.com/verify?email=kikipebriyanto14%40gmail.com#Kiki_Pebriyanto",
     "meja": "meja1",
     "timestamp": "2025-10-02T00:39:43.503Z"
