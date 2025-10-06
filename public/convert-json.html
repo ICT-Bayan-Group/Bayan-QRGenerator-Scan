@@ -459,7 +459,7 @@
     <div class="container">
         <div class="header">
             <h1 class="title">Scanner Data to CSV</h1>
-            <p class="description">Convert scanner JSON data to CSV format with parsed email/nomor and name</p>
+            <p class="description">Convert scanner JSON data to CSV format with parsed email and name</p>
         </div>
 
         <div class="card">
@@ -516,7 +516,7 @@
                 <table class="preview-table">
                     <thead>
                         <tr>
-                            <th>Email/Nomor</th>
+                            <th>Email</th>
                             <th>Name</th>
                             <th>Meja</th>
                             <th>Timestamp</th>
@@ -648,8 +648,8 @@
                     }
 
                     // Process data
-                    const csvRows = [];
-                    csvRows.push('Email/Nomor,Name,Meja,Timestamp');
+                   const csvRows = [];
+                    csvRows.push('Email,Nama,Meja,Timestamp');
 
                     const processedData = [];
                     let validCount = 0;
