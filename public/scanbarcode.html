@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,11 +15,101 @@
         * { font-family: 'Montserrat', sans-serif !important; }
         body {
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(to bottom, #560000ff 0%, #8b0202ff 50%, #021f6eff 50%, #00113fff 100%);
+            background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(255, 249, 249) 50%, #021f6eff 50%, #00113fff 100%);
             min-height: 100vh;
         }
         #video { width: 100%; border: 3px solid #ccc; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
         .scanning { border: 3px solid #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+        
+        /* Meja Selector Styles */
+        .meja-selector-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .meja-selector-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .meja-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .meja-option {
+            position: relative;
+        }
+        
+        .meja-radio {
+            display: none;
+        }
+        
+        .meja-button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(248, 249, 250, 0.8);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .meja-button:hover {
+            color: #ff7849;
+            border-color: #ff7849;
+            transform: translateY(-2px);
+        }
+        
+        .meja-radio:checked + .meja-button {
+            background: linear-gradient(135deg, #560000, #8b0202);
+            color: white;
+            border-color: #560000;
+            box-shadow: 0 5px 15px rgba(86, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .meja-status {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 10px;
+            background: rgba(248, 249, 250, 0.8);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .meja-status.selected {
+            background: rgba(16, 172, 132, 0.2);
+            color: #10ac84;
+        }
+        
+        @media (max-width: 480px) {
+            .meja-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0.4rem;
+            }
+            .meja-button {
+                padding: 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
         
         /* Success Popup */
         .success-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 8888; opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0.4s; padding: 1rem; }
@@ -69,8 +160,56 @@
     
     <div class="max-w-2xl mx-auto px-4 sm:px-6">
         <div class="text-center mb-8 sm:mb-10">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white italic tracking-wide drop-shadow-lg">QR CODE SCANNER</h1>
-            <p class="text-white font-bold mt-2 text-lg uppercase tracking-wider">BAYAN RUN 2025</p>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-800 italic tracking-wide drop-shadow-lg">QR CODE SCANNER</h1>
+            <p class="text-red-800 font-extrabold mt-2 text-lg uppercase tracking-wider">BAYAN RUN 2025</p>
+        </div>
+
+        <!-- Meja Selector -->
+        <div class="meja-selector-container">
+            <div class="meja-selector-title">Pilih Meja Scan</div>
+            <div class="meja-grid">
+                <div class="meja-option">
+                    <input type="radio" id="meja1" name="mejaSelection" value="meja1" class="meja-radio">
+                    <label for="meja1" class="meja-button">Meja 1</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja2" name="mejaSelection" value="meja2" class="meja-radio">
+                    <label for="meja2" class="meja-button">Meja 2</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja3" name="mejaSelection" value="meja3" class="meja-radio">
+                    <label for="meja3" class="meja-button">Meja 3</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja4" name="mejaSelection" value="meja4" class="meja-radio">
+                    <label for="meja4" class="meja-button">Meja 4</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja5" name="mejaSelection" value="meja5" class="meja-radio">
+                    <label for="meja5" class="meja-button">Meja 5</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja6" name="mejaSelection" value="meja6" class="meja-radio">
+                    <label for="meja6" class="meja-button">Meja 6</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja7" name="mejaSelection" value="meja7" class="meja-radio">
+                    <label for="meja7" class="meja-button">Meja 7</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja8" name="mejaSelection" value="meja8" class="meja-radio">
+                    <label for="meja8" class="meja-button">Meja 8</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja9" name="mejaSelection" value="meja9" class="meja-radio">
+                    <label for="meja9" class="meja-button">Meja 9</label>
+                </div>
+                <div class="meja-option">
+                    <input type="radio" id="meja10" name="mejaSelection" value="meja10" class="meja-radio">
+                    <label for="meja10" class="meja-button">Meja 10</label>
+                </div>
+            </div>
+            <div class="meja-status" id="mejaStatus">Silakan pilih meja scan</div>
         </div>
 
         <div class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 mb-8">
@@ -125,12 +264,18 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script>
-        const appState = { phoneID: 'meja1', socketConnected: false, scannedData: [] };
-        const phoneID = appState.phoneID;
+        const appState = { 
+            phoneID: null,
+            socketConnected: false, 
+            scannedData: [] 
+        };
+        
         const video = document.getElementById('video');
         const resultDiv = document.getElementById('result');
         const cameraSelect = document.getElementById('cameraSelect');
         const statusIndicator = document.getElementById('status-indicator');
+        const mejaStatus = document.getElementById('mejaStatus');
+        
         let currentStream = null;
         let isScanning = false;
         let isOnline = navigator.onLine;
@@ -138,6 +283,23 @@
 
         const scanSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSh+zPLZgCUELnbR8diLPwoUaLjy5ptBEgBRq+jtuGYdBkpgsd3kvGMdBUtcqN3jsGAPB0Ecb6nh4JNFGANKmufmw24bBzGH2/LCeCYEKo/Q8siHPwhJm9vxwH8gCCGI2vPGeTIIGnDY89yPOAYWYMPvy3U4BziR1vLNdyoEKHPL8dmQQAtGpOPwUwEAQQAAQwEAOQEAABsB');
         scanSound.volume = 0.3;
+
+        // Event listener untuk pemilihan Meja
+        const mejaRadios = document.querySelectorAll('input[name="mejaSelection"]');
+        mejaRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    appState.phoneID = this.value;
+                    mejaStatus.textContent = `Terhubung ke ${this.value.toUpperCase()}`;
+                    mejaStatus.classList.add('selected');
+                    
+                    if (socket && isOnline) {
+                        socket.emit('joinRoom', appState.phoneID);
+                        console.log(`Bergabung ke room: ${appState.phoneID}`);
+                    }
+                }
+            });
+        });
 
         function updateNetworkStatus() {
             isOnline = navigator.onLine;
@@ -150,7 +312,9 @@
                 try {
                     socket = io({ secure: true, rejectUnauthorized: false });
                     socket.on('connect', () => {
-                        socket.emit('joinRoom', phoneID);
+                        if (appState.phoneID) {
+                            socket.emit('joinRoom', appState.phoneID);
+                        }
                         appState.socketConnected = true;
                     });
                 } catch (error) {
@@ -262,6 +426,12 @@
 
         function handleQRCodeDetected(qrData) {
             if (!qrData || qrData.length === 0) return;
+            
+            if (!appState.phoneID) {
+                showErrorAlert('Meja Belum Dipilih', 'Silakan pilih meja scan terlebih dahulu', 'Pilih salah satu meja (1-10) di bagian atas');
+                return;
+            }
+            
             video.classList.add('scanning');
             isScanning = false;
             
@@ -287,17 +457,9 @@
             const scanEntry = {
                 ...parsedData,
                 timestamp: new Date().toISOString(),
-                phoneID: phoneID
+                phoneID: appState.phoneID
             };
             appState.scannedData.push(scanEntry);
-            
-            try {
-                const existingData = JSON.parse(localStorage.getItem('scannedQRCodes') || '[]');
-                existingData.push(scanEntry);
-                localStorage.setItem('scannedQRCodes', JSON.stringify(existingData));
-            } catch (error) {
-                console.error('Error saving to localStorage:', error);
-            }
 
             showSuccessPopup(parsedData);
             resultDiv.innerHTML = `<span class="text-green-400 font-bold">✅ QR Code detected!</span>`;
@@ -305,7 +467,7 @@
             if (socket && isOnline && appState.socketConnected) {
                 try {
                     socket.emit('barcodeScanned', {
-                        MejaID: phoneID,
+                        MejaID: appState.phoneID,
                         barcodeData: qrData,
                         parsedData: parsedData,
                         timestamp: scanEntry.timestamp
