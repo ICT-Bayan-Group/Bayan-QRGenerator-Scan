@@ -440,10 +440,12 @@
                 return;
             }
             
-            if (isDuplicateScan(qrData)) {
+             if (isDuplicateScan(qrData)) {
                 const previousScan = getPreviousScan(qrData);
                 const scanTime = previousScan ? new Date(previousScan.timestamp).toLocaleString('id-ID') : 'sebelumnya';
-                showErrorAlert('QR Code Sudah Pernah Di-Scan', `QR Code ini sudah di-scan pada: ${scanTime}`, 'Setiap QR Code hanya dapat di-scan satu kali');
+                const participantName = previousScan ? previousScan.name : 'Unknown';
+                const participantInfo = `Nama: ${participantName}\nWaktu scan: ${scanTime}`;
+                showErrorAlert('QR Code Sudah Pernah Di-Scan', participantInfo, 'Setiap QR Code hanya dapat di-scan satu kali');
                 return;
             }
             
