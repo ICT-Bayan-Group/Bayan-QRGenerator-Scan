@@ -18,8 +18,8 @@
         body {
             font-family: 'Montserrat', sans-serif;
             background: linear-gradient(to bottom, 
-                #560000ff 0%, 
-                #8b0202ff 50%, 
+                rgb(255, 255, 255) 0%, 
+                rgb(255, 241, 241) 50%, 
                 #021f6eff 50%, 
                 #00113fff 100%
             );
@@ -238,18 +238,20 @@
             color: rgba(255, 255, 255, 0.95);
             font-size: 1rem;
             font-weight: 500;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             line-height: 1.6;
         }
 
         .error-details {
             background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
             padding: 1rem;
             margin-bottom: 2rem;
             opacity: 0;
             transform: translateY(10px);
             animation: detailsFadeIn 0.5s ease-out 0.7s forwards;
-            border-radius: 12px;
         }
 
         .error-details p {
@@ -257,6 +259,39 @@
             font-size: 0.85rem;
             font-weight: 500;
             margin: 0;
+        }
+
+        .error-participant-info {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: detailsFadeIn 0.5s ease-out 0.6s forwards;
+        }
+
+        .error-participant-name {
+            color: #fbbf24;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-participant-detail {
+            color: #34d399;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 0.25rem 0;
+        }
+
+        .error-participant-hadiah {
+            color: #fbbf24;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 0.5rem;
         }
 
         .error-icon-container {
@@ -423,10 +458,10 @@
     <div class="max-w-2xl mx-auto px-4 sm:px-6">
         <!-- Header -->
         <div class="text-center mb-8 sm:mb-10">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white italic tracking-wide drop-shadow-lg">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 italic tracking-wide drop-shadow-lg">
                 QR CODE SCANNER
             </h1>
-            <p class="text-white font-bold mt-2 text-lg uppercase tracking-wider">
+            <p class="text-red-900 font-bold mt-2 text-lg uppercase tracking-wider">
                 BAYAN RUN 2025 - HADIAH
             </p>
         </div>
@@ -490,6 +525,15 @@
             
             <h3 class="error-title" id="error-title">Error</h3>
             <p class="error-message" id="error-message">Error message</p>
+            
+            <div class="error-participant-info" id="error-participant-info" style="display: none;">
+                <h4 style="color: white; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.75rem;">
+                    Data Pemenang:
+                </h4>
+                <div class="error-participant-name" id="error-prev-name">-</div>
+                <div class="error-participant-detail" id="error-prev-bib">-</div>
+                <div class="error-participant-hadiah" id="error-prev-hadiah">-</div>
+            </div>
             
             <div class="error-details" id="error-details-container" style="display: none;">
                 <p id="error-details-text"></p>
@@ -827,7 +871,8 @@
                 showErrorAlert(
                     'QR Code Tidak Valid',
                     'QR Code harus berisi data hadiah Bayan Run 2025',
-                    'Format: PEMENANG UNDIAN BAYAN RUN 2025'
+                    'Format: PEMENANG UNDIAN BAYAN RUN 2025',
+                    null
                 );
                 return;
             }
@@ -841,8 +886,9 @@
 
                 showErrorAlert(
                     'Hadiah Sudah Pernah Di-Scan',
-                    `Hadiah ini sudah di-scan pada: ${scanTime}`,
-                    'Setiap hadiah hanya dapat diambil satu kali'
+                    `Hadiah ini sudah diambil pada: ${scanTime}`,
+                    'Setiap hadiah hanya dapat diambil satu kali',
+                    previousScan
                 );
                 return;
             }
@@ -915,15 +961,27 @@
             }, 500);
         }
 
-        function showErrorAlert(title, message, details = null) {
+        function showErrorAlert(title, message, details = null, previousScan = null) {
             const titleEl = document.getElementById('error-title');
             const messageEl = document.getElementById('error-message');
             const detailsEl = document.getElementById('error-details-container');
             const detailsTextEl = document.getElementById('error-details-text');
+            const participantInfoEl = document.getElementById('error-participant-info');
 
             titleEl.textContent = title;
             messageEl.textContent = message;
 
+            // Show participant info if duplicate scan
+            if (previousScan) {
+                participantInfoEl.style.display = 'block';
+                document.getElementById('error-prev-name').textContent = previousScan.name || 'Unknown';
+                document.getElementById('error-prev-bib').textContent = `BIB: ${previousScan.bib || 'N/A'}`;
+                document.getElementById('error-prev-hadiah').textContent = `🎁 ${previousScan.hadiah || 'Unknown'}`;
+            } else {
+                participantInfoEl.style.display = 'none';
+            }
+
+            // Show additional details if provided
             if (details) {
                 detailsEl.style.display = 'block';
                 detailsTextEl.textContent = details;
