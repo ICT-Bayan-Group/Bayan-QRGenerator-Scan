@@ -2,6 +2,11 @@
   {
     "barcode": "https://coaching.bayanevent.com/verify?email=kikipebriyanto14%40gmail.com#Kiki_Pebriyanto",
     "meja": "meja1",
-    "timestamp": "2025-10-06T03:35:16.934Z"
+    "timestamp": "2025-10-06T14:49:27.685Z"
+  },
+  {
+    "barcode": "https://coaching.bayanevent.com/verify?email=testuser%40example.com#TEST_USER",
+    "meja": "meja2",
+    "timestamp": "2025-10-06T14:54:24.336Z"
   }
 ]
