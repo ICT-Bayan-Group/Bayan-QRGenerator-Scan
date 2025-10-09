@@ -155,13 +155,15 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', (meja) => {
         socket.join(meja);
         console.log(`Socket joined room: ${meja}`);
+        socket.emit('roomJoined', { meja });
     });
 
-    // Handler untuk scan peserta (original logic - unchanged)
+    // Handler untuk scan peserta (UPDATED - broadcast ke room spesifik)
     socket.on('barcodeScanned', (data) => {
         try {
             const barcode = data.barcodeData;
             const meja = data.MejaID;
+            const parsedData = data.parsedData || {};
 
             console.log(`Barcode scanned dari Meja ${meja}: ${barcode}`);
 
@@ -173,11 +175,14 @@ io.on('connection', (socket) => {
 
             const existingEntry = peserta.find(entry => entry.barcode === barcode);
             let entryToBroadcast = null;
+            let isDuplicate = false;
 
             if (!existingEntry) {
                 const newEntry = {
                     barcode,
                     meja,
+                    name: parsedData.name || 'Unknown',
+                    email: parsedData.email || 'Unknown',
                     timestamp: new Date().toISOString()
                 };
                 peserta.push(newEntry);
@@ -185,24 +190,34 @@ io.on('connection', (socket) => {
                 console.log('New barcode added:', newEntry);
             } else {
                 console.log('Barcode already exists:', existingEntry);
-                console.log('markotop');
-
-                io.emit('barcodeExists', {
+                isDuplicate = true;
+                entryToBroadcast = existingEntry;
+                
+                // Emit duplicate event ke room spesifik
+                io.to(meja).emit('barcodeExists', {
                     message: 'Barcode already scanned',
                     timestamp: existingEntry.timestamp,
-                    meja: data.MejaID
+                    name: existingEntry.name,
+                    meja: meja
                 });
-                entryToBroadcast = existingEntry;
             }
 
             fs.writeFileSync(dataPath, JSON.stringify(peserta, null, 2));
 
             console.log(`Data saved. Total entries: ${peserta.length}`);
 
-            // Broadcast ke semua client
-            io.emit('scanSuccess', { qrString: barcode, meja });
+            // KUNCI: Broadcast scanSuccess ke room spesifik (meja yang sama)
+            // Ini akan menampilkan data di screen (s.html) yang berada di room yang sama
+            io.to(meja).emit('scanSuccess', { 
+                qrString: barcode, 
+                meja: meja,
+                name: entryToBroadcast.name,
+                email: entryToBroadcast.email,
+                isDuplicate: isDuplicate
+            });
 
-            if (entryToBroadcast) {
+            // Emit barcodeAdded ke semua client untuk logging
+            if (!isDuplicate && entryToBroadcast) {
                 io.emit('barcodeAdded', entryToBroadcast);
             }
 
@@ -229,6 +244,7 @@ io.on('connection', (socket) => {
 
             const existingEntry = scanHadiah.find(entry => entry.barcode === barcode);
             let entryToBroadcast = null;
+            let isDuplicate = false;
 
             if (!existingEntry) {
                 const newEntry = {
@@ -243,28 +259,31 @@ io.on('connection', (socket) => {
                 console.log('New hadiah scan added:', newEntry);
             } else {
                 console.log('Hadiah already scanned:', existingEntry);
+                isDuplicate = true;
+                entryToBroadcast = existingEntry;
 
-                io.emit('hadiahExists', {
+                io.to(meja).emit('hadiahExists', {
                     message: 'Hadiah already scanned',
                     timestamp: existingEntry.timestamp,
-                    name: existingEntry.name
+                    name: existingEntry.name,
+                    meja: meja
                 });
-                entryToBroadcast = existingEntry;
             }
 
             fs.writeFileSync(scanHadiahPath, JSON.stringify(scanHadiah, null, 2));
 
             console.log(`Hadiah data saved. Total entries: ${scanHadiah.length}`);
 
-            // Broadcast ke semua client
-            io.emit('hadiahScanSuccess', { 
+            // Broadcast ke room spesifik
+            io.to(meja).emit('hadiahScanSuccess', { 
                 qrString: barcode, 
-                meja,
+                meja: meja,
                 name: entryToBroadcast.name,
-                email: entryToBroadcast.email
+                email: entryToBroadcast.email,
+                isDuplicate: isDuplicate
             });
 
-            if (entryToBroadcast) {
+            if (!isDuplicate && entryToBroadcast) {
                 io.emit('hadiahAdded', entryToBroadcast);
             }
 
@@ -283,6 +302,6 @@ const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0'; // Listen on all network interfaces
 
 server.listen(PORT, HOST, () => {
-    console.log(`Server running on http://${HOST}:${PORT}`);
+    console.log(`Server running on https://${HOST}:${PORT}`);
     console.log(`Accessible from other devices on your network using your computer's IP address`);
 });
