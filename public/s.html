@@ -382,10 +382,15 @@
 
         // Handle server-side duplicate detection - show notification but don't block display
         socket.on('barcodeExists', (data) => {
+            const currentMeja = localStorage.getItem("MejaID") || "Unknown";
+             if (data.meja !== currentMeja) {
+            return; 
+            }
             console.log('Server detected duplicate:', data);
             
             // Show duplicate notification for server-detected duplicates
             showDuplicateNotification('duplicate_detected');
+            
         });
 
         // Also handle client-side duplicate detection for immediate feedback

@@ -189,7 +189,8 @@ io.on('connection', (socket) => {
 
                 io.emit('barcodeExists', {
                     message: 'Barcode already scanned',
-                    timestamp: existingEntry.timestamp
+                    timestamp: existingEntry.timestamp,
+                    meja: data.MejaID
                 });
                 entryToBroadcast = existingEntry;
             }
