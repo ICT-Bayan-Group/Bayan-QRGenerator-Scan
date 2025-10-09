@@ -201,8 +201,8 @@
         // Global variables for duplicate detection
         let processedBarcodes = new Map(); // Track processed QR codes with timestamps
         let duplicateDetected = 0;
-        const DUPLICATE_NOTIFICATION_TIMEOUT = 2000; // 2 seconds between duplicate notifications for same QR
-        const QR_DISPLAY_TIMEOUT = 5000; // 5 seconds to display each QR result
+        const DUPLICATE_NOTIFICATION_TIMEOUT = 10000; // 2 seconds between duplicate notifications for same QR
+        const QR_DISPLAY_TIMEOUT = 10000; // 5 seconds to display each QR result
 
         // Audio notifications
         const duplicateSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEbBj2Y3vLLcSQGK4DN8NeHNwgZa7ztz6BODwtMqeXsz2g');
