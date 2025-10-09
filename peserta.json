@@ -1,67 +1,9 @@
 [
   {
-    "barcode": "https://coaching.bayanevent.com/verify?email=kikipebriyanto14%40gmail.com#Kiki_Pebriyanto",
-    "meja": "meja1",
-    "timestamp": "2025-10-06T14:49:27.685Z"
-  },
-  {
     "barcode": "https://coaching.bayanevent.com/verify?email=testuser%40example.com#TEST_USER",
-    "meja": "meja2",
-    "timestamp": "2025-10-06T14:54:24.336Z"
-  },
-  {
-    "barcode": "https://coaching.bayanevent.com/verify?email=testuser2%40example.com#TEST_USER_2",
     "meja": "meja1",
-    "timestamp": "2025-10-07T02:55:13.410Z"
-  },
-  {
-    "barcode": "PEMENANG UNDIAN BAYAN RUN 2025",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.001Z"
-  },
-  {
-    "barcode": "Nama: Imam Febrian",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.040Z"
-  },
-  {
-    "barcode": "BIB:",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.057Z"
-  },
-  {
-    "barcode": "Hadiah: SHOCKZ OPEN RUN",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.101Z"
-  },
-  {
-    "barcode": "Telepon: 08125431744",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.143Z"
-  },
-  {
-    "barcode": "Email: imamfebrian97@gmail.com",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.207Z"
-  },
-  {
-    "barcode": "Selamat anda memenangkan undian ini!",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.284Z"
-  },
-  {
-    "barcode": "Silakan tunjukkan QR code ini saat pengambilan hadiah.",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.393Z"
-  },
-  {
-    "barcode": "Generated: 2025-10-07 14:03:25",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.457Z"
-  },
-  {
-    "barcode": "Status: VALID",
-    "meja": "meja1",
-    "timestamp": "2025-10-09T03:58:16.486Z"
+    "name": "TEST USER",
+    "email": "testuser@example.com",
+    "timestamp": "2025-10-09T08:50:02.010Z"
   }
 ]
