@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner QR - Data Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #ff7849 0%, #ff6b35 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Layout Structure */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 120, 73, 0.1);
+            color: #ff7849;
+            border-left-color: #ff7849;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 120, 73, 0.15);
+            color: #ff7849;
+            border-left-color: #ff7849;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            fill: currentColor;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Mobile Toggle */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: #ff7849;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-description {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Scanner Section */
+        .scanner-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 1rem;
+            fill: #ff7849;
+        }
+
+        .scanner-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .scan-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 120, 73, 0.3);
+            display: flex;
+            align-items: center;
+        }
+
+        .scan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 120, 73, 0.4);
+        }
+
+        .scan-button.secondary {
+            background: linear-gradient(135deg, #10ac84, #0d9b6f);
+            box-shadow: 0 5px 20px rgba(16, 172, 132, 0.3);
+        }
+
+        .button-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            fill: currentColor;
+        }
+
+        #cameraPreview {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            aspect-ratio: 4/3;
+            margin: 1rem 0;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 120, 73, 0.2);
+            background: #f8f9fa;
+            display: none;
+        }
+
+        #barcodeInput {
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px solid rgba(255, 120, 73, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            background: rgba(248, 249, 250, 0.8);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        #barcodeInput:focus {
+            outline: none;
+            border-color: #ff7849;
+            box-shadow: 0 0 0 3px rgba(255, 120, 73, 0.1);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(248, 249, 250, 0.8);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #ff7849;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff7849;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Table */
+        .table-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #ff7849, #ff6b35);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 120, 73, 0.05);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+            font-style: italic;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+
+        .status-active {
+            background: #10ac84;
+            box-shadow: 0 0 10px rgba(16, 172, 132, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .status-inactive {
+            background: #ddd;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .scanner-controls {
+                flex-direction: column;
+            }
+
+            .scan-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Toggle Button -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Bayan Dashboard</h2>
+                <p class="sidebar-subtitle">QR Tools & Utilities</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/index.html" class="nav-link active">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zM9.5 14.5v3h-3v-3h3M11 13H5v6h6v-6zM17.5 6.5v3h-3v-3h3M19 5h-6v6h6V5zM13 13h1.5v1.5H13zM14.5 14.5H16V16h-1.5zM16 13h1.5v1.5H16zM13 16h1.5v1.5H13zM14.5 17.5H16V19h-1.5zM16 16h1.5v1.5H16zM17.5 14.5H19V16h-1.5zM17.5 17.5H19V19h-1.5zM22 7h-2V4h-3V2h5zM22 22v-5h-2v3h-3v2zM2 22h5v-2H4v-3H2zM2 2v5h2V4h3V2z"/>
+                        </svg>
+                        QR Scanner
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/convert-json.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M8 16h8v2H8v-2zm0-4h8v2H8v-2zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                        </svg>
+                        JSON to CSV Generator
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/convert-csv.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                        </svg>
+                        CSV Hadiah to JSON 
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/upload-csv.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm10 0h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z" />
+                        </svg>
+                        CSV to QR Generator
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/s.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M2 6h1v12H2V6zm2 0h1v12H4V6zm2 0h3v12H6V6zm4 0h1v12h-1V6zm3 0h1v12h-1V6zm2 0h3v12h-3V6zm4 0h1v12h-1V6z" />
+                        </svg>
+                        Monitor Welcome
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="header">
+                <h1 class="page-title">Scanner QR Faktur Pajak</h1>
+                <p class="page-description">Scan QR code untuk mengekstrak data dan export ke CSV</p>
+            </header>
+
+            <div class="scanner-section">
+                <h3 class="section-title">
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zM9.5 14.5v3h-3v-3h3M11 13H5v6h6v-6zM17.5 6.5v3h-3v-3h3M19 5h-6v6h6V5zM13 13h1.5v1.5H13zM14.5 14.5H16V16h-1.5zM16 13h1.5v1.5H16zM13 16h1.5v1.5H13zM14.5 17.5H16V19h-1.5zM16 16h1.5v1.5H16zM17.5 14.5H19V16h-1.5zM17.5 17.5H19V19h-1.5zM22 7h-2V4h-3V2h5zM22 22v-5h-2v3h-3v2zM2 22h5v-2H4v-3H2zM2 2v5h2V4h3V2z" />
+                    </svg>
+                    Scanner & Input
+                    <span id="scannerStatus" class="status-indicator status-inactive"></span>
+                </h3>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalScans">0</div>
+                        <div class="stat-label">Total Scan</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalValue">Rp 0</div>
+                        <div class="stat-label">Total Nilai</div>
+                    </div>
+                </div>
+
+                <video id="cameraPreview"></video>
+
+                <div class="scanner-controls">
+                    <button class="scan-button" onclick="startScan()">
+                        <svg class="button-icon" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        Mulai Scan Kamera
+                    </button>
+                    <button class="scan-button" onclick="stopScan()" style="background: linear-gradient(135deg, #ff5722, #e64a19);">
+                        <svg class="button-icon" viewBox="0 0 24 24">
+                            <path d="M6 6h12v12H6z" />
+                        </svg>
+                        Stop Kamera
+                    </button>
+                    <button class="scan-button secondary" onclick="exportToCSV()">
+                        <svg class="button-icon" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                        </svg>
+                        Export ke CSV
+                    </button>
+                    <button class="scan-button" onclick="clearData()" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                        <svg class="button-icon" viewBox="0 0 24 24">
+                            <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                        </svg>
+                        Hapus Data
+                    </button>
+                </div>
+
+                <input type="text" id="barcodeInput" placeholder="Ketik atau paste kode QR di sini (format: NAMA#KTP#...)" autofocus>
+            </div>
+
+            <div class="table-section">
+                <h3 class="section-title">
+                    <svg class="card-icon" viewBox="0 0 24 24">
+                        <path d="M5,4H19A2,2 0 0,1 21,6V18A2,2 0 0,1 19,20H5A2,2 0 0,1 3,18V6A2,2 0 0,1 5,4M5,8V12H11V8H5M13,8V12H19V8H13M5,14V18H11V14H5M13,14V18H19V14H13Z" />
+                    </svg>
+                    Data Hasil Scan
+                </h3>
+
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Perusahaan 1</th>
+                            <th>NPWP 1</th>
+                            <th>Perusahaan 2</th>
+                            <th>NPWP 2</th>
+                            <th>No Faktur Pajak</th>
+                            <th>Tanggal</th>
+                            <th>Dasar Pengenaan Pajak</th>
+                            <th>Jumlah PPN</th>
+                            <th>Jumlah PPnBM</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="11" class="no-data">Belum ada data. Mulai scan QR code untuk menambah data.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <script>
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking nav link on mobile
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Scanner functionality
+        const barcodeInput = document.getElementById('barcodeInput');
+        const tableBody = document.getElementById('tableBody');
+        const cameraPreview = document.getElementById('cameraPreview');
+        const scannerStatus = document.getElementById('scannerStatus');
+        const totalScansEl = document.getElementById('totalScans');
+        const totalValueEl = document.getElementById('totalValue');
+        
+        let scannerActive = false;
+        let scannedData = [];
+        let scanCount = 0;
+
+        function parseQRData(rawData) {
+            const parts = rawData.split('#');
+            if (parts.length !== 10) {
+                console.error('Format data tidak valid');
+                return null;
+            }
+
+            return {
+                namaPerusahaan: parts[0].trim(),
+                noKTP: parts[1].trim(),
+                perusahaan2: parts[2].trim(),
+                npwp: parts[3].trim(),
+                noRekening: parts[4].trim(),
+                tanggal: parts[5].trim(),
+                nilai1: parts[6].trim(),
+                nilai2: parts[7].trim(),
+                nilai3: parts[8].trim(),
+                status: parts[9].trim()
+            };
+        }
+
+        function formatCurrency(value) {
+            const num = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+            if (isNaN(num)) return value;
+            return new Intl.NumberFormat('id-ID', { 
+                style: 'currency', 
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(num);
+        }
+
+        function addDataToTable(data) {
+            scanCount++;
+            scannedData.push(data);
+
+            if (tableBody.querySelector('.no-data')) {
+                tableBody.innerHTML = '';
+            }
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${scanCount}</td>
+                <td>${data.namaPerusahaan}</td>
+                <td>${data.noKTP}</td>
+                <td>${data.perusahaan2}</td>
+                <td>${data.npwp}</td>
+                <td>${data.noRekening}</td>
+                <td>${data.tanggal}</td>
+                <td>${formatCurrency(data.nilai1)}</td>
+                <td>${formatCurrency(data.nilai2)}</td>
+                <td>${formatCurrency(data.nilai3)}</td>
+                <td><strong>${data.status}</strong></td>
+            `;
+
+            tableBody.appendChild(row);
+            updateStats();
+        }
+
+        function updateStats() {
+            totalScansEl.textContent = scanCount;
+            
+            let totalValue = 0;
+            scannedData.forEach(data => {
+                const nilai1 = parseFloat(data.nilai1.replace(/\./g, '').replace(',', '.')) || 0;
+                totalValue += nilai1;
+            });
+            
+            totalValueEl.textContent = new Intl.NumberFormat('id-ID', { 
+                style: 'currency', 
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(totalValue);
+        }
+
+        function processBarcodeData(rawData) {
+            const data = parseQRData(rawData);
+            if (data) {
+                addDataToTable(data);
+                barcodeInput.value = '';
+            } else {
+                alert('Format QR tidak valid! Format harus:\nNAMA#KTP#PERUSAHAAN2#NPWP#REKENING#TANGGAL#NILAI1#NILAI2#NILAI3#STATUS');
+            }
+        }
+
+        barcodeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const data = event.target.value.trim();
+                if (data) {
+                    processBarcodeData(data);
+                }
+            }
+        });
+
+        async function startScan() {
+            if (scannerActive) return;
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "environment",
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                
+                cameraPreview.srcObject = stream;
+                await cameraPreview.play();
+                cameraPreview.style.display = 'block';
+                scannerActive = true;
+                scannerStatus.className = 'status-indicator status-active';
+                
+                startQRScanner();
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Tidak dapat mengakses kamera. Pastikan browser memiliki izin akses kamera.');
+            }
+        }
+
+        function stopScan() {
+            if (!scannerActive) return;
+
+            scannerActive = false;
+            scannerStatus.className = 'status-indicator status-inactive';
+            cameraPreview.style.display = 'none';
+
+            if (cameraPreview.srcObject) {
+                const tracks = cameraPreview.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                cameraPreview.srcObject = null;
+            }
+        }
+
+        function startQRScanner() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function scanQRCode() {
+                if (!scannerActive || !cameraPreview.videoWidth) {
+                    if (scannerActive) {
+                        requestAnimationFrame(scanQRCode);
+                    }
+                    return;
+                }
+
+                canvas.width = cameraPreview.videoWidth;
+                canvas.height = cameraPreview.videoHeight;
+                
+                ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth",
+                });
+                
+                if (code && code.data) {
+                    processBarcodeData(code.data);
+                    setTimeout(() => {
+                        if (scannerActive) {
+                            requestAnimationFrame(scanQRCode);
+                        }
+                    }, 2000);
+                } else {
+                    requestAnimationFrame(scanQRCode);
+                }
+            }
+            
+            scanQRCode();
+        }
+
+        function exportToCSV() {
+            if (scannedData.length === 0) {
+                alert('Tidak ada data untuk di-export!');
+                return;
+            }
+
+            const headers = ['No', 'Perusahaan 1', 'NPWP 1', 'Perusahaan 2', 'NPWP 2', 'No Faktur Pajak', 'Tanggal', 'Dasar Pengenaan Pajak', 'Jumlah PPN', 'Jumlah PPnBM', 'Status'];
+            const csvContent = [
+                headers.join(','),
+                ...scannedData.map((data, index) => [
+                    index + 1,
+                    `"${data.namaPerusahaan}"`,
+                    `"${data.noKTP}"`,
+                    `"${data.perusahaan2}"`,
+                    `"${data.npwp}"`,
+                    `"${data.noRekening}"`,
+                    `"${data.tanggal}"`,
+                    `"Rp ${data.nilai1}"`,
+                    `"Rp ${data.nilai2}"`,
+                    `"Rp ${data.nilai3}"`,
+                    `"${data.status}"`
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `qr_scan_data_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearData() {
+            if (scannedData.length === 0) {
+                alert('Tidak ada data untuk dihapus!');
+                return;
+            }
+
+            if (confirm('Apakah Anda yakin ingin menghapus semua data?')) {
+                scannedData = [];
+                scanCount = 0;
+                tableBody.innerHTML = '<tr><td colspan="11" class="no-data">Belum ada data. Mulai scan QR code untuk menambah data.</td></tr>';
+                updateStats();
+            }
+        }
+
+        window.addEventListener('load', () => {
+            barcodeInput.focus();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target !== barcodeInput && !e.target.closest('.scanner-controls')) {
+                setTimeout(() => barcodeInput.focus(), 100);
+            }
+        });
+    </script>
+</body>
+
+</html>
